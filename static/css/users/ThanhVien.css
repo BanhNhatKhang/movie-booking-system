@@ -1,0 +1,30 @@
+.member-hover {
+  transition: all 0.3s ease;
+  cursor: pointer;
+}
+
+.member-hover:hover {
+  background-color: #ff4444 !important; 
+  transform: translateX(5px);            
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+.member-hover:hover a {
+  color: white !important;               
+}
+.card {
+      background: #ffffff;
+      border-radius: 10px;
+      padding: 20px;
+      margin-bottom: 20px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    }
+    ul {
+      margin-left: 20px;
+    }
+    .note {
+      background-color: #f4d1cc;
+      border-left: 5px solid #ff4444;
+      padding: 15px;
+      margin-top: 10px;
+    }

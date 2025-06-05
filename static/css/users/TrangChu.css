@@ -1,0 +1,177 @@
+.carousel-img {
+        width: 100%;
+        object-fit: cover;   
+        height: 70vh;
+    }
+   
+    .align-div{
+        align-items: center;
+    }
+        
+    .carousel-img-inner{
+        height:50vh;
+        object-fit: cover;
+        width: 100%;
+    }
+
+    .book-bg {
+            text-align: center;
+            z-index: 10;
+            position: relative;
+            background-color: #ff4444;
+            padding:10px;
+            border-radius: 5px;
+            margin-bottom:30px;
+    }
+
+    .book-bg:hover{
+            background-color: #cc0000;
+    }
+
+    .book-tk {
+        text-decoration: none;
+        color: white;
+        font-weight: bold;
+        z-index: 11;
+        position: relative;
+        display: inline-block;
+    }
+
+    
+
+    .movie-card-text{
+        margin-top:10px;
+        text-align: center;
+        font-weight: bold;
+        color:white;
+    }
+
+    .movie-card {
+            position: relative;
+            cursor: pointer;
+            z-index: 11;
+            overflow: visible;
+    }
+
+    /*Nút đặt vé hover*/
+    .book-hover-btn {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        display: none;
+        padding: 10px 20px;
+        background-color: rgba(255, 0, 0, 0.8);
+        color: white;
+        text-decoration: none;
+        font-weight: bold;
+        border-radius: 6px;
+        z-index: 20;
+        box-shadow: 0 0 10px rgba(0,0,0,0.5);
+        pointer-events: auto;
+    }
+    
+
+    /* Hiển thị nút khi hover vào ảnh */
+    .movie-card:hover .book-hover-btn {
+        display: block;
+    }
+
+    .movie-card img {
+        transition: 0.3s ease;
+    }
+
+    .movie-card:hover img {
+        filter: brightness(50%);
+    }
+
+    .align-text{
+        text-align: center;
+        color: white;
+    }
+
+    .service-img{
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+
+    .swap-f-btn{
+        color: #ff4444 !important;
+    }
+
+    .nav-tabs .nav-link {
+        background-color: transparent;
+        color: #ccc;
+        border: none;
+        transition: color 0.3s ease;
+    }
+
+    .nav-tabs .nav-link.active {
+        background-color: transparent !important;
+        color: #fff !important;
+        border-bottom: 2px solid #fff;
+    }
+
+    .nav-tabs .nav-link:hover {
+        color: #fff;
+    }
+
+    .div-pad{
+        margin-top:10px;
+    }
+
+    .responsive-text{
+        font-size:40px;
+        font-weight: bold;
+    }
+    /*Mobile*/
+    @media (max-width: 480px) {
+        .carousel-img {
+            height: 25vh; 
+        }
+
+        .carousel-img-inner {
+            height: 25vh; 
+        }
+
+        .book-hover-btn{
+            font-size: 12px;
+        }
+        
+        .service-img{
+            height:25vh;
+        }
+
+        .responsive-text {
+            font-size: 15px; 
+        }
+         .nav-tabs .nav-link {
+            padding: 0px 0px; /* Giảm padding để tiết kiệm không gian */
+        }
+    }
+    /*Tablet*/
+    @media (min-width: 481px) and (max-width: 768px) {
+        .carousel-img {
+            height: 32vh; 
+        }
+
+        .carousel-img-inner {
+            height: 30vh; 
+        }
+
+        .book-hover-btn{
+            font-size: 14px;
+        }
+        
+        .service-img{
+            height:25vh;
+        }
+
+        .responsive-text {
+            font-size: 30px; 
+        }
+         .nav-tabs .nav-link {
+            padding: 0px 0px; /* Giảm padding để tiết kiệm không gian */
+        }
+    }
