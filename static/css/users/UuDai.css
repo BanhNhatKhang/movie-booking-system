@@ -1,0 +1,340 @@
+.khf-logo {
+  display: flex;
+  align-items: center;
+  text-decoration: none;
+}
+
+.logo-icon {
+  width: 45px;
+  height: 45px;
+  background: linear-gradient(145deg, var(--primary-red), var(--dark-red));
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-right: 12px;
+  position: relative;
+  overflow: hidden;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+}
+
+.logo-icon::before {
+  content: "";
+  position: absolute;
+  width: 30px;
+  height: 30px;
+  border: 3px solid white;
+  border-radius: 50%;
+}
+
+.logo-icon::after {
+  content: "";
+  position: absolute;
+  width: 15px;
+  height: 15px;
+  background: white;
+  border-radius: 50%;
+}
+
+.logo-text {
+  display: flex;
+  flex-direction: column;
+  line-height: 1;
+}
+
+.logo-text .cinema {
+  font-size: 20px;
+  font-weight: 800;
+  letter-spacing: 1px;
+  color: white;
+  margin-bottom: 2px;
+}
+
+.logo-text .khf {
+  font-size: 28px;
+  font-weight: 900;
+  background: linear-gradient(to right, #ff6b6b, #ffa502);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  letter-spacing: -1px;
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+}
+
+/* Main content */
+.offers-banner {
+  background: linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)),
+    url("/CT275/CT275/FILM/public/assets/images/slide.avif");
+  background-size: cover;
+  background-position: center;
+  height: 400px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  padding: 2rem;
+  margin-bottom: 3rem;
+}
+
+.offers-banner h1 {
+  font-size: 3.5rem;
+  font-weight: 700;
+  margin-bottom: 1.5rem;
+  background: linear-gradient(90deg, #ff6b6b, #ffa502);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.offers-banner p {
+  font-size: 1.25rem;
+  max-width: 700px;
+  color: #f0f0f0;
+  margin-bottom: 2rem;
+}
+
+.section-title {
+  position: relative;
+  padding-bottom: 15px;
+  margin-bottom: 30px;
+  color: white;
+  font-weight: 600;
+}
+
+.section-title::after {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 80px;
+  height: 4px;
+  background: linear-gradient(90deg, var(--primary-red), var(--dark-red));
+  border-radius: 2px;
+}
+
+/* Offers Section */
+.offers-section {
+  padding: 4rem 0;
+  background-color: #1a1a1a;
+}
+
+.offer-card {
+  background: #2a2a2a;
+  border-radius: 10px;
+  overflow: hidden;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  margin-bottom: 2rem;
+  height: 100%;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+}
+
+.offer-card:hover {
+  transform: translateY(-10px);
+  box-shadow: 0 15px 30px rgba(0, 0, 0, 0.4);
+}
+
+.offer-img {
+  height: 200px;
+  overflow: hidden;
+}
+
+.offer-img img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.5s ease;
+}
+
+.offer-card:hover .offer-img img {
+  transform: scale(1.1);
+}
+
+.offer-content {
+  padding: 1.5rem;
+}
+
+.offer-badge {
+  display: inline-block;
+  background: linear-gradient(90deg, var(--primary-red), var(--dark-red));
+  color: white;
+  padding: 0.25rem 1rem;
+  border-radius: 20px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  margin-bottom: 0.75rem;
+}
+
+.offer-title {
+  font-size: 1.25rem;
+  margin-bottom: 0.75rem;
+  color: white;
+  font-weight: 600;
+}
+
+.offer-desc {
+  color: #b0b0b0;
+  margin-bottom: 1.5rem;
+  font-size: 0.95rem;
+  line-height: 1.6;
+}
+
+.offer-details {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  padding-top: 1rem;
+}
+
+.offer-expiry {
+  font-size: 0.85rem;
+  color: #888;
+}
+
+.offer-btn {
+  background: rgba(255, 68, 68, 0.1);
+  color: var(--primary-red);
+  border: 1px solid var(--primary-red);
+  padding: 0.4rem 1.2rem;
+  border-radius: 30px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  text-decoration: none;
+  font-size: 0.9rem;
+}
+
+.offer-btn:hover {
+  background: linear-gradient(90deg, var(--primary-red), var(--dark-red));
+  color: white;
+}
+
+/* Filter Section */
+.filter-section {
+  background-color: #2a2a2a;
+  border-radius: 10px;
+  padding: 1.5rem;
+  margin-bottom: 2rem;
+}
+
+.filter-btn {
+  background: rgba(255, 68, 68, 0.1);
+  color: var(--primary-red);
+  border: 1px solid var(--primary-red);
+  margin: 0.25rem;
+  transition: all 0.3s ease;
+}
+
+.filter-btn.active,
+.filter-btn:hover {
+  background: linear-gradient(90deg, var(--primary-red), var(--dark-red));
+  color: white;
+}
+
+/* Featured Offers */
+.featured-offer {
+  background: linear-gradient(
+    45deg,
+    rgba(255, 68, 68, 0.1),
+    rgba(0, 0, 0, 0.3)
+  );
+  border-radius: 10px;
+  padding: 2rem;
+  margin-bottom: 2rem;
+  border: 1px solid rgba(255, 68, 68, 0.2);
+  position: relative;
+  overflow: hidden;
+}
+
+.featured-offer::before {
+  content: "ĐẶC BIỆT";
+  position: absolute;
+  top: 20px;
+  right: -30px;
+  background: var(--primary-red);
+  color: white;
+  padding: 0.25rem 2rem;
+  transform: rotate(45deg);
+  font-weight: 600;
+  font-size: 0.85rem;
+}
+
+.featured-content h3 {
+  color: white;
+  font-weight: 600;
+  margin-bottom: 1rem;
+}
+
+.featured-content p {
+  color: #b0b0b0;
+  margin-bottom: 1.5rem;
+}
+
+.featured-btn {
+  background: linear-gradient(90deg, var(--primary-red), var(--dark-red));
+  color: white;
+  border: none;
+  padding: 0.5rem 1.5rem;
+  border-radius: 30px;
+  font-weight: 600;
+  transition: all 0.3s ease;
+}
+
+.featured-btn:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 5px 15px rgba(255, 68, 68, 0.4);
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .offers-banner h1 {
+    font-size: 2.5rem;
+  }
+
+  .offers-banner p {
+    font-size: 1rem;
+  }
+
+  .section-title {
+    font-size: 1.8rem;
+  }
+
+  .logo-text .cinema {
+    font-size: 16px;
+  }
+
+  .logo-text .khf {
+    font-size: 24px;
+  }
+}
+
+@media (max-width: 576px) {
+  .offers-banner h1 {
+    font-size: 2rem;
+  }
+
+  .section-title {
+    font-size: 1.5rem;
+  }
+
+  .featured-offer::before {
+    font-size: 0.7rem;
+    right: -35px;
+    padding: 0.2rem 1.8rem;
+  }
+
+  .logo-icon {
+    width: 40px;
+    height: 40px;
+    margin-right: 8px;
+  }
+
+  .logo-text .cinema {
+    font-size: 14px;
+  }
+
+  .logo-text .khf {
+    font-size: 20px;
+  }
+}
