@@ -48,7 +48,7 @@
                                      aria-expanded="false">PHIM</a>
                                     <ul class="dropdown-menu" aria-labelledby="phimDropdown">
                                         <li>
-                                        <a class="dropdown-item hover-red-nav" href="#"
+                                        <a class="dropdown-item hover-red-nav" href="/static/html/users/Phim/PhimDangChieu.php"
                                             >Phim đang chiếu</a
                                         >
                                         </li>

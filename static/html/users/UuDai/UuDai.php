@@ -16,7 +16,7 @@
       rel="stylesheet"
       href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css"
     />
-    <link rel="stylesheet" href="/static/css/users/Header-Footer.css" />
+    <link rel="stylesheet" href="/static/css/users/HeaderFooter.css" />
     <link rel="stylesheet" href="/static/css/users/UuDai.css" />
     
   </head>
