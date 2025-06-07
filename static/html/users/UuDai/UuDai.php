@@ -47,7 +47,7 @@
                                 </div>
                                 </div>
                                 <div class="col-md-6">
-                                <img src="" alt="Combo gia đình" class="img-fluid rounded" />
+                                <img src="/static/imgs/bgChonGhe.avif" alt="Combo gia đình" class="img-fluid rounded" />
                                 </div>
                             </div>
                         </div>
@@ -67,7 +67,7 @@
                                 </div>
                                 <div class="col-md-6 order-md-1">
                                 <img
-                                    src="https://images.unsplash.com/photo-1616530940355-351fabd952eb?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=800&q=80"
+                                    src="/static/imgs/tichdiem2x.jpg"
                                     alt="Miễn phí vé"
                                     class="img-fluid rounded"
                                 />
@@ -105,13 +105,13 @@
                         <div class="col-lg-4 col-md-6 offer-item" data-status="ongoing">
                             <div class="offer-card">
                                 <div class="offer-img">
-                                    <img src="" alt="Combo bắp nước" />
+                                    <img src="/static/imgs/bapnuoc.jpg" alt="Combo bắp nước" />
                                 </div>
                                 <div class="offer-content">
                                     <span class="offer-badge">COMBO</span>
-                                    <h4 class="offer-title">Combo bắp nước chỉ 69k</h4>
+                                    <h4 class="offer-title">Combo bắp nước chỉ 99k</h4>
                                     <p class="offer-desc">
-                                    Combo 1 bắp lớn + 2 nước lớn chỉ với 69.000đ. Áp dụng cho tất
+                                    Combo 1 bắp lớn + 2 nước lớn chỉ với 99.000đ. Áp dụng cho tất
                                     cả các suất chiếu và rạp trên toàn quốc.
                                     </p>
                                     <div class="offer-details">
@@ -126,7 +126,7 @@
                         <div class="col-lg-4 col-md-6 offer-item" data-status="ongoing">
                             <div class="offer-card">
                                 <div class="offer-img">
-                                    <img src="" alt="Giảm giá" />
+                                    <img src="/static/imgs/member600_800.jpg" alt="Giảm giá" />
                                 </div>
                                 <div class="offer-content">
                                     <span class="offer-badge">GIẢM GIÁ</span>
@@ -147,7 +147,7 @@
                         <div class="col-lg-4 col-md-6 offer-item" data-status="upcoming">
                             <div class="offer-card">
                                 <div class="offer-img">
-                                    <img src="" alt="Thẻ thành viên" />
+                                    <img src="/static/imgs/tichdiem2x.jpg" alt="Thẻ thành viên" />
                                 </div>
                                 <div class="offer-content">
                                     <span class="offer-badge">THÀNH VIÊN</span>
@@ -168,7 +168,7 @@
                         <div class="col-lg-4 col-md-6 offer-item" data-status="upcoming">
                             <div class="offer-card">
                                 <div class="offer-img">
-                                    <img src="" alt="Sinh nhật" />
+                                    <img src="/static/imgs/uudaisinhnhatdacbiet.avif" alt="Sinh nhật" />
                                 </div>
                                 <div class="offer-content">
                                     <span class="offer-badge">SINH NHẬT</span>
@@ -189,7 +189,7 @@
                         <div class="col-lg-4 col-md-6 offer-item" data-status="ongoing">
                             <div class="offer-card">
                                 <div class="offer-img">
-                                    <img src="" alt="Đặt vé sớm" />
+                                    <img src="/static/imgs/uudainoibat2.avif" alt="Đặt vé sớm" />
                                 </div>
                                 <div class="offer-content">
                                     <span class="offer-badge">SỚM</span>
@@ -210,7 +210,7 @@
                         <div class="col-lg-4 col-md-6 offer-item" data-status="expired">
                             <div class="offer-card">
                                 <div class="offer-img">
-                                    <img src="" alt="Ngân hàng" />
+                                    <img src="/static/imgs/uudainganhang.jpg" alt="Ngân hàng" />
                                 </div>
                                 <div class="offer-content">
                                     <span class="offer-badge">NGÂN HÀNG</span>

@@ -110,7 +110,7 @@
                             25/06/2024
                         </div>
                         <div class="border border-top-0 p-2 d-flex flex-wrap gap-2">
-                            <button class="btn btn-danger btn-sm">08:30</button>
+                            <a href="ChonGhe.php"><button class="btn btn-danger btn-sm">08:30</button></a>
                             <button class="btn btn-danger btn-sm">10:00</button>
                             <button class="btn btn-danger btn-sm">11:45</button>
                             <button class="btn btn-danger btn-sm">13:00</button>

@@ -1,7 +1,7 @@
 /* Main content */
 .offers-banner {
   background: linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)),
-    url("/CT275/CT275/FILM/public/assets/images/slide.avif");
+    url("/static/imgs/slide.avif");
   background-size: cover;
   background-position: center;
   height: 400px;
