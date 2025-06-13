@@ -1,0 +1,21 @@
+.profile-card {
+    background: linear-gradient(to right, #ffffff, #f9f9f9);
+    border-radius: 16px;
+}
+
+.badge {
+    font-size: 1rem;
+    padding: 0.6em 1em;
+    border-radius: 999px;
+    font-weight: 600;
+}
+
+.btn {
+    border-radius: 25px;
+    font-weight: 500;
+    transition: box-shadow 0.2s ease;
+}
+
+.btn:hover {
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.12);
+}
