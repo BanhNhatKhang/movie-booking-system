@@ -17,9 +17,9 @@
 </head>
 <body style="background-color: rgb(40, 40, 40)">
 <main>
-    <div class="container-fluid py-3">
+    <div class="container py-3">
         <div class="row justify-content-center">
-            <div class="col-12 col-md-10">
+            <div class="col-12 col-md-12">
                 <div class="card profile-card shadow p-4 rounded-4">
                     <div class="text-center mb-4">
                         <h2 class="fw-bold text-primary">Nguyễn Văn A</h2><br>

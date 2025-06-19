@@ -13,56 +13,7 @@
     />
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-4Q6Gf2aSP4eDXB8Miphtr37CMZZQ5oXLH2yaXMJ2w8e2ZtHTl7GptT4jmndRuHDT" crossorigin="anonymous">
     <link rel="stylesheet" href="/static/css/users/HeaderFooter.css">
-    <style>
-        .seat-map { 
-            display: flex; 
-            flex-direction: column; 
-            align-items: center; 
-
-        }
-        .seat-bg {
-            position: absolute;
-            top: 0; left: 0; right: 0; bottom: 0;
-            background-image: url('/static/imgs/bgChonGhe.avif'); /* thay đường dẫn của bạn */
-            background-size: cover;
-            background-position: center;
-            filter: brightness(0.5);
-            z-index: 1;
-        }
-
-        .seat-content {
-            position: relative;
-            z-index: 2;
-            padding: 2rem;
-        }
-        .seat-row { display: flex; margin-bottom: 6px; }
-        .seat {
-            width: 38px; height: 38px; margin: 2px; border-radius: 6px; color: #fff; font-weight: bold;
-            display: flex; align-items: center; justify-content: center; cursor: pointer; border: none;
-            transition: filter 0.2s;
-        }
-        .seat.normal { background: #2196f3; }
-        .seat.vip { background: #e53935; }
-        .seat.couple { background: #8bc34a; }
-        .seat.luxury { background: #8e24aa; }
-        .seat.sold { background: #bdbdbd; color: #333; cursor: not-allowed; }
-        .seat.selected { background: #ffe600; color: #222; }
-        .seat.aisle { background: #263238; color: #fff; cursor: default; }
-        .seat:active:not(.sold):not(.aisle) { filter: brightness(0.8); }
-        .screen { width: 70%; height: 8px; background: #fff; margin: 18px auto 24px; border-radius: 4px; }
-        .legend-seat { display: inline-block; width: 22px; height: 22px; border-radius: 4px; margin-right: 6px; vertical-align: middle; }
-        .legend-normal { background: #2196f3; }
-        .legend-vip { background: #e53935; }
-        .legend-couple { background: #8bc34a; }
-        .legend-luxury { background: #8e24aa; }
-        .legend-sold { background: #bdbdbd; }
-        .legend-selected { background: #ffe600; border: 1px solid #aaa; }
-        .legend-aisle { background: #263238; }
-        .seat-label { font-size: 13px; }
-        .summary-box { background: #fff; border-radius: 8px; padding: 24px 32px; margin-top: 24px; }
-        .btn-next { background: linear-gradient(90deg, #ff4444, #ffe600); color: #222; border: none; font-weight: bold; }
-        .btn-next:hover { background: linear-gradient(90deg, #cc0000, #ffe600); }
-    </style>
+    <link rel="stylesheet" href="/static/css/users/ChonGhe.css">
 </head>
 <body style="background: #222;">
     <div class="container">
@@ -136,7 +87,7 @@
                     <div id="totalPrice" class="mt-2">
                         Giá vé: 170,000 VNĐ
                     </div>
-                    <button class="btn btn-next mt-3 px-4 py-2">Tiếp theo</button>
+                    <a id="btn-next" class="btn btn-next mt-3 px-4 py-2">Tiếp theo</a>
                 </div>
             </div>
         </div>
@@ -177,6 +128,20 @@
             document.getElementById('totalPrice').textContent = 'Giá vé: ' + total.toLocaleString('vi-VN') + ' VNĐ';
         }
         updateSummary();
+        document.getElementById('btn-next').onclick = function(e) {
+            e.preventDefault();
+            const seats = selectedSeats.join(',');
+            // Tính tổng tiền
+            let total = 0;
+            selectedSeats.forEach(seat => {
+                let type = 'normal';
+                if (seat.startsWith('A') || seat.startsWith('B') || seat.startsWith('C')) type = 'normal';
+                else if (seat.startsWith('D') || seat.startsWith('E') || seat.startsWith('F') || seat.startsWith('G')) type = 'vip';
+                else if (seat.startsWith('H')) type = 'luxury';
+                total += seatPrices[type] || 0;
+            });
+            window.location.href = '/static/html/users/ThanhToan/ThanhToan.php?seats=' + encodeURIComponent(seats) + '&total=' + total;
+        };
     </script>
 </body>
 </html>
