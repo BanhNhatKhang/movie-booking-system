@@ -12,10 +12,7 @@ $id = isset($_GET['id']) ? intval($_GET['id']) : 0;
     <title>Hủy vé #<?= htmlspecialchars($id) ?></title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/dist/css/bootstrap.min.css">
     <link rel="stylesheet" href="/static/css/admin/Admin.css">
-    <style>
-        .main-content { max-width: 500px; margin: 60px auto; background: #fff; border-radius: 12px; box-shadow: 0 2px 12px rgba(0,0,0,0.07); padding: 32px; text-align: center;}
-        .icon-cancel { font-size: 3rem; color: #e74c3c; }
-    </style>
+    <link rel="stylesheet" href="/static/css/admin/HuyDon.css">
 </head>
 <body style="background: #f5f5f5;">
 <div class="main-content">

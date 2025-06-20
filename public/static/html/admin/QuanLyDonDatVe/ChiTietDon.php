@@ -54,14 +54,7 @@ foreach($orders as $o) {
     <title>Chi tiết vé #<?= htmlspecialchars($id) ?></title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/dist/css/bootstrap.min.css">
     <link rel="stylesheet" href="/static/css/admin/Admin.css">
-    <style>
-        .main-content { max-width: 600px; margin: 40px auto; background: #fff; border-radius: 12px; box-shadow: 0 2px 12px rgba(0,0,0,0.07); padding: 32px; }
-        .order-label { font-weight: bold; color: #555; width: 140px; }
-        .order-value { color: #222; }
-        .status-paid { background: #27ae60; color: #fff; }
-        .status-unpaid { background: #f1c40f; color: #222; }
-        .status-cancelled { background: #bdbdbd; color: #222; }
-    </style>
+    <link rel="stylesheet" href="/static/css/admin/ChiTietDon.css">
 </head>
 <body style="background: #f5f5f5;">
 <div class="main-content">

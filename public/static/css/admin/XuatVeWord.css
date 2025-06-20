@@ -1,0 +1,27 @@
+body {
+  font-family: Arial, sans-serif;
+}
+.ticket-box {
+  border: 1px solid #333;
+  border-radius: 8px;
+  padding: 24px;
+  width: 450px;
+  margin: 0 auto;
+}
+.ticket-title {
+  font-size: 1.5em;
+  font-weight: bold;
+  margin-bottom: 18px;
+  text-align: center;
+}
+.ticket-row {
+  margin-bottom: 10px;
+}
+.label {
+  font-weight: bold;
+  width: 120px;
+  display: inline-block;
+}
+.value {
+  display: inline-block;
+}

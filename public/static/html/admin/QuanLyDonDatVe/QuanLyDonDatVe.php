@@ -8,50 +8,7 @@
     <title>Quản lý Đơn đặt vé</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/dist/css/bootstrap.min.css">
     <link rel="stylesheet" href="/static/css/admin/Admin.css">
-    <style>
-        body {
-            margin: 0;
-            font-family: Arial, sans-serif;
-            height: 100vh;
-            overflow: hidden;
-        }
-        .main-content {
-            flex: 1;
-            display: flex;
-            flex-direction: column;
-        }
-        .topbar {
-            background-color: #f8f9fa;
-            padding: 10px 20px;
-            border-bottom: 1px solid #ddd;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-        .user-info {
-            display: flex;
-            align-items: center;
-        }
-        .user-info i {
-            margin-right: 8px;
-        }
-        .content {
-            padding: 20px;
-            overflow-y: auto;
-            flex: 1;
-            background-color: #f1f3f5;
-        }
-        .table-responsive {
-            background: #fff;
-            border-radius: 10px;
-            box-shadow: 0 2px 12px rgba(0,0,0,0.07);
-        }
-        .status-paid { background: #27ae60; color: #fff; }
-        .status-unpaid { background: #f1c40f; color: #222; }
-        .status-cancelled { background: #bdbdbd; color: #222; }
-        .action-btn { margin-right: 6px; }
-        .table th, .table td { vertical-align: middle; }
-    </style>
+    <link rel="stylesheet" href="/static/css/admin/QuanLyDonDatVe.css">
 </head>
 <body style="background: #f5f5f5;">
 <div class="main-content">

@@ -1,0 +1,15 @@
+.main-content {
+  flex: 1;
+}
+.table-responsive {
+  background: #fff;
+  border-radius: 10px;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.07);
+}
+.action-btn {
+  margin-right: 6px;
+}
+.table th,
+.table td {
+  vertical-align: middle;
+}

@@ -56,14 +56,9 @@ header("Content-Disposition: attachment;Filename=Ve_{$order['id']}.doc");
 <head>
     <meta charset="UTF-8">
     <title>Vé #<?= htmlspecialchars($order['id']) ?></title>
-    <style>
-        body { font-family: Arial, sans-serif; }
-        .ticket-box { border:1px solid #333; border-radius:8px; padding:24px; width:450px; margin:0 auto; }
-        .ticket-title { font-size: 1.5em; font-weight: bold; margin-bottom: 18px; text-align:center; }
-        .ticket-row { margin-bottom: 10px; }
-        .label { font-weight: bold; width: 120px; display: inline-block; }
-        .value { display: inline-block; }
-    </style>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/static/css/admin/Admin.css">
+    <link rel="stylesheet" href="/static/css/admin/XuatVeWord.css">
 </head>
 <body>
     <div class="ticket-box">

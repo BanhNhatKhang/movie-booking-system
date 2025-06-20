@@ -14,12 +14,7 @@ $staffs = [
     <title>Quản lý Nhân viên</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/dist/css/bootstrap.min.css">
     <link rel="stylesheet" href="/static/css/admin/Admin.css">
-    <style>
-        .main-content { flex: 1; }
-        .table-responsive { background: #fff; border-radius: 10px; box-shadow: 0 2px 12px rgba(0,0,0,0.07); }
-        .action-btn { margin-right: 6px; }
-        .table th, .table td { vertical-align: middle; }
-    </style>
+    <link rel="stylesheet" href="/static/css/admin/QuanLyNhanVien.css">
 </head>
 <body style="background: #f5f5f5;">
 <div class="main-content">
