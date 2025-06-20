@@ -11,9 +11,7 @@
     border-radius: 12px;
     color: white;
     min-width: 0;
-    /* Không để giãn quá */
     overflow: hidden;
-    /* Tránh nội dung tràn */
     gap: 1rem;
 }
 

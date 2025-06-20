@@ -10,7 +10,7 @@
     <title>Quản lý ưu đãi</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" />
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
-    <link href="/public/static/css/admin/LayoutAdmin.css" rel="stylesheet">
+    <link href="/static/css/admin/LayoutAdmin.css" rel="stylesheet">
 
 </head>
 

@@ -10,8 +10,8 @@
     <title>Quản lý trang chủ</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" />
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
-    <link href="/public/static/css/admin/LayoutAdmin.css" rel="stylesheet">
-    <link href="/public/static/css/admin/ModalXoa.css" rel="stylesheet">
+    <link href="/static/css/admin/LayoutAdmin.css" rel="stylesheet">
+    <link href="/static/css/admin/ModalXoa.css" rel="stylesheet">
 </head>
 
 <body>
@@ -58,11 +58,13 @@
                                     <a href="SuaPoster.php" class="btn btn-sm btn-warning" title="Sửa">
                                         <i class="bi bi-pencil-square"></i>
                                     </a>
-                                    <a href="XoaPoster.php?id=5"
-                                    onclick="return confirm('Bạn có chắc chắn muốn xóa poster này không?')"
-                                    class="btn btn-sm btn-danger" title="Xóa">
+                                    <button 
+                                        class="btn btn-sm btn-danger btn-delete" 
+                                        title="Xóa"
+                                        data-title="poster phim 'Avengers: Endgame'"
+                                        data-url="XoaPoster.php?id=1">
                                         <i class="bi bi-trash"></i>
-                                    </a>
+                                    </button>
                                 </td>
                             </tr>
                         </tbody>
@@ -74,13 +76,15 @@
                         <button class="btn btn-primary">
                             <a href="ThemUuDaiHome.php" class="text-white text-decoration-none"><i class="bi bi-plus-circle"></i> Thêm ưu đãi mới</a>
                         </button>
-                        <button 
-                            class="btn btn-sm btn-danger btn-delete" 
-                            title="Xóa"
-                            data-title="poster phim 'Avengers: Endgame'"
-                            data-url="XoaPoster.php?id=1">
-                            <i class="bi bi-trash"></i>
-                        </button>
+                        <form class="d-flex gap-2 w-75 justify-content-end flex-wrap">
+                            <select class="form-select w-auto" style="min-width:140px;">
+                                <option value="">Tất cả ưu đãi</option>
+                                <option>Thứ 4 vui vẻ</option>
+                            </select>
+                            <button class="btn btn-outline-primary" type="submit">
+                                <i class="bi bi-search"></i>
+                            </button>
+                        </form>
                     </div>
                     
                     <table class="table table-bordered table-hover bg-white shadow-sm text-center">
@@ -101,11 +105,13 @@
                                     <a href="SuaUuDaiHome.php" class="btn btn-sm btn-warning" title="Sửa">
                                         <i class="bi bi-pencil-square"></i>
                                     </a>
-                                    <a href="XoaUuDaiHome.php?id=5"
-                                    onclick="return confirm('Bạn có chắc chắn muốn xóa poster này không?')"
-                                    class="btn btn-sm btn-danger" title="Xóa">
+                                    <button 
+                                        class="btn btn-sm btn-danger btn-delete" 
+                                        title="Xóa"
+                                        data-title="ưu đãi 'Thứ 4 vui vẻ'"
+                                        data-url="XoaUuDai.php?id=1">
                                         <i class="bi bi-trash"></i>
-                                    </a>
+                                    </button>
                                 </td>
                             </tr>
                         </tbody>
@@ -114,7 +120,7 @@
             </main>
         </div>
     </div>
-    <script src="/public/static/js/admin/ModalXoa.js"></script>
+    <script src="/static/js/admin/ModalXoa.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
     <?php include '../../../html/admin/ModalXoa/ModalXoa.php'; ?></body>
 </html>
