@@ -106,6 +106,7 @@ foreach($orders as $o) {
         <?php if($order['status']!='cancelled'): ?>
         <a href="HuyDon.php?id=<?= $order['id'] ?>" class="btn btn-danger" onclick="return confirm('Bạn chắc chắn muốn hủy vé này?')">Hủy vé</a>
         <?php endif; ?>
+        <a href="XuatVeWord.php?id=<?= $order['id'] ?>" class="btn btn-success">Xuất vé Word</a>
     </div>
     <?php else: ?>
     <div class="alert alert-danger text-center">
