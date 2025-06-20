@@ -1,0 +1,21 @@
+
+.user-label {
+  font-weight: bold;
+  color: #555;
+  width: 140px;
+}
+.user-value {
+  color: #222;
+}
+.status-admin {
+  background: #e67e22;
+  color: #fff;
+}
+.status-guest {
+  background: #3498db;
+  color: #fff;
+}
+.status-locked {
+  background: #bdbdbd;
+  color: #222;
+}

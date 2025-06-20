@@ -5,59 +5,15 @@
 <html lang="vi">
 <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Dashboard</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" />
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
-    <link href="/static/css/admin/LayoutAdmin.css" rel="stylesheet">
-    <style>
-        body {
-            margin: 0;
-            font-family: Arial, sans-serif;
-            height: 100vh;
-            overflow: hidden;
-        }
-        .main-content {
-            flex: 1;
-            display: flex;
-            flex-direction: column;
-        }
-        .topbar {
-            background-color: #f8f9fa;
-            padding: 10px 20px;
-            border-bottom: 1px solid #ddd;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-        .user-info {
-            display: flex;
-            align-items: center;
-        }
-        .user-info i {
-            margin-right: 8px;
-        }
-        .content {
-            padding: 20px;
-            overflow-y: auto;
-            flex: 1;
-            background-color: #f1f3f5;
-        }
-        .table-responsive {
-            background: #fff;
-            border-radius: 10px;
-            box-shadow: 0 2px 12px rgba(0,0,0,0.07);
-        }
-        .status-paid { background: #27ae60; color: #fff; }
-        .status-unpaid { background: #f1c40f; color: #222; }
-        .status-cancelled { background: #bdbdbd; color: #222; }
-        .action-btn { margin-right: 6px; }
-        .table th, .table td { vertical-align: middle; }
-    </style>
+    <title>Quản lý Đơn đặt vé</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/static/css/admin/Admin.css">
+    <link rel="stylesheet" href="/static/css/admin/QuanLyDonDatVe.css">
+    <link rel="stylesheet" href="/static/css/admin/LayoutAdmin.css">
 </head>
 <body>
     <div class="admin-layout">
-        <?php include __DIR__ . '/../../../layouts/admin/Sidebar.php'; ?>
+    <?php include '../../../layouts/admin/Sidebar.php'; ?>
         <div class="main-content">
         <?php include '../../../layouts/admin/HeaderAdmin.php'; ?>
             <main>
@@ -78,7 +34,7 @@
                                 <input type="date" class="form-control" name="date" value="<?= isset($_GET['date']) ? htmlspecialchars($_GET['date']) : '' ?>">
                             </div>
                             <div class="col-md-2">
-                                <button class="btn btn-primary w-100" type="submit"><i class="bi bi-search"></i> Tra cứu</button>
+                                <button class="btn btn-outline-primary" type="submit"><i class="bi bi-search"></i></button>
                             </div>
                         </form>
                         <!-- Danh sách đơn đặt vé -->
@@ -163,7 +119,7 @@
                                         <td>
                                             <a href="ChiTietDon.php?id=<?= $order['id'] ?>" class="btn btn-info btn-sm action-btn" title="Xem chi tiết"><i class="bi bi-eye"></i></a>
                                             <?php if($order['status']!='cancelled'): ?>
-                                            <a href="HuyDon.php?id=<?= $order['id'] ?>" class="btn btn-danger btn-sm action-btn" title="Hủy vé" onclick="return confirm('Bạn chắc chắn muốn hủy vé này?')"><i class="bi bi-x-circle"></i></a>
+                                            <a href="HuyDon.php?id=<?= $order['id'] ?>" class="btn btn-danger btn-sm action-btn" title="Hủy vé" onclick="return confirm('Bạn chắc chắn muốn hủy vé này?')"><i class="bi bi-trash"></i></a>
                                             <?php endif; ?>
                                         </td>
                                     </tr>

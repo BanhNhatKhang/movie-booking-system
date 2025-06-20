@@ -1,0 +1,25 @@
+
+.table-responsive {
+  background: #fff;
+  border-radius: 10px;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.07);
+}
+.status-paid {
+  background: #27ae60;
+  color: #fff;
+}
+.status-unpaid {
+  background: #f1c40f;
+  color: #222;
+}
+.status-cancelled {
+  background: #bdbdbd;
+  color: #222;
+}
+.action-btn {
+  margin-right: 6px;
+}
+.table th,
+.table td {
+  vertical-align: middle;
+}

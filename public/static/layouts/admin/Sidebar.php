@@ -9,7 +9,7 @@
     <br>
     <a class="nav-link <?= ($activePage == 'dashboard') ? 'active' : '' ?>" href="/static/html/admin/Dashboard/index.php"><i class="bi bi-speedometer2"></i> Dashboard</a>
     <a class="nav-link <?= ($activePage == 'home') ? 'active' : '' ?>" href="/static/html/admin/TrangChu/QuanLyTrangChu.php"><i class="bi bi-house-door"></i> Quản lý trang chủ</a>
-    <a hclass="nav-link <?= ($activePage == 'admmin-movies') ? 'active' : '' ?>" href="/static/html/admin/QuanLyPhim/QuanLyPhim.php"><i class="bi bi-film"></i> Quản lý phim</a>
+    <a class="nav-link <?= ($activePage == 'admin-movies') ? 'active' : '' ?>" href="/static/html/admin/QuanLyPhim/QuanLyPhim.php"><i class="bi bi-film"></i> Quản lý phim</a>
     <a class="nav-link <?= ($activePage == 'schedule') ? 'active' : '' ?>" href="/static/html/admin/LichChieu/QuanLyLichChieu.php"><i class="bi bi-calendar-event"></i> Quản lý lịch chiếu</a>
     <a class="nav-link <?= ($activePage == 'PhongGhe') ? 'active' : '' ?>" href="/static/html/admin/QuanLyPhongGhe/QuanLyPhongGhe.php"><i class="bi bi-door-closed"></i> Phòng & Ghế</a>
     <a class="nav-link <?= ($activePage == 'admin-orders') ? 'active' : '' ?>" href="/static/html/admin/QuanLyDonDatVe/QuanLyDonDatVe.php"><i class="bi bi-ticket-detailed"></i> Quản lý đơn đặt vé</a>

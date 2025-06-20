@@ -23,7 +23,7 @@
 
             <main>
                 <div class="container py-4 content">
-                    <h1>Quản lý poster</h1><hr>
+                    <h1>Quản lý Poster</h1><hr>
     
                     <div class="d-flex justify-content-between align-items-center mb-3">
                         <button class="btn btn-primary">
@@ -39,36 +39,37 @@
                             </button>
                         </form>
                     </div>
-                    
-                    <table class="table table-bordered table-hover bg-white shadow-sm text-center">
-                        <thead class="table-dark">
-                            <tr>
-                                <th>STT</th>
-                                <th>Ảnh poster</th>
-                                <th>Phim</th>
-                                <th>Hành động</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr>
-                                <td>1</td>
-                                <td><img src="poster1.jpg" alt="Poster" width="100"></td>
-                                <td>Avengers: Endgame</td>
-                                <td>
-                                    <a href="SuaPoster.php" class="btn btn-sm btn-warning" title="Sửa">
-                                        <i class="bi bi-pencil-square"></i>
-                                    </a>
-                                    <button 
-                                        class="btn btn-sm btn-danger btn-delete" 
-                                        title="Xóa"
-                                        data-title="poster phim 'Avengers: Endgame'"
-                                        data-url="XoaPoster.php?id=1">
-                                        <i class="bi bi-trash"></i>
-                                    </button>
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table><hr>
+                    <div class="table-responsive p-3">
+                        <table class="table align-middle table-hover">
+                            <thead class="table-dark">
+                                <tr>
+                                    <th>STT</th>
+                                    <th>Ảnh poster</th>
+                                    <th>Phim</th>
+                                    <th>Hành động</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>1</td>
+                                    <td><img src="poster1.jpg" alt="Poster" width="100"></td>
+                                    <td>Avengers: Endgame</td>
+                                    <td>
+                                        <a href="SuaPoster.php" class="btn btn-sm btn-warning" title="Sửa">
+                                            <i class="bi bi-pencil-square"></i>
+                                        </a>
+                                        <button 
+                                            class="btn btn-sm btn-danger btn-delete" 
+                                            title="Xóa"
+                                            data-title="poster phim 'Avengers: Endgame'"
+                                            data-url="XoaPoster.php?id=1">
+                                            <i class="bi bi-trash"></i>
+                                        </button>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div><hr><br>
 
                     <h1>Quản lý ưu đãi</h1><hr>
     
@@ -86,36 +87,38 @@
                             </button>
                         </form>
                     </div>
-                    
-                    <table class="table table-bordered table-hover bg-white shadow-sm text-center">
-                        <thead class="table-dark">
-                            <tr>
-                                <th>STT</th>
-                                <th>Ảnh ưu đãi</th>
-                                <th>Tên ưu đãi</th>
-                                <th>Hành động</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr>
-                                <td>1</td>
-                                <td><img src="poster1.jpg" alt="Poster" width="100"></td>
-                                <td>Thứ 4 vui vẻ</td>
-                                <td>
-                                    <a href="SuaUuDaiHome.php" class="btn btn-sm btn-warning" title="Sửa">
-                                        <i class="bi bi-pencil-square"></i>
-                                    </a>
-                                    <button 
-                                        class="btn btn-sm btn-danger btn-delete" 
-                                        title="Xóa"
-                                        data-title="ưu đãi 'Thứ 4 vui vẻ'"
-                                        data-url="XoaUuDai.php?id=1">
-                                        <i class="bi bi-trash"></i>
-                                    </button>
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
+                    <div class="table-responsive p-3">
+                        <table class="table align-middle table-hover">
+                            <thead class="table-dark">
+                                <tr>
+                                    <th>STT</th>
+                                    <th>Ảnh ưu đãi</th>
+                                    <th>Tên ưu đãi</th>
+                                    <th>Hành động</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>1</td>
+                                    <td><img src="poster1.jpg" alt="Poster" width="100"></td>
+                                    <td>Thứ 4 vui vẻ</td>
+                                    <td>
+                                        <a href="SuaUuDaiHome.php" class="btn btn-sm btn-warning" title="Sửa">
+                                            <i class="bi bi-pencil-square"></i>
+                                        </a>
+                                        <button 
+                                            class="btn btn-sm btn-danger btn-delete" 
+                                            title="Xóa"
+                                            data-title="ưu đãi 'Thứ 4 vui vẻ'"
+                                            data-url="XoaUuDai.php?id=1">
+                                            <i class="bi bi-trash"></i>
+                                        </button>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
                 </div>
             </main>
         </div>

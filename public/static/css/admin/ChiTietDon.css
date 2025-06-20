@@ -1,0 +1,21 @@
+
+.order-label {
+  font-weight: bold;
+  color: #555;
+  width: 140px;
+}
+.order-value {
+  color: #222;
+}
+.status-paid {
+  background: #27ae60;
+  color: #fff;
+}
+.status-unpaid {
+  background: #f1c40f;
+  color: #222;
+}
+.status-cancelled {
+  background: #bdbdbd;
+  color: #222;
+}
