@@ -1,8 +1,12 @@
 <?php
-    $activePage ='home';
-    include __DIR__ . '/static/layouts/users/Header.php';
+    session_start();
+    $activePage = 'home';
+    if (isset($_SESSION['user'])) {
+        include __DIR__ . '/static/layouts/users/HeaderLogin.php';
+    } else {
+        include __DIR__ . '/static/layouts/users/Header.php';
+    }
 ?>
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -16,9 +20,8 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-4Q6Gf2aSP4eDXB8Miphtr37CMZZQ5oXLH2yaXMJ2w8e2ZtHTl7GptT4jmndRuHDT" crossorigin="anonymous">
     <link rel="stylesheet" href="/static/css/users/HeaderFooter.css">
     <link rel="stylesheet" href="/static/css/users/TrangChu.css">
-
 </head>
-<body  class="bg-dark">
+<body class="bg-dark">
    <main>
         <div class="container">
             <div class="row div-pad">

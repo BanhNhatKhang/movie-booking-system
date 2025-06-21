@@ -1,9 +1,14 @@
-<?php 
-    $activePage='movies';
+<?php
+session_start();
+if (isset($_SESSION['user'])) {
+    include __DIR__ . '/../../../layouts/users/HeaderLogin.php';
+} else {
     include __DIR__ . '/../../../layouts/users/Header.php';
+}
 
-    $seats = isset($_GET['seats']) ? $_GET['seats'] : 'Chưa chọn ghế';
-    $total = isset($_GET['total']) ? intval($_GET['total']) : 0;
+// Lấy dữ liệu seats và total từ URL
+$seats = isset($_GET['seats']) ? $_GET['seats'] : '';
+$total = isset($_GET['total']) ? (int)$_GET['total'] : 0;
 ?>
 <!DOCTYPE html>
 <html lang="vi">

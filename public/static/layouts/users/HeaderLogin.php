@@ -44,7 +44,10 @@
                         <div class="dropdown " >
                                 <a href="#" class="d-flex align-items-center user-dropdown-link text-decoration-none " id="userDropdown" data-bs-toggle="dropdown" aria-expanded="false" style="outline: none;">
                                     <i class="bi bi-person-circle fs-4 me-2"></i>
-                                    <span class="fw-semibold user-name">Nguyễn Văn A</span>
+                                    <?php
+                                    $user_name = isset($_SESSION['user']['name']) ? htmlspecialchars($_SESSION['user']['name']) : 'Người dùng';
+                                    ?>
+                                    <span class="fw-semibold user-name"><?= $user_name ?></span>
                                 </a>
                                 <ul class="dropdown-menu dropdown-menu-end mt-0 shadow-sm" aria-labelledby="userDropdown">
                                     <li>
@@ -52,6 +55,9 @@
                                     </li>
                                     <li>
                                         <a class="dropdown-item hover-red-nav" href="/static/html/users/LichSuDatVe/LichSuDatVe.php">Lịch sử đặt vé</a>
+                                    </li>
+                                    <li>
+                                        <a class="dropdown-item text-danger" href="/static/html/users/Login/DangXuat.php">Đăng xuất</a>
                                     </li>
                                 </ul>
                             </div>
