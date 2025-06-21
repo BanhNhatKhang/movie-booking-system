@@ -10,7 +10,7 @@
     <title>Chi tiết thanh toán</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" />
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
-    <link href="/public/static/css/admin/LayoutAdmin.css" rel="stylesheet">
+    <link href="/static/css/admin/LayoutAdmin.css" rel="stylesheet">
 
 </head>
 
@@ -63,32 +63,34 @@
                                 <i class="bi bi-ticket-detailed"></i> Thông tin vé đã mua
                             </div>
                             <div class="card-body p-0">
-                                <table class="table table-bordered text-center m-0">
-                                    <thead class="table-dark">
-                                        <tr>
-                                            <th>Suất chiếu</th>
-                                            <th>Phim</th>
-                                            <th>Phòng</th>
-                                            <th>Ghế</th>
-                                            <th>Ngày</th>
-                                            <th>Giờ</th>
-                                            <th>Giá vé</th>
-                                            <th>Loại vé</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        <tr>
-                                            <td>SC7890</td>
-                                            <td>Avengers: Endgame</td>
-                                            <td>Phòng 1</td>
-                                            <td>A5, A6</td>
-                                            <td>2025-06-18</td>
-                                            <td>18:30</td>
-                                            <td>120.000đ</td>
-                                            <td>Vé thường</td>
-                                        </tr>
-                                    </tbody>
-                                </table>
+                                <div class="table-responsive p-3">
+                                    <table class="table align-middle table-hover">
+                                        <thead class="table-dark">
+                                                <tr>
+                                                    <th>Suất chiếu</th>
+                                                    <th>Phim</th>
+                                                    <th>Phòng</th>
+                                                    <th>Ghế</th>
+                                                    <th>Ngày</th>
+                                                    <th>Giờ</th>
+                                                    <th>Giá vé</th>
+                                                    <th>Loại vé</th>
+                                                </tr>
+                                        </thead>
+                                        <tbody>
+                                                <tr>
+                                                    <td>SC7890</td>
+                                                    <td>Avengers: Endgame</td>
+                                                    <td>Phòng 1</td>
+                                                    <td>A5, A6</td>
+                                                    <td>2025-06-18</td>
+                                                    <td>18:30</td>
+                                                    <td>120.000đ</td>
+                                                    <td>Vé thường</td>
+                                                </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
                             </div>
                         </div>
 

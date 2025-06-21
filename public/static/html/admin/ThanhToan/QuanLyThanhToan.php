@@ -10,7 +10,7 @@
     <title>Quản lý thanh toán</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" />
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
-    <link href="/public/static/css/admin/LayoutAdmin.css" rel="stylesheet">
+    <link href="/static/css/admin/LayoutAdmin.css" rel="stylesheet">
 
 </head>
 
@@ -23,7 +23,7 @@
 
             <main>
                 <div class="container py-4 content">
-                    <h1>Quản lý thanh toán</h1>
+                    <h1>Quản lý Thanh toán</h1>
                     <hr>
                     <form class="row g-2 mb-3">
                     <div class="col-md-2">
@@ -61,37 +61,37 @@
                     </div>
 
                     </div>
-                    <div class="table-responsive">
-                    <table class="table table-bordered table-hover text-center align-middle">
-                        <thead class="table-dark">
-                        <tr>
-                            <th>STT</th>
-                            <th>Mã GD</th>
-                            <th>Mã vé</th>
-                            <th>Khách hàng</th>
-                            <th>Số tiền</th>
-                            <th>Phương thức</th>
-                            <th>Thời gian</th>
-                            <th>Hành động</th>
-                        </tr>
-                        </thead>
-                        <tbody>
-                        <tr>
-                            <td>1</td>
-                            <td>GD123456</td>
-                            <td>VE4567</td>
-                            <td>Nguyễn Văn A</td>
-                            <td>120.000đ</td>
-                            <td>VNPay</td>
-                            <td>2025-06-15 09:30</td>
-                            <td>
-                            <a href="ChiTietThanhToan.php?id=GD123456" class="btn btn-info btn-sm" title="Chi tiết">
-                                <i class="bi bi-eye"></i>
-                            </a>
-                            </td>
-                        </tr>
-                        </tbody>
-                    </table>
+                    <div class="table-responsive p-3">
+                        <table class="table align-middle table-hover">
+                            <thead class="table-dark">
+                            <tr>
+                                <th>STT</th>
+                                <th>Mã GD</th>
+                                <th>Mã vé</th>
+                                <th>Khách hàng</th>
+                                <th>Số tiền</th>
+                                <th>Phương thức</th>
+                                <th>Thời gian</th>
+                                <th>Hành động</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr>
+                                <td>1</td>
+                                <td>GD123456</td>
+                                <td>VE4567</td>
+                                <td>Nguyễn Văn A</td>
+                                <td>120.000đ</td>
+                                <td>VNPay</td>
+                                <td>2025-06-15 09:30</td>
+                                <td>
+                                <a href="ChiTietThanhToan.php?id=GD123456" class="btn btn-info btn-sm" title="Chi tiết">
+                                    <i class="bi bi-eye"></i>
+                                </a>
+                                </td>
+                            </tr>
+                            </tbody>
+                        </table>
                     </div>
                 </div>
             </main>

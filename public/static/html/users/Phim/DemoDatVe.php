@@ -75,7 +75,7 @@
                 </div>
                 <div class="row p-4">
                     <div class="border rounded p-3 bg-danger-subtle">
-                        <button class="btn btn-danger openTrailerBtn">Tóm tắt</button><hr>
+                        <button class="btn btn-danger">Tóm tắt</button><hr>
                         <p>Qua những lát cắt đan xen, ẩn chứa nhiều nụ cười và cả nước mắt, "Lật Mặt 7: Một Điều Ước" là câu chuyện cảm động về đại gia đình bà Hai 73 tuổi - người mẹ đơn thân tự mình nuôi 5 người con khôn lớn. Khi trưởng thành, mỗi người đều có cuộc sống và gia đình riêng. Bất chợt, biến cố ập đến, những góc khuất dần được hé lộ, những nỗi niềm, lo lắng, trĩu nặng ẩn sâu trong trái tim người mẹ. Trách nhiệm thuộc về ai?</p>
                     </div>
                 </div>
