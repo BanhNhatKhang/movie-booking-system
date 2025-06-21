@@ -64,7 +64,7 @@ foreach($orders as $o) {
             <?php include '../../../layouts/admin/HeaderAdmin.php'; ?>
 
             <main>
-                <div class="container py-4 content ms-5">
+            <div class="container py-4 content d-flex justify-content-center align-items-center" style="min-height: 80vh;">
                     <div>
                         <?php if($order): ?>
                             <h1 class="mb-4">Chi tiết vé #<?= htmlspecialchars($order['id']) ?></h1>
