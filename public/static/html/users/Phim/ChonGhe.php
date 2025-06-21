@@ -27,14 +27,14 @@
                 <!-- Ghế -->
                 <?php
                 $rows = [
-                    'A' => ['normal', 'normal', 'normal', 'normal', 'normal', 'normal', 'normal', 'normal', 'normal', 'normal', 'normal', 'normal', 'aisle'],
-                    'B' => ['normal', 'normal', 'normal', 'normal', 'normal', 'normal', 'normal', 'normal', 'normal', 'normal', 'normal', 'normal', 'aisle'],
-                    'C' => ['normal', 'normal', 'normal', 'normal', 'normal', 'normal', 'normal', 'normal', 'normal', 'normal', 'normal', 'normal', 'aisle'],
-                    'D' => ['vip', 'vip', 'vip', 'vip', 'vip', 'vip', 'vip', 'vip', 'vip', 'vip', 'vip', 'vip', 'aisle'],
-                    'E' => ['vip', 'vip', 'vip', 'vip', 'vip', 'sold', 'vip', 'sold', 'vip', 'vip', 'vip', 'vip', 'aisle'],
-                    'F' => ['vip', 'vip', 'vip', 'vip', 'vip', 'sold', 'vip', 'sold', 'vip', 'vip', 'vip', 'vip', 'aisle'],
-                    'G' => ['vip', 'vip', 'vip', 'vip', 'vip', 'vip', 'vip', 'vip', 'selected', 'selected', 'vip', 'vip', 'aisle'],
-                    'H' => ['luxury', 'luxury', 'luxury', 'luxury', 'luxury', 'luxury', 'luxury', 'luxury', 'luxury', 'luxury', 'luxury', 'luxury'],
+                    'A' => ['aisle','normal','normal','normal','normal','normal','normal','aisle','normal','normal','normal','normal','normal','normal','aisle'],
+                    'B' => ['aisle','normal','normal','normal','normal','normal','normal','aisle','normal','normal','normal','normal','normal','normal','aisle'],
+                    'C' => ['aisle','normal','normal','normal','normal','normal','normal','aisle','normal','normal','normal','normal','normal','normal','aisle'],
+                    'D' => ['aisle','vip','vip','vip','vip','vip','vip','aisle','vip','vip','vip','vip','vip','vip','aisle'],
+                    'E' => ['aisle','vip','vip','vip','vip','vip','sold','aisle','vip','sold','vip','vip','vip','vip','aisle'],
+                    'F' => ['aisle','vip','vip','vip','vip','vip','sold','aisle','vip','sold','vip','vip','vip','vip','aisle'],
+                    'G' => ['aisle','vip','vip','vip','vip','vip','vip','aisle','vip','vip','vip','vip','vip','vip','aisle'],
+                    'H' => ['aisle','luxury','luxury','luxury','luxury','luxury','luxury','aisle','luxury','luxury','luxury','luxury','luxury','luxury','aisle'],
                 ];
                 $seat_prices = [
                     'normal' => 70000,
@@ -47,17 +47,17 @@
                 ?>
                 <?php foreach ($rows as $row => $types): ?>
                     <div class="seat-row">
-                        <?php for ($i = 1; $i <= count($types); $i++): 
+                        <?php for ($i = 1; $i <= count($types); $i++):
                             $type = $types[$i-1];
-                            $seat_code = $row . str_pad($i, 2, '0', STR_PAD_LEFT);
-                            $is_sold = in_array($seat_code, $sold_seats);
-                            $is_selected = in_array($seat_code, $selected_seats);
-                            $seat_class = $type;
-                            if ($is_sold) $seat_class = 'sold';
-                            if ($is_selected) $seat_class = 'selected';
                             if ($type == 'aisle') {
                                 echo '<div class="seat aisle seat-label">V</div>';
                             } else {
+                                $seat_code = $row . str_pad($i, 2, '0', STR_PAD_LEFT);
+                                $is_sold = in_array($seat_code, $sold_seats);
+                                $is_selected = in_array($seat_code, $selected_seats);
+                                $seat_class = $type;
+                                if ($is_sold) $seat_class = 'sold';
+                                if ($is_selected) $seat_class = 'selected';
                                 echo '<button type="button" class="seat '.$seat_class.'" data-seat="'.$seat_code.'" data-type="'.$type.'" '.($is_sold ? 'disabled' : '').'>'.$seat_code.'</button>';
                             }
                         endfor; ?>
@@ -92,57 +92,7 @@
             </div>
         </div>
     </div>
-    <script>
-        // Giá ghế theo loại
-        const seatPrices = { normal: 70000, vip: 90000, luxury: 120000, couple: 150000 };
-        // Ghế đã bán (không chọn được)
-        const soldSeats = ["E06","E08","F06","F08"];
-        // Ghế đang chọn (demo)
-        let selectedSeats = ["G09","G10"];
-        // Cập nhật giao diện khi chọn ghế
-        document.querySelectorAll('.seat').forEach(btn => {
-            btn.addEventListener('click', function() {
-                const seat = this.getAttribute('data-seat');
-                const type = this.getAttribute('data-type');
-                if (this.classList.contains('sold') || this.classList.contains('aisle')) return;
-                if (this.classList.contains('selected')) {
-                    this.classList.remove('selected');
-                    selectedSeats = selectedSeats.filter(s => s !== seat);
-                } else {
-                    this.classList.add('selected');
-                    selectedSeats.push(seat);
-                }
-                updateSummary();
-            });
-        });
-        function updateSummary() {
-            document.getElementById('selectedSeats').textContent = selectedSeats.length ? selectedSeats.join(', ') : 'Chưa chọn ghế';
-            let total = 0;
-            selectedSeats.forEach(seat => {
-                let type = 'normal';
-                if (seat.startsWith('A') || seat.startsWith('B') || seat.startsWith('C')) type = 'normal';
-                else if (seat.startsWith('D') || seat.startsWith('E') || seat.startsWith('F') || seat.startsWith('G')) type = 'vip';
-                else if (seat.startsWith('H')) type = 'luxury';
-                total += seatPrices[type] || 0;
-            });
-            document.getElementById('totalPrice').textContent = 'Giá vé: ' + total.toLocaleString('vi-VN') + ' VNĐ';
-        }
-        updateSummary();
-        document.getElementById('btn-next').onclick = function(e) {
-            e.preventDefault();
-            const seats = selectedSeats.join(',');
-            // Tính tổng tiền
-            let total = 0;
-            selectedSeats.forEach(seat => {
-                let type = 'normal';
-                if (seat.startsWith('A') || seat.startsWith('B') || seat.startsWith('C')) type = 'normal';
-                else if (seat.startsWith('D') || seat.startsWith('E') || seat.startsWith('F') || seat.startsWith('G')) type = 'vip';
-                else if (seat.startsWith('H')) type = 'luxury';
-                total += seatPrices[type] || 0;
-            });
-            window.location.href = '/static/html/users/ThanhToan/ThanhToan.php?seats=' + encodeURIComponent(seats) + '&total=' + total;
-        };
-    </script>
+    <script src="/static/js/users/ChonGhe.js"></script>
 </body>
 </html>
 <?php include __DIR__ . '/../../../layouts/users/Footer.php'; ?>

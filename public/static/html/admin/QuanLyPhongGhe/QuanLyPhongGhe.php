@@ -15,13 +15,17 @@ $room = $rooms[$roomId];
 
 // Sơ đồ ghế cho từng phòng
 if ($roomId == 2) {
-    // Phòng 2: 4 hàng, 5 cột
-    $rows = ['A','B','C','D', 'E'];
+    // Phòng 2: 5 hàng, 10 cột, lối đi trái và giữa
+    $rows = ['A','B','C','D','E'];
     $cols = range(1,10);
+    $aisle_col = 6; // sau ghế 5
 } else {
-    // Phòng 1 & 3: 8 hàng, 12 cột
+    // Phòng 1 & 3: 8 hàng, 12 cột, lối đi trái, giữa, phải
     $rows = ['A','B','C','D','E','F','G','H'];
     $cols = range(1,12);
+    $aisle_left = true;
+    $aisle_right = true;
+    $aisle_col = 7; // sau ghế 6
 }
 
 // Tạo dữ liệu ghế mẫu
@@ -85,7 +89,11 @@ foreach($rows as $row) {
         <div class="seat-map-demo mb-3 text-center">
             <?php
             foreach($rows as $row) {
+                // Lối đi trái cho phòng 1 & 3
+                if ($roomId != 2) echo "<span class='seat-demo seat-label aisle'>V</span>";
                 foreach($cols as $col) {
+                    // Lối đi giữa
+                    if ($col == $aisle_col) echo "<span class='seat-demo seat-label aisle'>V</span>";
                     $code = $row . str_pad($col,2,'0',STR_PAD_LEFT);
                     $seat = $room['seats'][$code];
                     $class = 'seat-demo seat-label ';
@@ -95,6 +103,8 @@ foreach($rows as $row) {
                     else $class .= 'seat-' . $seat['type'];
                     echo "<span class='$class' data-seat='$code' data-type='{$seat['type']}' data-status='{$seat['status']}'>$code</span>";
                 }
+                // Lối đi phải cho phòng 1 & 3
+                if ($roomId != 2) echo "<span class='seat-demo seat-label aisle'>V</span>";
                 echo "<br>";
             }
             ?>

@@ -1,3 +1,37 @@
+document.querySelectorAll(".seat-demo").forEach((seat) => {
+  seat.addEventListener("click", function () {
+    const seatCode = this.getAttribute("data-seat");
+    const seatType = this.getAttribute("data-type");
+    const seatStatus = this.getAttribute("data-status");
+    if (seatStatus === "booked" || seatStatus === "locked") return;
+
+    // Nếu là ghế luxury thì chọn cả ghế bên cạnh (ghế đôi)
+    if (seatType === "luxury") {
+      // Tìm ghế bên phải (cùng hàng, cột +1)
+      const row = seatCode[0];
+      const col = parseInt(seatCode.slice(1), 10);
+      const nextCol = col % 12 !== 0 ? col + 1 : null; // Giả sử 12 ghế 1 hàng
+      if (nextCol) {
+        const nextSeatCode = row + String(nextCol).padStart(2, "0");
+        const nextSeat = document.querySelector(
+          `.seat-demo[data-seat="${nextSeatCode}"][data-type="luxury"]`
+        );
+        if (
+          nextSeat &&
+          nextSeat.getAttribute("data-status") !== "booked" &&
+          nextSeat.getAttribute("data-status") !== "locked"
+        ) {
+          this.classList.toggle("seat-selected");
+          nextSeat.classList.toggle("seat-selected");
+          return;
+        }
+      }
+    }
+
+    // Bình thường: chỉ chọn 1 ghế
+    this.classList.toggle("seat-selected");
+  });
+});
 // Demo: chọn ghế để thao tác
 let selectedSeats = [];
 document.querySelectorAll(".seat-demo").forEach((seat) => {
