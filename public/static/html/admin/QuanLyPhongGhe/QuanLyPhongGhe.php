@@ -51,86 +51,97 @@ foreach($rows as $row) {
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/dist/css/bootstrap.min.css">
     <link rel="stylesheet" href="/static/css/admin/Admin.css">
     <link rel="stylesheet" href="/static/css/admin/QuanLyPhongGhe.css">
+    <link rel="stylesheet" href="/static/css/admin/LayoutAdmin.css">
 </head>
 <body style="background: #f5f5f5;">
-<div class="d-flex justify-content-center align-items-center" style="min-height:100vh;">
-    <div>
-        <h2 class="mb-4 text-center">Quản lý Ghế - <?= htmlspecialchars($room['name']) ?></h2>
-        <!-- Chọn phòng -->
-        <form class="row g-3 align-items-center mb-4 justify-content-center" method="get" action="">
-            <div class="col-auto">
-                <label class="form-label fw-bold">Chọn phòng:</label>
-            </div>
-            <div class="col-auto">
-                <select name="room" class="form-select" onchange="this.form.submit()">
-                    <?php foreach($rooms as $id=>$r): ?>
-                        <option value="<?= $id ?>"<?= $roomId==$id?' selected':''; ?>><?= htmlspecialchars($r['name']) ?></option>
-                    <?php endforeach; ?>
-                </select>
-            </div>
-        </form>
-        <!-- Chỉnh sửa phân loại phòng -->
-        <form class="row g-3 align-items-center mb-4 justify-content-center" method="post" action="">
-            <div class="col-auto">
-                <label class="form-label fw-bold">Phân loại phòng:</label>
-            </div>
-            <div class="col-auto">
-                <select name="room_type" class="form-select">
-                    <?php foreach($roomTypes as $type): ?>
-                        <option value="<?= $type ?>"<?= $room['type']==$type?' selected':''; ?>><?= $type ?></option>
-                    <?php endforeach; ?>
-                </select>
-            </div>
-            <div class="col-auto">
-                <button class="btn btn-primary" type="submit" name="update_room_type">Cập nhật</button>
-            </div>
-        </form>
-        <!-- Sơ đồ ghế -->
-        <div class="seat-map-demo mb-3 text-center">
-            <?php
-            foreach($rows as $row) {
-                // Lối đi trái cho phòng 1 & 3
-                if ($roomId != 2) echo "<span class='seat-demo seat-label aisle'>V</span>";
-                foreach($cols as $col) {
-                    // Lối đi giữa
-                    if ($col == $aisle_col) echo "<span class='seat-demo seat-label aisle'>V</span>";
-                    $code = $row . str_pad($col,2,'0',STR_PAD_LEFT);
-                    $seat = $room['seats'][$code];
-                    $class = 'seat-demo seat-label ';
-                    if($seat['status']=='booked') $class .= 'seat-booked';
-                    elseif($seat['status']=='selected') $class .= 'seat-selected';
-                    elseif($seat['status']=='locked') $class .= 'seat-locked';
-                    else $class .= 'seat-' . $seat['type'];
-                    echo "<span class='$class' data-seat='$code' data-type='{$seat['type']}' data-status='{$seat['status']}'>$code</span>";
-                }
-                // Lối đi phải cho phòng 1 & 3
-                if ($roomId != 2) echo "<span class='seat-demo seat-label aisle'>V</span>";
-                echo "<br>";
-            }
-            ?>
-        </div>
-        <div class="mb-3 text-center">
-            <button class="btn btn-warning btn-sm" id="btn-vip">Đổi sang VIP</button>
-            <button class="btn btn-info btn-sm" id="btn-normal">Đổi sang Thường</button>
-            <button class="btn btn-purple btn-sm" id="btn-luxury" style="background:#8e24aa;color:#fff;">Đổi sang LUXURY</button>
-            <button class="btn btn-secondary btn-sm" id="btn-lock">Khóa ghế</button>
-            <button class="btn btn-success btn-sm" id="btn-unlock">Mở khóa ghế</button>
-        </div>
-        <div class="mt-4 text-center">
-            <h5>Chú thích:</h5>
-            <span class="seat-demo seat-normal seat-label">A01</span> Ghế thường
-            <span class="seat-demo seat-vip seat-label ms-3">D01</span> Ghế VIP
-            <span class="seat-demo seat-luxury seat-label ms-3">H01</span> LUXURY
-            <span class="seat-demo seat-booked seat-label ms-3">F06</span> Ghế đã bán
-            <span class="seat-demo seat-selected seat-label ms-3">G09</span> Ghế đang chọn
-            <span class="seat-demo seat-locked seat-label ms-3">A03</span> Ghế khóa (hư)
-        </div>
-        <div class="mt-4 text-center">
-            <h5>Thống kê</h5>
-            <div id="stat"></div>
+    <div class="admin-layout">
+        <?php include '../../../layouts/admin/Sidebar.php'; ?>
+        
+        <div class="main-content">
+            <?php include '../../../layouts/admin/HeaderAdmin.php'; ?>
+            <main> 
+                <div class="d-flex justify-content-center align-items-center" style="min-height:100vh;">
+                    <div>
+                        
+                        <h2 class="mb-4 text-center">Quản lý Ghế - <?= htmlspecialchars($room['name']) ?></h2>
+                        <!-- Chọn phòng -->
+                        <form class="row g-3 align-items-center mb-4 justify-content-center" method="get" action="">
+                            <div class="col-auto">
+                                <label class="form-label fw-bold">Chọn phòng:</label>
+                            </div>
+                            <div class="col-auto">
+                                <select name="room" class="form-select" onchange="this.form.submit()">
+                                    <?php foreach($rooms as $id=>$r): ?>
+                                        <option value="<?= $id ?>"<?= $roomId==$id?' selected':''; ?>><?= htmlspecialchars($r['name']) ?></option>
+                                    <?php endforeach; ?>
+                                </select>
+                            </div>
+                        </form>
+                        <!-- Chỉnh sửa phân loại phòng -->
+                        <form class="row g-3 align-items-center mb-4 justify-content-center" method="post" action="">
+                            <div class="col-auto">
+                                <label class="form-label fw-bold">Phân loại phòng:</label>
+                            </div>
+                            <div class="col-auto">
+                                <select name="room_type" class="form-select">
+                                    <?php foreach($roomTypes as $type): ?>
+                                        <option value="<?= $type ?>"<?= $room['type']==$type?' selected':''; ?>><?= $type ?></option>
+                                    <?php endforeach; ?>
+                                </select>
+                            </div>
+                            <div class="col-auto">
+                                <button class="btn btn-primary" type="submit" name="update_room_type">Cập nhật</button>
+                            </div>
+                        </form>
+                        <!-- Sơ đồ ghế -->
+                        <div class="seat-map-demo mb-3 text-center">
+                            <?php
+                            foreach($rows as $row) {
+                                // Lối đi trái cho phòng 1 & 3
+                                if ($roomId != 2) echo "<span class='seat-demo seat-label aisle'>V</span>";
+                                foreach($cols as $col) {
+                                    // Lối đi giữa
+                                    if ($col == $aisle_col) echo "<span class='seat-demo seat-label aisle'>V</span>";
+                                    $code = $row . str_pad($col,2,'0',STR_PAD_LEFT);
+                                    $seat = $room['seats'][$code];
+                                    $class = 'seat-demo seat-label ';
+                                    if($seat['status']=='booked') $class .= 'seat-booked';
+                                    elseif($seat['status']=='selected') $class .= 'seat-selected';
+                                    elseif($seat['status']=='locked') $class .= 'seat-locked';
+                                    else $class .= 'seat-' . $seat['type'];
+                                    echo "<span class='$class' data-seat='$code' data-type='{$seat['type']}' data-status='{$seat['status']}'>$code</span>";
+                                }
+                                // Lối đi phải cho phòng 1 & 3
+                                if ($roomId != 2) echo "<span class='seat-demo seat-label aisle'>V</span>";
+                                echo "<br>";
+                            }
+                            ?>
+                        </div>
+                        <div class="mb-3 text-center">
+                            <button class="btn btn-warning btn-sm" id="btn-vip">Đổi sang VIP</button>
+                            <button class="btn btn-info btn-sm" id="btn-normal">Đổi sang Thường</button>
+                            <button class="btn btn-purple btn-sm" id="btn-luxury" style="background:#8e24aa;color:#fff;">Đổi sang LUXURY</button>
+                            <button class="btn btn-secondary btn-sm" id="btn-lock">Khóa ghế</button>
+                            <button class="btn btn-success btn-sm" id="btn-unlock">Mở khóa ghế</button>
+                        </div>
+                        <div class="mt-4 text-center">
+                            <h5>Chú thích:</h5>
+                            <span class="seat-demo seat-normal seat-label">A01</span> Ghế thường
+                            <span class="seat-demo seat-vip seat-label ms-3">D01</span> Ghế VIP
+                            <span class="seat-demo seat-luxury seat-label ms-3">H01</span> LUXURY
+                            <span class="seat-demo seat-booked seat-label ms-3">F06</span> Ghế đã bán
+                            <span class="seat-demo seat-selected seat-label ms-3">G09</span> Ghế đang chọn
+                            <span class="seat-demo seat-locked seat-label ms-3">A03</span> Ghế khóa (hư)
+                        </div>
+                        <div class="mt-4 text-center">
+                            <h5>Thống kê</h5>
+                            <div id="stat"></div>
+                        </div>
+                    </div>
+                </div>
+            </main>
         </div>
     </div>
-</div>
 <script src="/static/js/admin/QuanLyPhongGhe.js"></script>
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
 </body>

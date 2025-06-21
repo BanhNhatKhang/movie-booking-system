@@ -1,3 +1,4 @@
+<link rel="stylesheet" href="/static/css/users/HeaderFooter.css">
 <div class="collapse d-lg-block sidebar" id="mobileSidebar">
     <div class="khf-logo">
         <div class="logo-icon"></div>

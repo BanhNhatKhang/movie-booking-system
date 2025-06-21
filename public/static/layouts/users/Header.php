@@ -8,11 +8,11 @@
                             <div class="d-flex justify-content-between align-items-center flex-wrap">
                                 <a class="navbar-brand" href="#">
                                     <div class="khf-logo">
-                                    <div class="logo-icon"></div>
-                                    <div class="logo-text">
-                                        <span class="cinema">CINEMA</span>
-                                        <span class="khf">KHF</span>
-                                    </div>
+                                        <div class="logo-icon"></div>
+                                        <div class="logo-text">
+                                            <span class="cinema">CINEMA</span>
+                                            <span class="khf">KHF</span>
+                                        </div>
                                     </div>
                                 </a>
                                 <div class="d-flex align-items-center gap-4 auth-links">
