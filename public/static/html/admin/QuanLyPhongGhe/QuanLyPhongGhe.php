@@ -49,7 +49,7 @@ foreach($rows as $row) {
     <meta charset="UTF-8">
     <title>Quản lý Ghế phòng chiếu</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/dist/css/bootstrap.min.css">
-    <link rel="stylesheet" href="/static/css/admin/LayoutAdmin.css">
+    <link rel="stylesheet" href="/static/css/admin/Admin.css">
     <link rel="stylesheet" href="/static/css/admin/QuanLyPhongGhe.css">
 </head>
 <body style="background: #f5f5f5;">
@@ -89,7 +89,11 @@ foreach($rows as $row) {
         <div class="seat-map-demo mb-3 text-center">
             <?php
             foreach($rows as $row) {
+                // Lối đi trái cho phòng 1 & 3
+                if ($roomId != 2) echo "<span class='seat-demo seat-label aisle'>V</span>";
                 foreach($cols as $col) {
+                    // Lối đi giữa
+                    if ($col == $aisle_col) echo "<span class='seat-demo seat-label aisle'>V</span>";
                     $code = $row . str_pad($col,2,'0',STR_PAD_LEFT);
                     $seat = $room['seats'][$code];
                     $class = 'seat-demo seat-label ';
@@ -99,6 +103,8 @@ foreach($rows as $row) {
                     else $class .= 'seat-' . $seat['type'];
                     echo "<span class='$class' data-seat='$code' data-type='{$seat['type']}' data-status='{$seat['status']}'>$code</span>";
                 }
+                // Lối đi phải cho phòng 1 & 3
+                if ($roomId != 2) echo "<span class='seat-demo seat-label aisle'>V</span>";
                 echo "<br>";
             }
             ?>
