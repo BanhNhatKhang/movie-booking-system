@@ -1,7 +1,11 @@
-    <?php
-        $activePage='member';
-        include __DIR__ . '/../../../layouts/users/Header.php';
-    ?>
+<?php
+session_start();
+if (isset($_SESSION['user'])) {
+    include __DIR__ . '/../../../layouts/users/HeaderLogin.php';
+} else {
+    include __DIR__ . '/../../../layouts/users/Header.php';
+}
+?>
 <!DOCTYPE html>
 <html lang="en">
 <head>

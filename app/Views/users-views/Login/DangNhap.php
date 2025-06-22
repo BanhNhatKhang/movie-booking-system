@@ -1,5 +1,50 @@
-<?php 
+<?php
+session_start();
+include __DIR__ . '/../../../includes/db_connect.php';
+
+// Xử lý đăng nhập
+$error_message = false;
+if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+    $username = $_POST['username'] ?? '';
+    $password = $_POST['password'] ?? '';
+
+    if ($username && $password) {
+        // Cho phép đăng nhập bằng email hoặc tên đăng nhập
+        $stmt = $pdo->prepare("SELECT * FROM nguoi_dung WHERE nd_email = :username OR nd_tendangnhap = :username LIMIT 1");
+        $stmt->execute([':username' => $username]);
+        $user = $stmt->fetch(PDO::FETCH_ASSOC);
+
+        if ($user && password_verify($password, $user['nd_matkhau'])) {
+            // Đăng nhập thành công, lưu session
+            $_SESSION['user'] = [
+                'id' => $user['nd_id'],
+                'name' => $user['nd_hoten'],
+                'email' => $user['nd_email'],
+                'username' => $user['nd_tendangnhap'],
+                'phone' => $user['nd_sdt'],
+                'gender' => $user['nd_gioitinh'],
+                'role' => $user['nd_role']
+            ];
+            if ($user['nd_role'] === 'admin') {
+                header('Location: /static/html/admin/Dashboard/index.php');
+            } else {
+                header('Location: /index.php');
+            }
+            exit();
+        } else {
+            $error_message = 'Sai tài khoản hoặc mật khẩu!';
+        }
+    } else {
+        $error_message = 'Vui lòng nhập đầy đủ thông tin!';
+    }
+}
+
+// Hiển thị header phù hợp
+if (isset($_SESSION['user'])) {
+    include __DIR__ . '/../../../layouts/users/HeaderLogin.php';
+} else {
     include __DIR__ . '/../../../layouts/users/Header.php';
+}
 ?>
 <!DOCTYPE html>
 <html lang="vi">
@@ -30,7 +75,10 @@
                                     <h2 class="auth-title">ĐĂNG NHẬP</h2>
                                 </div>
                                 <div class="auth-body">
-                                    <form>
+                                    <?php if ($error_message): ?>
+                                        <div class="alert alert-danger text-center"><?= htmlspecialchars($error_message) ?></div>
+                                    <?php endif; ?>
+                                    <form method="post">
                                     <div class="mb-3">
                                         <input
                                         type="text"
@@ -68,7 +116,7 @@
                                     <div class="text-center mt-3">
                                         <p class="text-white">
                                         Chưa có tài khoản?
-                                        <a href="#" class="text-danger fw-bold">Đăng ký!</a>
+                                        <a href="DangKy.php" class="text-danger fw-bold">Đăng ký!</a>
                                         </p>
                                     </div>
                                     </form>

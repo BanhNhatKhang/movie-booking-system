@@ -15,7 +15,7 @@ $id = isset($_GET['id']) ? intval($_GET['id']) : 0;
     <link rel="stylesheet" href="/static/css/admin/HuyDon.css">
 </head>
 <body style="background: #f5f5f5;">
-<div class="main-content">
+<div class="main-content d-flex flex-column justify-content-center align-items-center" style="min-height: 80vh;">
     <div class="icon-cancel mb-3"><i class="bi bi-x-circle-fill"></i></div>
     <h4>Vé #<?= htmlspecialchars($id) ?> đã được hủy thành công!</h4>
     <a href="QuanLyDonDatVe.php" class="btn btn-primary mt-4">Quay lại danh sách đơn đặt vé</a>

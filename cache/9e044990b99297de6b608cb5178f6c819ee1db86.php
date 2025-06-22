@@ -1,6 +1,28 @@
+<<<<<<< HEAD:cache/9e044990b99297de6b608cb5178f6c819ee1db86.php
 
 
 <?php $__env->startSection('page-css'); ?>
+=======
+<?php
+session_start();
+if (isset($_SESSION['user'])) {
+    include __DIR__ . '/../../../layouts/users/HeaderLogin.php';
+} else {
+    include __DIR__ . '/../../../layouts/users/Header.php';
+}
+?>
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <title>Chọn Ghế</title>
+    <link
+        rel="stylesheet"
+        href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css"
+    />
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-4Q6Gf2aSP4eDXB8Miphtr37CMZZQ5oXLH2yaXMJ2w8e2ZtHTl7GptT4jmndRuHDT" crossorigin="anonymous">
+    <link rel="stylesheet" href="/static/css/users/HeaderFooter.css">
+>>>>>>> bbae041446511ff7340b18c8b8f24f9eee8ceda6:public/static/html/users/Phim/ChonGhe.php
     <link rel="stylesheet" href="/static/css/users/ChonGhe.css">
 <?php $__env->stopSection(); ?>
 
@@ -17,14 +39,14 @@
                 
                 <?php
                 $rows = [
-                    'A' => ['normal', 'normal', 'normal', 'normal', 'normal', 'normal', 'normal', 'normal', 'normal', 'normal', 'normal', 'normal', 'aisle'],
-                    'B' => ['normal', 'normal', 'normal', 'normal', 'normal', 'normal', 'normal', 'normal', 'normal', 'normal', 'normal', 'normal', 'aisle'],
-                    'C' => ['normal', 'normal', 'normal', 'normal', 'normal', 'normal', 'normal', 'normal', 'normal', 'normal', 'normal', 'normal', 'aisle'],
-                    'D' => ['vip', 'vip', 'vip', 'vip', 'vip', 'vip', 'vip', 'vip', 'vip', 'vip', 'vip', 'vip', 'aisle'],
-                    'E' => ['vip', 'vip', 'vip', 'vip', 'vip', 'sold', 'vip', 'sold', 'vip', 'vip', 'vip', 'vip', 'aisle'],
-                    'F' => ['vip', 'vip', 'vip', 'vip', 'vip', 'sold', 'vip', 'sold', 'vip', 'vip', 'vip', 'vip', 'aisle'],
-                    'G' => ['vip', 'vip', 'vip', 'vip', 'vip', 'vip', 'vip', 'vip', 'selected', 'selected', 'vip', 'vip', 'aisle'],
-                    'H' => ['luxury', 'luxury', 'luxury', 'luxury', 'luxury', 'luxury', 'luxury', 'luxury', 'luxury', 'luxury', 'luxury', 'luxury'],
+                    'A' => ['aisle','normal','normal','normal','normal','normal','normal','aisle','normal','normal','normal','normal','normal','normal','aisle'],
+                    'B' => ['aisle','normal','normal','normal','normal','normal','normal','aisle','normal','normal','normal','normal','normal','normal','aisle'],
+                    'C' => ['aisle','normal','normal','normal','normal','normal','normal','aisle','normal','normal','normal','normal','normal','normal','aisle'],
+                    'D' => ['aisle','vip','vip','vip','vip','vip','vip','aisle','vip','vip','vip','vip','vip','vip','aisle'],
+                    'E' => ['aisle','vip','vip','vip','vip','vip','sold','aisle','vip','sold','vip','vip','vip','vip','aisle'],
+                    'F' => ['aisle','vip','vip','vip','vip','vip','sold','aisle','vip','sold','vip','vip','vip','vip','aisle'],
+                    'G' => ['aisle','vip','vip','vip','vip','vip','vip','aisle','vip','vip','vip','vip','vip','vip','aisle'],
+                    'H' => ['aisle','luxury','luxury','luxury','luxury','luxury','luxury','aisle','luxury','luxury','luxury','luxury','luxury','luxury','aisle'],
                 ];
                 $seat_prices = [
                     'normal' => 70000,
@@ -39,15 +61,15 @@
                     <div class="seat-row">
                         <?php for ($i = 1; $i <= count($types); $i++):
                             $type = $types[$i-1];
-                            $seat_code = $row . str_pad($i, 2, '0', STR_PAD_LEFT);
-                            $is_sold = in_array($seat_code, $sold_seats);
-                            $is_selected = in_array($seat_code, $selected_seats);
-                            $seat_class = $type;
-                            if ($is_sold) $seat_class = 'sold';
-                            if ($is_selected) $seat_class = 'selected';
                             if ($type == 'aisle') {
                                 echo '<div class="seat aisle seat-label">V</div>';
                             } else {
+                                $seat_code = $row . str_pad($i, 2, '0', STR_PAD_LEFT);
+                                $is_sold = in_array($seat_code, $sold_seats);
+                                $is_selected = in_array($seat_code, $selected_seats);
+                                $seat_class = $type;
+                                if ($is_sold) $seat_class = 'sold';
+                                if ($is_selected) $seat_class = 'selected';
                                 echo '<button type="button" class="seat '.$seat_class.'" data-seat="'.$seat_code.'" data-type="'.$type.'" '.($is_sold ? 'disabled' : '').'>'.$seat_code.'</button>';
                             }
                         endfor; ?>
@@ -81,6 +103,7 @@
             </div>
         </div>
     </div>
+<<<<<<< HEAD:cache/9e044990b99297de6b608cb5178f6c819ee1db86.php
 </main>
 <script>
     // Giá ghế theo loại
@@ -134,3 +157,9 @@
 </script>
 <?php $__env->stopSection(); ?>
 <?php echo $__env->make('layouts.users.master', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?><?php /**PATH C:\Servers\test\app\Views/user-view/Phim/ChonGhe.blade.php ENDPATH**/ ?>
+=======
+    <script src="/static/js/users/ChonGhe.js"></script>
+</body>
+</html>
+<?php include __DIR__ . '/../../../layouts/users/Footer.php'; ?>
+>>>>>>> bbae041446511ff7340b18c8b8f24f9eee8ceda6:public/static/html/users/Phim/ChonGhe.php

@@ -1,5 +1,82 @@
-<?php 
+<?php
+session_start();
+include __DIR__ . '/../../../includes/db_connect.php';
+
+$error_message = false;
+$success_message = false;
+
+
+if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+    $full_name = $_POST['full_name'] ?? '';
+    $dob = $_POST['dob'] ?? '';
+    $address = $_POST['address'] ?? '';
+    $gender = $_POST['gender'] ?? '';
+    $cmnd = $_POST['cmnd'] ?? '';
+    $username = $_POST['username'] ?? '';
+    $email = $_POST['email'] ?? '';
+    $password = $_POST['password'] ?? '';
+    $confirm_password = $_POST['confirm_password'] ?? '';
+    $phone = $_POST['phone'] ?? '';
+
+    if ($full_name && $dob && $address && $gender && $cmnd && $username && $email && $password && $confirm_password && $phone) {
+        if ($password !== $confirm_password) {
+            $error_message = 'Mật khẩu nhập lại không khớp!';
+        } else {
+            // Kiểm tra email hoặc tên đăng nhập đã tồn tại chưa
+            $stmt = $pdo->prepare("SELECT 1 FROM nguoi_dung WHERE nd_email = :email OR nd_tendangnhap = :username");
+            $stmt->execute([':email' => $email, ':username' => $username]);
+            if ($stmt->fetch()) {
+                $error_message = 'Email hoặc tên đăng nhập đã tồn tại!';
+            } else {
+                try {
+                    $nd_id = 'ND' . time();
+                    $signup = date('Y-m-d');
+
+                    $stmt = $pdo->prepare("INSERT INTO nguoi_dung 
+                        (nd_id, nd_hoten, nd_ngaysinh, nd_diachi, nd_gioitinh, nd_sdt, nd_cccd, nd_email, nd_tendangnhap, nd_matkhau, nd_role, nd_dangky)
+                        VALUES 
+                        (:nd_id, :nd_hoten, :nd_ngaysinh, :nd_diachi, :nd_gioitinh, :nd_sdt, :nd_cccd, :nd_email, :nd_tendangnhap, :nd_matkhau, :nd_role, :nd_dangky)");
+                    if ($stmt->execute([
+                        ':nd_id' => $nd_id,
+                        ':nd_hoten' => $full_name,
+                        ':nd_ngaysinh' => $dob,
+                        ':nd_diachi' => $address,
+                        ':nd_gioitinh' => ($gender == 'Nam') ? true : false,
+                        ':nd_sdt' => $phone,
+                        ':nd_cccd' => $cmnd,
+                        ':nd_email' => $email,
+                        ':nd_tendangnhap' => $username,
+                        ':nd_matkhau' => password_hash($password, PASSWORD_DEFAULT),
+                        ':nd_role' => 'user',
+                        ':nd_dangky' => $signup
+                    ])) {
+                        $_SESSION['user'] = [
+                            'id' => $nd_id,
+                            'name' => $full_name,
+                            'email' => $email,
+                            'username' => $username,
+                            'phone' => $phone,
+                            'gender' => $gender,
+                            'signup' => $signup
+                        ];
+                        header('Location: /index.php');
+                        exit();
+                    }
+                } catch (PDOException $e) {
+                    $error_message = 'Lỗi khi đăng ký: ' . $e->getMessage();
+                }
+            }
+        }
+    } else {
+        $error_message = 'Vui lòng nhập đầy đủ thông tin!';
+    }
+}
+
+if (isset($_SESSION['user'])) {
+    include __DIR__ . '/../../../layouts/users/HeaderLogin.php';
+} else {
     include __DIR__ . '/../../../layouts/users/Header.php';
+}
 ?>
 
 <!DOCTYPE html>
@@ -32,7 +109,13 @@
                                 </div>
 
                                 <div class="auth-body">
-                                    <form>
+                                    <?php if ($error_message): ?>
+                                        <div class="alert alert-danger text-center"><?= htmlspecialchars($error_message) ?></div>
+                                    <?php endif; ?>
+                                    <?php if ($success_message): ?>
+                                        <div class="alert alert-success text-center"><?= htmlspecialchars($success_message) ?></div>
+                                    <?php endif; ?>
+                                    <form method="post">
                                     <div class="row mb-3">
                                         <div class="col-md-6">
                                         <input
@@ -101,7 +184,7 @@
                                         <input
                                             type="text"
                                             class="form-control"
-                                            placeholder="CMND(*)"
+                                            placeholder="CCCD(*)"
                                             name="cmnd"
                                             required
                                         />

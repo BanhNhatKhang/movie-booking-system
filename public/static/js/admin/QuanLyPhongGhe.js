@@ -22,7 +22,6 @@ document.getElementById("btn-vip").onclick = function () {
       el.setAttribute("data-type", "vip");
     }
   });
-  selectedSeats = [];
   clearSelection();
   updateStat();
 };
@@ -35,7 +34,6 @@ document.getElementById("btn-normal").onclick = function () {
       el.setAttribute("data-type", "normal");
     }
   });
-  selectedSeats = [];
   clearSelection();
   updateStat();
 };
@@ -48,7 +46,6 @@ document.getElementById("btn-luxury").onclick = function () {
       el.setAttribute("data-type", "luxury");
     }
   });
-  selectedSeats = [];
   clearSelection();
   updateStat();
 };
@@ -104,6 +101,7 @@ function clearSelection() {
   document
     .querySelectorAll(".seat-outline")
     .forEach((el) => el.classList.remove("seat-outline"));
+  selectedSeats = [];
 }
 // Thống kê tỷ lệ lấp đầy
 function updateStat() {

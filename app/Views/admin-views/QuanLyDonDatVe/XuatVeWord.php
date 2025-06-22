@@ -56,29 +56,55 @@ header("Content-Disposition: attachment;Filename=Ve_{$order['id']}.doc");
 <head>
     <meta charset="UTF-8">
     <title>Vé #<?= htmlspecialchars($order['id']) ?></title>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/dist/css/bootstrap.min.css">
-    <link rel="stylesheet" href="/static/css/admin/Admin.css">
-    <link rel="stylesheet" href="/static/css/admin/XuatVeWord.css">
 </head>
-<body>
-    <div class="ticket-box">
-        <div class="ticket-title">VÉ XEM PHIM</div>
-        <div class="ticket-row"><span class="label">Mã vé:</span> <span class="value"><?= htmlspecialchars($order['id']) ?></span></div>
-        <div class="ticket-row"><span class="label">Tên phim:</span> <span class="value"><?= htmlspecialchars($order['movie']) ?></span></div>
-        <div class="ticket-row"><span class="label">Suất chiếu:</span> <span class="value"><?= htmlspecialchars($order['showtime']) ?></span></div>
-        <div class="ticket-row"><span class="label">Ghế:</span> <span class="value"><?= htmlspecialchars($order['seats']) ?></span></div>
-        <div class="ticket-row"><span class="label">Giá:</span> <span class="value"><?= number_format($order['price'],0,',','.') ?> VNĐ</span></div>
-        <div class="ticket-row"><span class="label">Ngày đặt:</span> <span class="value"><?= date('d/m/Y', strtotime($order['date'])) ?></span></div>
-        <div class="ticket-row"><span class="label">Khách hàng:</span> <span class="value"><?= htmlspecialchars($order['user']) ?></span></div>
-        <div class="ticket-row"><span class="label">Trạng thái:</span> <span class="value">
-            <?php
-            if($order['status']=='paid') echo 'Đã thanh toán';
-            elseif($order['status']=='unpaid') echo 'Chưa thanh toán';
-            else echo 'Đã hủy';
-            ?>
-        </span></div>
-        <div style="margin-top:24px; text-align:center; font-size:0.95em; color:#888;">
-            Cảm ơn quý khách và chúc quý khách xem phim vui vẻ!
+<body style="background:#fff;">
+    <div style="max-width:500px;margin:40px auto;padding:32px 32px 24px 32px;border:2px solid #ff4444;border-radius:18px;box-shadow:0 2px 12px #eee;">
+        <div style="text-align:center;margin-bottom:24px;">
+            <span style="font-size:2.1em;font-weight:bold;color:#ff4444;letter-spacing:2px;">VÉ XEM PHIM</span>
+            <div style="font-size:1.1em;color:#555;margin-top:4px;">KHF CINEMA</div>
+        </div>
+        <table style="width:100%;font-size:1.1em;border-collapse:collapse;">
+            <tr>
+                <td style="padding:6px 0;width:120px;font-weight:bold;">Mã vé:</td>
+                <td style="padding:6px 0;"><?= htmlspecialchars($order['id']) ?></td>
+            </tr>
+            <tr>
+                <td style="padding:6px 0;font-weight:bold;">Tên phim:</td>
+                <td style="padding:6px 0;"><?= htmlspecialchars($order['movie']) ?></td>
+            </tr>
+            <tr>
+                <td style="padding:6px 0;font-weight:bold;">Suất chiếu:</td>
+                <td style="padding:6px 0;"><?= htmlspecialchars($order['showtime']) ?></td>
+            </tr>
+            <tr>
+                <td style="padding:6px 0;font-weight:bold;">Ghế:</td>
+                <td style="padding:6px 0;"><?= htmlspecialchars($order['seats']) ?></td>
+            </tr>
+            <tr>
+                <td style="padding:6px 0;font-weight:bold;">Giá:</td>
+                <td style="padding:6px 0;"><?= number_format($order['price'],0,',','.') ?> VNĐ</td>
+            </tr>
+            <tr>
+                <td style="padding:6px 0;font-weight:bold;">Ngày đặt:</td>
+                <td style="padding:6px 0;"><?= date('d/m/Y', strtotime($order['date'])) ?></td>
+            </tr>
+            <tr>
+                <td style="padding:6px 0;font-weight:bold;">Khách hàng:</td>
+                <td style="padding:6px 0;"><?= htmlspecialchars($order['user']) ?></td>
+            </tr>
+            <tr>
+                <td style="padding:6px 0;font-weight:bold;">Trạng thái:</td>
+                <td style="padding:6px 0;">
+                    <?php
+                    if($order['status']=='paid') echo '<span style="color:green;font-weight:bold;">Đã thanh toán</span>';
+                    elseif($order['status']=='unpaid') echo '<span style="color:#ff9800;font-weight:bold;">Chưa thanh toán</span>';
+                    else echo '<span style="color:#888;font-weight:bold;">Đã hủy</span>';
+                    ?>
+                </td>
+            </tr>
+        </table>
+        <div style="margin-top:32px;text-align:center;font-size:1.05em;color:#888;">
+            <i>Cảm ơn quý khách và chúc quý khách xem phim vui vẻ!</i>
         </div>
     </div>
 </body>

@@ -13,6 +13,19 @@
   font-weight: bold;
   cursor: pointer;
 }
+.seat-demo.aisle {
+  background: #263238 !important;
+  border: none !important;
+  display: inline-block;
+  width: 40px;
+  height: 40px;
+  margin: 3px;
+  cursor: default;
+  vertical-align: middle;
+  box-shadow: none;
+  color: #fff;
+  pointer-events: none;
+}
 .seat-normal {
   background: #2196f3;
   color: #fff;
