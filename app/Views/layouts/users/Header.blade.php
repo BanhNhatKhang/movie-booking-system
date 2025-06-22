@@ -16,9 +16,9 @@
                                     </div>
                                 </a>
                                 <div class="d-flex align-items-center gap-4 auth-links">
-                                    <a href="/static/html/users/Login/DangNhap.php">Đăng nhập</a>
+                                    <a href="/dang-nhap" class="{{ isset($activePage) && $activePage == 'dangnhap' ? 'active' : '' }}">Đăng nhập</a>
                                     <span class="text-white-50 opacity-75">|</span>
-                                    <a href="/static/html/users/Login/DangKy.php">Đăng ký</a>
+                                    <a href="/dang-ky" class="{{ isset($activePage) && $activePage == 'dangky' ? 'active' : '' }}">Đăng ký</a>
                                 </div>
                             </div>
                         </div>
@@ -53,10 +53,10 @@
                                 </ul>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link {{ ($activePage == 'offers') ? 'active' : '' }}" href="/static/html/users/UuDai/UuDai.php">ƯU ĐÃI</a>
+                                <a class="nav-link {{ ($activePage == 'offers') ? 'active' : '' }}" href="/uu-dai">ƯU ĐÃI</a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link {{ ($activePage == 'member') ? 'active' : '' }}" href="/static/html/users/ThanhVien/ThanhVienKHF.php">THÀNH VIÊN</a>
+                                <a class="nav-link {{ ($activePage == 'member') ? 'active' : '' }}" href="/thanh-vien">THÀNH VIÊN</a>
                             </li>
                             </ul>
                         </div>
