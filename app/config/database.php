@@ -3,9 +3,9 @@ return [
     'driver'   => 'pgsql',
     'host'     => 'localhost',
     'port'     => 5432,
-    'database' => 'web_phim',
+    'database' => 'CT275_Project',
     'username' => 'postgres',
-    'password' => 'doquanghuy401181',
+    'password' => 'T@McjBZn',
     'charset'  => 'utf8',
     'options'  => [
         PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION
