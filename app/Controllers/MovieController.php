@@ -34,7 +34,7 @@ class MovieController
             realpath(__DIR__ . '/../Views'),
             realpath(__DIR__ . '/../../cache')
         );
-        echo $blade->render('user-view.Phim.ChiTietPhim', [
+        echo $blade->render('users-views.Phim.ChiTietPhim', [
             'activePage' => 'movies'
         ]);
     }
@@ -45,7 +45,7 @@ class MovieController
             realpath(__DIR__ . '/../Views'),
             realpath(__DIR__ . '/../../cache')
         );
-        echo $blade->render('user-view.Phim.ChonGhe', [
+        echo $blade->render('users-views.Phim.ChonGhe', [
             'activePage' => 'movies'
         ]);
     }

@@ -14,7 +14,7 @@ class PayController
             realpath(__DIR__ . '/../Views'),
             realpath(__DIR__ . '/../../cache')
         );
-        echo $blade->render('user-views.ThanhToan.ThanhToan', [
+        echo $blade->render('users-views.ThanhToan.ThanhToan', [
             'seats' => $seats,
             'total' => $total
         ]);
