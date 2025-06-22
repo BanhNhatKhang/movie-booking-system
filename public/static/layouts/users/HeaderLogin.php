@@ -57,7 +57,7 @@
                                         <a class="dropdown-item hover-red-nav" href="/static/html/users/LichSuDatVe/LichSuDatVe.php">Lịch sử đặt vé</a>
                                     </li>
                                     <li>
-                                        <a class="dropdown-item text-danger" href="/static/html/users/Login/DangXuat.php">Đăng xuất</a>
+                                        <a class="dropdown-item text-danger" href="/static/html/users/Login_Logout/DangXuat.php">Đăng xuất</a>
                                     </li>
                                 </ul>
                             </div>

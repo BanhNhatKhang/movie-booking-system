@@ -6,7 +6,7 @@
                     <div class="bg-header text-white py-2">
                         <div class="container">
                             <div class="d-flex justify-content-between align-items-center flex-wrap">
-                                <a class="navbar-brand" href="#">
+                                <a class="navbar-brand" href="/static/index.php">
                                     <div class="khf-logo">
                                         <div class="logo-icon"></div>
                                         <div class="logo-text">
@@ -16,9 +16,9 @@
                                     </div>
                                 </a>
                                 <div class="d-flex align-items-center gap-4 auth-links">
-                                    <a href="/static/html/users/Login/DangNhap.php">Đăng nhập</a>
+                                    <a href="/static/html/users/Login_Logout/DangNhap.php">Đăng nhập</a>
                                     <span class="text-white-50 opacity-75">|</span>
-                                    <a href="/static/html/users/Login/DangKy.php">Đăng ký</a>
+                                    <a href="/static/html/users/Login_Logout/DangKy.php">Đăng ký</a>
                                 </div>
                             </div>
                         </div>
