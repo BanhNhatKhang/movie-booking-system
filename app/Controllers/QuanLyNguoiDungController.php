@@ -23,5 +23,18 @@ class QuanLyNguoiDungController
         );
         echo $blade->render('admin-views.QuanLyNguoiDung.ChiTietNguoiDung', ['activePage' => 'user']);
     }
+    public function khoaNguoiDung()
+    {
+        $blade = new Blade(
+            realpath(__DIR__ . '/../Views'),
+            realpath(__DIR__ . '/../../cache')
+        );
+        
+        $id = isset($_GET['id']) ? intval($_GET['id']) : 0;
 
+        
+        echo $blade->render('admin-views.QuanLyNguoiDung.KhoaNguoiDung', [
+            'id' => $id
+        ]);
+    }
 }

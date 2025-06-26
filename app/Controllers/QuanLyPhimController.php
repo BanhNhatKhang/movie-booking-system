@@ -37,4 +37,12 @@ class QuanLyPhimController
         header('Location: /quan-ly-phim?msg=status_success');
         exit;
     }
+    
+    public function xoaPhim()
+    {
+        $id = isset($_GET['id']) ? intval($_GET['id']) : 0;
+
+        header('Location: /quan-ly-phim?msg=delete_success');
+        exit;
+    }
 }
