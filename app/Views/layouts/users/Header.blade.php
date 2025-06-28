@@ -1,4 +1,18 @@
+@if(isset($_SESSION['error_message']))
+    <div class="alert alert-danger alert-dismissible fade show mx-3 mt-2" role="alert" id="errorAlert">
+        <i class="bi bi-exclamation-triangle me-2"></i>{{ $_SESSION['error_message'] }}
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+    @php unset($_SESSION['error_message']); @endphp
+@endif
 
+@if(isset($_SESSION['success_message']))
+    <div class="alert alert-success alert-dismissible fade show mx-3 mt-2" role="alert" id="successAlert">
+        <i class="bi bi-check-circle me-2"></i>{{ $_SESSION['success_message'] }}
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+    @php unset($_SESSION['success_message']); @endphp
+@endif
 <header>
     <div class="container">
         <div class="row align-items-center">
@@ -17,6 +31,13 @@
                                 </div>
                             </a>
                             
+                            {{-- THÊM: Badge khi admin đang ở user mode --}}
+                            @if(isset($_SESSION['original_role']) && $_SESSION['original_role'] === 'admin')
+                                <span class="badge bg-warning me-3">
+                                    <i class="bi bi-person-gear me-1"></i>Admin đang xem như User
+                                </span>
+                            @endif
+                            
                             {{-- Kiểm tra đăng nhập --}}
                             @if(isset($_SESSION['logged_in']) && $_SESSION['logged_in'] === true)
                                 {{-- Header khi đã đăng nhập --}}
@@ -25,17 +46,37 @@
                                        id="userDropdown" data-bs-toggle="dropdown" aria-expanded="false" style="outline: none;">
                                         <i class="bi bi-person-circle fs-4 me-2"></i>
                                         <span class="fw-semibold user-name">{{ $_SESSION['user_name'] ?? 'User' }}</span>
+                                        <small class="text-white-50 ms-1">({{ $_SESSION['user_role'] }})</small>
                                     </a>
                                     <ul class="dropdown-menu dropdown-menu-end mt-0 shadow-sm" aria-labelledby="userDropdown">
+                                        <li><h6 class="dropdown-header">Tài khoản</h6></li>
                                         <li>
-                                            <a class="dropdown-item hover-red-nav" href="/thong-tin-ca-nhan">Thông tin cá nhân</a>
+                                            <a class="dropdown-item hover-red-nav" href="/thong-tin-ca-nhan">
+                                                <i class="bi bi-person me-2"></i>Thông tin cá nhân
+                                            </a>
                                         </li>
                                         <li>
-                                            <a class="dropdown-item hover-red-nav" href="/lich-su-dat-ve">Lịch sử đặt vé</a>
+                                            <a class="dropdown-item hover-red-nav" href="/lich-su-dat-ve">
+                                                <i class="bi bi-clock-history me-2"></i>Lịch sử đặt vé
+                                            </a>
                                         </li>
+                                        
+                                        {{-- THÊM: Nếu có original_role admin thì hiển thị nút quay lại --}}
+                                        @if(isset($_SESSION['original_role']) && $_SESSION['original_role'] === 'admin')
+                                            <li><hr class="dropdown-divider"></li>
+                                            <li><h6 class="dropdown-header">Quản trị</h6></li>
+                                            <li>
+                                                <a class="dropdown-item text-success hover-red-nav" href="/admin/switch-to-admin">
+                                                    <i class="bi bi-gear me-2"></i>Quay lại quyền Admin
+                                                </a>
+                                            </li>
+                                        @endif
+                                        
                                         <li><hr class="dropdown-divider"></li>
                                         <li>
-                                            <a class="dropdown-item hover-red-nav" href="/dang-xuat">Đăng xuất</a>
+                                            <a class="dropdown-item text-danger hover-red-nav" href="/dang-xuat">
+                                                <i class="bi bi-box-arrow-right me-2"></i>Đăng xuất
+                                            </a>
                                         </li>
                                     </ul>
                                 </div>
@@ -117,4 +158,47 @@
     .auth-links a:hover {
         color: #dc3545;
     }
+    
+    /* THÊM: Style cho badge admin */
+    .badge {
+        font-size: 0.75rem;
+        padding: 0.35em 0.65em;
+    }
+    .dropdown-header {
+        font-size: 0.875rem;
+        font-weight: 600;
+        color: #6c757d;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
 </style>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const successAlert = document.getElementById('successAlert');
+    if (successAlert) {
+        setTimeout(function() {
+            successAlert.style.transition = 'opacity 0.5s ease-out';
+            successAlert.style.opacity = '0';
+            setTimeout(function() {
+                if (successAlert.parentNode) {
+                    successAlert.parentNode.removeChild(successAlert);
+                }
+            }, 500);
+        }, 3000);
+    }
+
+    const errorAlert = document.getElementById('errorAlert');
+    if (errorAlert) {
+        setTimeout(function() {
+            errorAlert.style.transition = 'opacity 0.5s ease-out';
+            errorAlert.style.opacity = '0';
+            setTimeout(function() {
+                if (errorAlert.parentNode) {
+                    errorAlert.parentNode.removeChild(errorAlert);
+                }
+            }, 500);
+        }, 5000);
+    }
+});
+</script>

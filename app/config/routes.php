@@ -36,6 +36,10 @@ $router->add('GET', '/qua-tang', 'ThanhVienKHFController@quatang');
 //dashboard
 $router->add('GET', '/dashboard', 'DashboardController@dashboard');
 
+//switch
+$router->add('GET', '/admin/switch-to-user', 'AdminModeController@switchToUser');
+$router->add('GET', '/admin/switch-to-admin', 'AdminModeController@switchToAdmin');
+
 //trangchu
 $router->add('GET', '/quan-ly-trang-chu', 'QuanLyTrangChuController@trangChu');
 $router->add('GET', '/them-poster', 'QuanLyTrangChuController@themPoster');
