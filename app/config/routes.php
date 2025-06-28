@@ -12,7 +12,7 @@ $router->add('POST', '/dang-ky', 'DangKyController@xuLy');
 $router->add('GET', '/dang-nhap', 'DangNhapController@dangnhap');
 $router->add('POST', '/dang-nhap', 'DangNhapController@xuLy');
 $router->add('GET', '/uu-dai', 'UuDaiController@uudai');
-$router->add('GET', '/lich-su-dat-ve', 'LichSuDatVeController@lichudatve');
+$router->add('GET', '/lich-su-dat-ve', 'LichSuDatVeController@lichsudatve');
 $router->add('GET', '/thanh-vien', 'ThanhVienKHFController@thanhvien');
 $router->add('GET', '/diem-thuong', 'ThanhVienKHFController@diemthuong');
 $router->add('GET', '/cap-do', 'ThanhVienKHFController@capdo');
