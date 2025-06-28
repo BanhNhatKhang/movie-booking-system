@@ -10,18 +10,14 @@
 <div class="container bg-white shadow-sm p-4 rounded mt-4">
     <h4 class="mb-4">Sửa poster</h4>
     <form method="POST" enctype="multipart/form-data" action="">
+        <input type="hidden" name="pt_maposter" value="{{ $poster['pt_maposter'] }}">
+        <input type="hidden" name="old_img" value="{{ $poster['pt_anhposter'] }}">
         <div class="mb-3">
             <label for="anhPoster" class="form-label">Ảnh poster</label>
-            <input type="file" class="form-control" id="anhPoster" name="anhPoster" required />
-        </div>
-        <div class="mb-3">
-            <label for="lienKetPhim" class="form-label">Liên kết đến phim</label>
-            <select class="form-select" id="lienKetPhim" name="lienKetPhim" required>
-                <option value="">-- Chọn phim liên kết --</option>
-                <option value="1">Spider-Man: No Way Home</option>
-                <option value="2">Inside Out 2</option>
-                {{-- Dữ liệu từ backend --}}
-            </select>
+            @if($poster['pt_anhposter'])
+                <img src="{{ $poster['pt_anhposter'] }}" id="previewImg" style="max-width:150px;max-height:150px;border:1px solid #ccc;margin-bottom:10px;">
+            @endif
+            <input type="file" class="form-control" id="pt_anhposter" name="anhPoster" />
         </div>
         <div class="text-end">
             <button type="submit" class="btn btn-success">Sửa poster</button>
@@ -32,5 +28,20 @@
 @endsection
 
 @section('page-js')
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+document.getElementById('pt_anhposter').addEventListener('change', function(e) {
+    const [file] = this.files;
+    if (file) {
+        let preview = document.getElementById('previewImg');
+        if (!preview) {
+            preview = document.createElement('img');
+            preview.id = 'previewImg';
+            preview.style = 'display:block;max-width:150px;max-height:150px;border:1px solid #ccc;margin-top:10px;';
+            this.parentNode.appendChild(preview);
+        }
+        preview.src = URL.createObjectURL(file);
+        preview.style.display = 'block';
+    }
+});
+</script>
 @endsection

@@ -15,4 +15,14 @@ class DangNhapController
 
         echo $blade->render('users-views.Login.DangNhap', ['activePage' => 'dangnhap']);
     }
+
+    public function thongTinCaNhan()
+    {
+        $blade = new Blade(
+            realpath(__DIR__ . '/../Views'),
+            realpath(__DIR__ . '/../../cache')
+        );
+
+        echo $blade->render('users-views.ThongTinCaNhan.ThongTinCaNhan');
+    }
 }

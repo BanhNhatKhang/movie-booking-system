@@ -11,6 +11,9 @@
 @section('content')
 <div class="container py-4 content">
     <h1>Quản lý Poster</h1><hr>
+    @if(isset($_GET['error']) && $_GET['error'] == 'poster_in_use')
+        <div class="alert alert-danger">Không thể xóa poster này vì đang được sử dụng cho phim!</div>
+    @endif
     <div class="d-flex justify-content-between align-items-center mb-3">
         <button class="btn btn-primary">
             <a href="/them-poster" class="text-white text-decoration-none">
@@ -33,29 +36,43 @@
                 <tr>
                     <th>STT</th>
                     <th>Ảnh poster</th>
-                    <th>Phim</th>
+                    <th>Tên phim</th>
                     <th>Hành động</th>
                 </tr>
             </thead>
             <tbody>
-                <tr>
-                    <td>1</td>
-                    <td><img src="poster1.jpg" alt="Poster" width="100"></td>
-                    <td>Avengers: Endgame</td>
-                    <td>
-                        <a href="/sua-poster" class="btn btn-sm btn-warning" title="Sửa">
-                            <i class="bi bi-pencil-square"></i>
-                        </a>
-                        <button 
-                            class="btn btn-sm btn-danger btn-delete" 
-                            title="Xóa"
-                            data-title="poster phim 'Avengers: Endgame'"
-                            data-url="XoaPoster.php?id=1">
-                            <i class="bi bi-trash"></i>
-                        </button>
-                    </td>
-                </tr>
-            </tbody>
+    @forelse($posters as $i => $p)
+    <tr>
+        <td>{{ $i+1 }}</td>
+        <td>
+            @if($p['pt_anhposter'])
+            <img src="{{ $p['pt_anhposter'] }}" alt="Poster" style="width:100px; height:140px; object-fit:cover;">            @else
+                <span class="text-muted">Không có ảnh</span>
+            @endif
+        </td>
+        <td>
+            {{-- Nếu có tên phim liên kết thì hiển thị, không thì hiển thị mã poster --}}
+            {{ $p['ten_phim'] ?? $p['pt_maposter'] }}
+        </td>
+        <td>
+            <a href="/sua-poster?id={{ $p['pt_maposter'] }}" class="btn btn-sm btn-warning" title="Sửa">
+                <i class="bi bi-pencil-square"></i>
+            </a>
+            <button 
+                class="btn btn-sm btn-danger btn-delete" 
+                title="Xóa"
+                data-title="poster {{ $p['pt_maposter'] }}"
+                data-url="/xoa-poster?id={{ $p['pt_maposter'] }}">
+                <i class="bi bi-trash"></i>
+            </button>
+        </td>
+    </tr>
+    @empty
+    <tr>
+        <td colspan="4" class="text-center text-muted">Chưa có poster nào</td>
+    </tr>
+    @endforelse
+</tbody>
         </table>
     </div>
     <hr><br>

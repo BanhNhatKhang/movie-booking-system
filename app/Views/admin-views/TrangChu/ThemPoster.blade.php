@@ -1,3 +1,4 @@
+
 @extends('layouts.admin.master')
 
 @section('title', 'Thêm poster')
@@ -9,27 +10,39 @@
 @section('content')
 <div class="container bg-white shadow-sm p-4 rounded mt-4">
     <h4 class="mb-4">Thêm poster mới</h4>
-    <form method="POST" enctype="multipart/form-data" action="">
+    <form method="POST" enctype="multipart/form-data" action="/luu-poster">
         <div class="mb-3">
-            <label for="anhPoster" class="form-label">Ảnh poster</label>
-            <input type="file" class="form-control" id="anhPoster" name="anhPoster" required />
+            <label for="pt_maposter" class="form-label">Mã poster</label>
+            <input type="text" class="form-control" id="pt_maposter" name="pt_maposter" value="{{ $newId }}" readonly required />
         </div>
         <div class="mb-3">
-            <label for="lienKetPhim" class="form-label">Liên kết đến phim</label>
-            <select class="form-select" id="lienKetPhim" name="lienKetPhim" required>
-                <option value="">-- Chọn phim liên kết --</option>
-                <option value="1">Spider-Man: No Way Home</option>
-                <option value="2">Inside Out 2</option>
-                {{-- Dữ liệu từ backend --}}
-            </select>
+        <label for="ten_phim" class="form-label">Tên phim</label>
+            <input type="text" class="form-control" id="ten_phim" name="ten_phim" required />
+        </div>
+        <div class="mb-3">
+            <label for="anhPoster" class="form-label">Ảnh poster</label>
+            <input type="file" class="form-control" id="pt_anhposter" name="anhPoster" accept="image/*" required />
+            <div class="mt-2">
+                <img id="previewImg" src="#" alt="Xem trước ảnh" style="display:none;max-width:150px;max-height:150px;border:1px solid #ccc;" />
+            </div>
         </div>
         <div class="text-end">
             <button type="submit" class="btn btn-success">Thêm poster</button>
-            <a href="/quan-ly-trang-chu" class="btn btn-secondary ms-2">Hủy</a>        </div>
+            <a href="/quan-ly-trang-chu" class="btn btn-secondary ms-2">Hủy</a>
+        </div>
     </form>
 </div>
 @endsection
 
 @section('page-js')
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+document.getElementById('pt_anhposter').addEventListener('change', function(e) {
+    const [file] = this.files;
+    if (file) {
+        const preview = document.getElementById('previewImg');
+        preview.src = URL.createObjectURL(file);
+        preview.style.display = 'block';
+    }
+});
+</script>
 @endsection

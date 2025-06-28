@@ -5,4 +5,3 @@ $id = $_GET['id'] ?? 0;
 // Sau khi xóa, chuyển về trang quản lý phim
 header('Location: QuanLyPhim.php?msg=delete_success');
 exit;
-?>
