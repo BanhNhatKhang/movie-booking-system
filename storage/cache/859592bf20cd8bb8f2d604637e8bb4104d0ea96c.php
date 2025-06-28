@@ -8,14 +8,14 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/dist/css/bootstrap.min.css" rel="stylesheet" crossorigin="anonymous">
     <link rel="stylesheet" href="/static/css/users/HeaderFooter.css">
     <link rel="stylesheet" href="/static/css/users/TrangChu.css">
-    @yield('page-css')
+    <?php echo $__env->yieldContent('page-css'); ?>
 
 </head>
 <body class="bg-dark">
-    @include('layouts.users.Header')
-    @yield('content')
-    @include('layouts.users.Footer')
-    @yield('page-js')
+    <?php echo $__env->make('layouts.users.Header', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?>
+    <?php echo $__env->yieldContent('content'); ?>
+    <?php echo $__env->make('layouts.users.Footer', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?>
+    <?php echo $__env->yieldContent('page-js'); ?>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/dist/js/bootstrap.bundle.min.js"></script>
     <script>
         document.addEventListener('DOMContentLoaded', function() {
@@ -33,4 +33,4 @@
         });
     </script>
 </body>
-</html>
+</html><?php /**PATH C:\mysites\ct27501-project-BanhNhatKhang-1\app\Views/layouts/users/master.blade.php ENDPATH**/ ?>

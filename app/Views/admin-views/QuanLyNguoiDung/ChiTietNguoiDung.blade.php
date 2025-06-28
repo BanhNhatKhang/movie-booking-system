@@ -144,29 +144,7 @@
                 </tbody>
             </table>
         </div>
-        <h5>Ưu đãi đã sử dụng</h5>
-        <div class="table-responsive mb-3">
-            <table class="table table-sm table-bordered align-middle">
-                <thead class="table-light">
-                    <tr>
-                        <th>Tên ưu đãi</th>
-                        <th>Ngày sử dụng</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @if(!empty($user['offers']))
-                        @foreach($user['offers'] as $offer)
-                        <tr>
-                            <td>{{ $offer['name'] }}</td>
-                            <td>{{ date('d/m/Y', strtotime($offer['used_date'])) }}</td>
-                        </tr>
-                        @endforeach
-                    @else
-                        <tr><td colspan="2" class="text-center text-muted">Chưa sử dụng ưu đãi nào.</td></tr>
-                    @endif
-                </tbody>
-            </table>
-        </div>
+
         <div class="mt-4">
             <a href="/quan-ly-nguoi-dung" class="btn btn-secondary">Quay lại</a>
             @if($user['status']!='locked')

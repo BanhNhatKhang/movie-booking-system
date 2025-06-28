@@ -17,14 +17,14 @@
                                 </div>
                             </a>
                             
-                            {{-- Kiểm tra đăng nhập --}}
-                            @if(isset($_SESSION['logged_in']) && $_SESSION['logged_in'] === true)
-                                {{-- Header khi đã đăng nhập --}}
+                            
+                            <?php if(isset($_SESSION['logged_in']) && $_SESSION['logged_in'] === true): ?>
+                                
                                 <div class="dropdown">
                                     <a href="#" class="d-flex align-items-center user-dropdown-link text-decoration-none" 
                                        id="userDropdown" data-bs-toggle="dropdown" aria-expanded="false" style="outline: none;">
                                         <i class="bi bi-person-circle fs-4 me-2"></i>
-                                        <span class="fw-semibold user-name">{{ $_SESSION['user_name'] ?? 'User' }}</span>
+                                        <span class="fw-semibold user-name"><?php echo e($_SESSION['user_name'] ?? 'User'); ?></span>
                                     </a>
                                     <ul class="dropdown-menu dropdown-menu-end mt-0 shadow-sm" aria-labelledby="userDropdown">
                                         <li>
@@ -39,14 +39,14 @@
                                         </li>
                                     </ul>
                                 </div>
-                            @else
-                                {{-- Header khi chưa đăng nhập --}}
+                            <?php else: ?>
+                                
                                 <div class="d-flex align-items-center gap-4 auth-links">
-                                    <a href="/dang-nhap" class="{{ isset($activePage) && $activePage == 'dangnhap' ? 'active' : '' }}">Đăng nhập</a>
+                                    <a href="/dang-nhap" class="<?php echo e(isset($activePage) && $activePage == 'dangnhap' ? 'active' : ''); ?>">Đăng nhập</a>
                                     <span class="text-white-50 opacity-75">|</span>
-                                    <a href="/dang-ky" class="{{ isset($activePage) && $activePage == 'dangky' ? 'active' : '' }}">Đăng ký</a>
+                                    <a href="/dang-ky" class="<?php echo e(isset($activePage) && $activePage == 'dangky' ? 'active' : ''); ?>">Đăng ký</a>
                                 </div>
-                            @endif
+                            <?php endif; ?>
                         </div>
                     </div>
                 </div>
@@ -66,10 +66,10 @@
                         <div class="collapse navbar-collapse" id="navbarNav">
                             <ul class="navbar-nav mx-auto">
                                 <li class="nav-item">
-                                    <a class="nav-link {{ isset($activePage) && $activePage == 'home' ? 'active' : '' }}" href="/">LỊCH CHIẾU</a>
+                                    <a class="nav-link <?php echo e(isset($activePage) && $activePage == 'home' ? 'active' : ''); ?>" href="/">LỊCH CHIẾU</a>
                                 </li>
                                 <li class="nav-item dropdown">
-                                    <a class="nav-link {{ isset($activePage) && $activePage == 'movies' ? 'active' : '' }}" href="#" id="phimDropdown"
+                                    <a class="nav-link <?php echo e(isset($activePage) && $activePage == 'movies' ? 'active' : ''); ?>" href="#" id="phimDropdown"
                                     role="button" data-bs-toggle="dropdown" aria-expanded="false">PHIM</a>
                                     <ul class="dropdown-menu" aria-labelledby="phimDropdown">
                                         <li>
@@ -81,10 +81,10 @@
                                     </ul>
                                 </li>
                                 <li class="nav-item">
-                                    <a class="nav-link {{ isset($activePage) && $activePage == 'offers' ? 'active' : '' }}" href="/uu-dai">ƯU ĐÃI</a>
+                                    <a class="nav-link <?php echo e(isset($activePage) && $activePage == 'offers' ? 'active' : ''); ?>" href="/uu-dai">ƯU ĐÃI</a>
                                 </li>
                                 <li class="nav-item">
-                                    <a class="nav-link {{ isset($activePage) && $activePage == 'member' ? 'active' : '' }}" href="/thanh-vien">THÀNH VIÊN</a>
+                                    <a class="nav-link <?php echo e(isset($activePage) && $activePage == 'member' ? 'active' : ''); ?>" href="/thanh-vien">THÀNH VIÊN</a>
                                 </li>
                             </ul>
                         </div>
@@ -117,4 +117,4 @@
     .auth-links a:hover {
         color: #dc3545;
     }
-</style>
+</style><?php /**PATH C:\mysites\ct27501-project-BanhNhatKhang-1\app\Views/layouts/users/Header.blade.php ENDPATH**/ ?>

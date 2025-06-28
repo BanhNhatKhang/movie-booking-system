@@ -17,10 +17,33 @@
                                 <h2 class="auth-title">ĐĂNG NHẬP</h2>
                             </div>
                             <div class="auth-body">
+                                {{-- Thông báo thành công từ session --}}
+                                @if(isset($_SESSION['success_message']))
+                                    <div class="alert alert-success text-center mb-3">
+                                        <strong>{{ $_SESSION['success_message'] }}</strong>
+                                    </div>
+                                    @php
+                                        unset($_SESSION['success_message']);
+                                    @endphp
+                                @endif
+                                
+                                {{-- Thông báo lỗi từ session --}}
+                                @if(isset($_SESSION['error_message']))
+                                    <div class="alert alert-danger text-center mb-3">
+                                        <strong>{{ $_SESSION['error_message'] }}</strong>
+                                    </div>
+                                    @php
+                                        unset($_SESSION['error_message']);
+                                    @endphp
+                                @endif
+                                
+                                {{-- Thông báo lỗi từ controller (biến) --}}
                                 @if(isset($error_message) && $error_message)
                                     <div class="alert alert-danger text-center">{{ htmlspecialchars($error_message) }}</div>
                                 @endif
-                                <form method="post">
+                                
+                                <form method="post" action="/dang-nhap">
+                                    <input type="hidden" name="csrf_token" value="{{ $_SESSION['csrf_token'] ?? '' }}">
                                     <div class="mb-3">
                                         <input
                                             type="text"
@@ -58,7 +81,7 @@
                                     <div class="text-center mt-3">
                                         <p class="text-white">
                                             Chưa có tài khoản?
-                                            <a href="DangKy.php" class="text-danger fw-bold">Đăng ký!</a>
+                                            <a href="/dang-ky" class="text-danger fw-bold">Đăng ký!</a>
                                         </p>
                                     </div>
                                 </form>
