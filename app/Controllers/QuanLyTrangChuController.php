@@ -6,8 +6,25 @@ use Jenssegers\Blade\Blade;
 
 class QuanLyTrangChuController
 {
+    private function checkAdminAuth()
+    {
+        // Kiểm tra đăng nhập
+        if (!isset($_SESSION['logged_in']) || $_SESSION['logged_in'] !== true) {
+            $_SESSION['error_message'] = 'Vui lòng đăng nhập để truy cập trang admin!';
+            header('Location: /dang-nhap');
+            exit;
+        }
+        
+        // Kiểm tra role admin
+        if (!isset($_SESSION['user_role']) || $_SESSION['user_role'] !== 'admin') {
+            $_SESSION['error_message'] = 'Bạn không có quyền truy cập trang admin!';
+            header('Location: /'); // Chuyển về trang chủ user
+            exit;
+        }
+    }
     public function trangChu()
     {
+        $this->checkAdminAuth(); // Kiểm tra quyền truy cập admin
         $posterModel = new \App\Models\Poster();
         $posters = $posterModel->getAll(); // Lấy tất cả poster từ DB
     
@@ -23,6 +40,7 @@ class QuanLyTrangChuController
 
     public function themPoster()
     {
+        $this->checkAdminAuth(); // Kiểm tra quyền truy cập admin
         $posterModel = new \App\Models\Poster();
         $newId = $posterModel->generateNewId();
         $blade = new \Jenssegers\Blade\Blade(
@@ -37,6 +55,7 @@ class QuanLyTrangChuController
 
     public function luuPoster()
     {
+        $this->checkAdminAuth(); // Kiểm tra quyền truy cập admin
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $file = $_FILES['anhPoster']; // Đúng tên input trong form
             $imgPath = null;
@@ -55,6 +74,7 @@ class QuanLyTrangChuController
     }
     public function danhSachPoster()
     {
+        $this->checkAdminAuth(); // Kiểm tra quyền truy cập admin
         $posterModel = new \App\Models\Poster();
         $posters = $posterModel->getAll();
         $blade = new \Jenssegers\Blade\Blade(
@@ -68,6 +88,7 @@ class QuanLyTrangChuController
     }
     public function suaPoster()
     {
+        $this->checkAdminAuth(); // Kiểm tra quyền truy cập admin
         $id = $_GET['id'] ?? '';
         $posterModel = new \App\Models\Poster();
         $poster = $posterModel->getById($id);
@@ -82,6 +103,7 @@ class QuanLyTrangChuController
     }
     public function capNhatPoster()
 {
+    $this->checkAdminAuth(); // Kiểm tra quyền truy cập admin
     if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $id = $_POST['pt_maposter'];
         $file = $_FILES['anhPoster'];
@@ -98,6 +120,7 @@ class QuanLyTrangChuController
 }
 public function xoaPoster()
 {
+    $this->checkAdminAuth(); // Kiểm tra quyền truy cập admin
     $id = $_GET['id'] ?? '';
     $db = \App\Core\Database::getInstance()->getConnection();
     $stmt = $db->prepare("SELECT COUNT(*) FROM phim WHERE p_maposter = ?");
@@ -122,6 +145,7 @@ public function xoaPoster()
 
     public function themUuDai()
     {
+        $this->checkAdminAuth(); // Kiểm tra quyền truy cập admin
         $blade = new \Jenssegers\Blade\Blade(
             realpath(__DIR__ . '/../Views'),
             realpath(__DIR__ . '/../../cache')
@@ -131,6 +155,7 @@ public function xoaPoster()
 
     public function suauuDai()
     {
+        $this->checkAdminAuth(); // Kiểm tra quyền truy cập admin
         $blade = new \Jenssegers\Blade\Blade(
             realpath(__DIR__ . '/../Views'),
             realpath(__DIR__ . '/../../cache')

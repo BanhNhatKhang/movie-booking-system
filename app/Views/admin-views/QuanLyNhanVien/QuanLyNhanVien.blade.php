@@ -11,13 +11,6 @@
 <div class="container py-4 content">
     <h1>Quản lý Nhân viên</h1><hr>
     
-    @if(isset($_SESSION['success_message']))
-        <div class="alert alert-success alert-dismissible fade show">
-            {{ $_SESSION['success_message'] }}
-            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-        </div>
-    @endif
-    
     <div class="d-flex justify-content-between align-items-center mb-3">
         <a href="/admin/them-nhan-vien" class="btn btn-primary text-white text-decoration-none">
             <i class="bi bi-plus-circle"></i> Thêm nhân viên
@@ -29,11 +22,9 @@
             <button class="btn btn-outline-primary" type="submit">
                 <i class="bi bi-search"></i> Tìm kiếm
             </button>
-            @if($search ?? '')
                 <a href="/admin/quan-ly-nhan-vien" class="btn btn-outline-secondary">
                     <i class="bi bi-x"></i> Xóa bộ lọc
                 </a>
-            @endif
         </form>
     </div>
     
