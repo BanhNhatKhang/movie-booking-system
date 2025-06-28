@@ -38,6 +38,7 @@ class AuthController
             $cccd = $_POST['nd_cccd'] ?? '';
             $sdt = $_POST['nd_sdt'] ?? '';
             $matkhau = $_POST['nd_matkhau'] ?? '';
+            $ngaysinh = $_POST['nd_ngaysinh'] ?? '';
             
             // Lưu dữ liệu vào session để giữ lại khi có lỗi
             $_SESSION['form_data'] = $_POST;
@@ -54,7 +55,30 @@ class AuthController
                 header('Location: /dang-ky');
                 exit;
             }
-            
+            //Kiểm tra ngày sinh bắt buộc
+            if (empty($ngaysinh)) {
+                $_SESSION['error_message'] = 'Ngày sinh không được để trống!';
+                header('Location: /dang-ky');
+                exit;
+            }
+            //Kiểm tra tuổi >13 <100
+            if (!empty($ngaysinh)) {
+                $birthDate = new \DateTime($ngaysinh);
+                $today = new \DateTime();
+                $age = $today->diff($birthDate)->y;
+                
+                if ($age < 13) {
+                    $_SESSION['error_message'] = 'Bạn phải đủ 13 tuổi trở lên để đăng ký tài khoản!';
+                    header('Location: /dang-ky');
+                    exit;
+                }
+                
+                if ($age > 100) {
+                    $_SESSION['error_message'] = 'Ngày sinh không hợp lệ!';
+                    header('Location: /dang-ky');
+                    exit;
+                }
+            }
             // Kiểm tra trùng tên đăng nhập
             $checkUsername = $nguoiDungModel->checkExists('nd_tendangnhap', $tendangnhap);
             if ($checkUsername) {
@@ -103,7 +127,7 @@ class AuthController
             $data = [
                 'nd_id' => $id,
                 'nd_hoten' => $_POST['nd_hoten'] ?? '',
-                'nd_ngaysinh' => $_POST['nd_ngaysinh'] ?? null,
+                'nd_ngaysinh' => $ngaysinh ?: null,
                 'nd_gioitinh' => isset($_POST['nd_gioitinh']) ? (bool)$_POST['nd_gioitinh'] : null,
                 'nd_sdt' => $sdt,
                 'nd_cccd' => $cccd,

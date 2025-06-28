@@ -1,146 +1,115 @@
-{{-- filepath: d:\Server\ct27501-project-BanhNhatKhang\app\Views\admin-views\QuanLyNguoiDung\KhoaNguoiDung.blade.php --}}
 @extends('layouts.admin.master')
 
-@section('title', 'Khóa Người Dùng')
+@section('title', 'Khóa/Mở khóa người dùng')
 
 @section('page-css')
-    <link rel="stylesheet" href="/static/css/admin/KhoaNguoiDung.css" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/static/css/admin/LayoutAdmin.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
 @endsection
 
 @section('content')
-<div class="container py-4">
-    <div class="row">
-        <div class="col">
-            <div class="admin-container">
-                <div class="admin-header">
-                    <h2 class="admin-title">KHÓA TÀI KHOẢN NGƯỜI DÙNG</h2>
-                    <nav aria-label="breadcrumb">
-                        <ol class="breadcrumb">
-                            <li class="breadcrumb-item"><a href="/admin">Dashboard</a></li>
-                            <li class="breadcrumb-item"><a href="/admin/quan-ly-nguoi-dung">Quản lý người dùng</a></li>
-                            <li class="breadcrumb-item active">Khóa tài khoản</li>
-                        </ol>
-                    </nav>
+<div class="container py-4 content">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1><i class="bi bi-lock me-2"></i>Khóa/Mở khóa tài khoản</h1>
+        <a href="/quan-ly-nguoi-dung" class="btn btn-secondary">
+            <i class="bi bi-arrow-left me-2"></i>Quay lại
+        </a>
+    </div>
+
+    @if(isset($nguoidung))
+        {{-- Form xác nhận --}}
+        <div class="card">
+            <div class="card-header bg-warning text-dark">
+                <h5 class="card-title mb-0">
+                    @php $currentStatus = $nguoidung['nd_trangthai'] ?? 'active'; @endphp
+                    @if($currentStatus === 'active')
+                        <i class="bi bi-lock me-2"></i>Xác nhận khóa tài khoản
+                    @else
+                        <i class="bi bi-unlock me-2"></i>Xác nhận mở khóa tài khoản
+                    @endif
+                </h5>
+            </div>
+            <div class="card-body">
+                <p class="mb-3">
+                    @if($currentStatus === 'active')
+                        Bạn có chắc chắn muốn <strong class="text-danger">khóa</strong> tài khoản người dùng sau đây?
+                    @else
+                        Bạn có chắc chắn muốn <strong class="text-success">mở khóa</strong> tài khoản người dùng sau đây?
+                    @endif
+                </p>
+                
+                <div class="row mb-3">
+                    <div class="col-md-6">
+                        <strong>ID:</strong> {{ $nguoidung['nd_id'] }}
+                    </div>
+                    <div class="col-md-6">
+                        <strong>Họ tên:</strong> {{ $nguoidung['nd_hoten'] }}
+                    </div>
                 </div>
                 
-                <div class="admin-content">
-                    @if(isset($_SESSION['success_message']))
-                        {{-- Thành công khóa tài khoản --}}
-                        <div class="text-center">
-                            <div class="icon-lock mb-4">
-                                <i class="bi bi-lock-fill text-success" style="font-size: 4rem;"></i>
-                            </div>
-                            <div class="alert alert-success mb-4">
-                                <h4 class="alert-heading">Khóa tài khoản thành công!</h4>
-                                <p class="mb-0">{{ $_SESSION['success_message'] }}</p>
-                            </div>
-                            <a href="/admin/quan-ly-nguoi-dung" class="btn btn-primary">
-                                <i class="bi bi-arrow-left me-2"></i>Quay lại danh sách người dùng
-                            </a>
-                        </div>
-                    @elseif(isset($_SESSION['error_message']))
-                        {{-- Lỗi khi khóa tài khoản --}}
-                        <div class="text-center">
-                            <div class="icon-lock mb-4">
-                                <i class="bi bi-exclamation-triangle-fill text-danger" style="font-size: 4rem;"></i>
-                            </div>
-                            <div class="alert alert-danger mb-4">
-                                <h4 class="alert-heading">Có lỗi xảy ra!</h4>
-                                <p class="mb-0">{{ $_SESSION['error_message'] }}</p>
-                            </div>
-                            <a href="/admin/quan-ly-nguoi-dung" class="btn btn-secondary">
-                                <i class="bi bi-arrow-left me-2"></i>Quay lại
-                            </a>
-                        </div>
-                    @elseif(isset($nguoidung))
-                        {{-- Form xác nhận khóa tài khoản --}}
-                        <div class="card">
-                            <div class="card-header bg-warning text-dark">
-                                <h5 class="card-title mb-0">
-                                    <i class="bi bi-lock me-2"></i>Xác nhận khóa tài khoản
-                                </h5>
-                            </div>
-                            <div class="card-body">
-                                <p class="mb-3">Bạn có chắc chắn muốn khóa tài khoản người dùng sau đây?</p>
-                                
-                                <div class="row mb-3">
-                                    <div class="col-md-6">
-                                        <strong>ID:</strong> {{ $nguoidung['id'] ?? 'N/A' }}
-                                    </div>
-                                    <div class="col-md-6">
-                                        <strong>Họ tên:</strong> {{ $nguoidung['ho_ten'] ?? 'N/A' }}
-                                    </div>
-                                </div>
-                                
-                                <div class="row mb-3">
-                                    <div class="col-md-6">
-                                        <strong>Email:</strong> {{ $nguoidung['email'] ?? 'N/A' }}
-                                    </div>
-                                    <div class="col-md-6">
-                                        <strong>Số điện thoại:</strong> {{ $nguoidung['so_dien_thoai'] ?? 'N/A' }}
-                                    </div>
-                                </div>
+                <div class="row mb-3">
+                    <div class="col-md-6">
+                        <strong>Email:</strong> {{ $nguoidung['nd_email'] }}
+                    </div>
+                    <div class="col-md-6">
+                        <strong>Số điện thoại:</strong> {{ $nguoidung['nd_sdt'] ?? 'Chưa cập nhật' }}
+                    </div>
+                </div>
 
-                                <div class="row mb-3">
-                                    <div class="col-md-6">
-                                        <strong>Trạng thái hiện tại:</strong> 
-                                        <span class="badge bg-success">Hoạt động</span>
-                                    </div>
-                                    <div class="col-md-6">
-                                        <strong>Ngày đăng ký:</strong> {{ $nguoidung['ngay_dang_ky'] ?? 'N/A' }}
-                                    </div>
-                                </div>
+                <div class="row mb-3">
+                    <div class="col-md-6">
+                        <strong>Trạng thái hiện tại:</strong> 
+                        @if($currentStatus === 'active')
+                            <span class="badge bg-success">Hoạt động</span>
+                        @else
+                            <span class="badge bg-danger">Đã khóa</span>
+                        @endif
+                    </div>
+                    <div class="col-md-6">
+                        <strong>Ngày đăng ký:</strong> {{ date('d/m/Y', strtotime($nguoidung['nd_ngaydangky'])) }}
+                    </div>
+                </div>
 
-                                <div class="alert alert-warning">
-                                    <i class="bi bi-exclamation-triangle me-2"></i>
-                                    <strong>Lưu ý:</strong> Sau khi khóa, người dùng sẽ không thể đăng nhập vào hệ thống.
-                                </div>
-
-                                <form method="post" action="/admin/khoa-nguoi-dung">
-                                    <input type="hidden" name="csrf_token" value="{{ $_SESSION['csrf_token'] ?? '' }}">
-                                    <input type="hidden" name="id" value="{{ $nguoidung['id'] ?? '' }}">
-                                    
-                                    <div class="text-center">
-                                        <button type="submit" class="btn btn-warning me-2">
-                                            <i class="bi bi-lock me-2"></i>Xác nhận khóa
-                                        </button>
-                                        <a href="/admin/quan-ly-nguoi-dung" class="btn btn-secondary">
-                                            <i class="bi bi-x-circle me-2"></i>Hủy bỏ
-                                        </a>
-                                    </div>
-                                </form>
-                            </div>
-                        </div>
+                <div class="alert alert-{{ $currentStatus === 'active' ? 'warning' : 'info' }}">
+                    <i class="bi bi-{{ $currentStatus === 'active' ? 'exclamation-triangle' : 'info-circle' }} me-2"></i>
+                    <strong>Lưu ý:</strong> 
+                    @if($currentStatus === 'active')
+                        Sau khi khóa, người dùng sẽ không thể đăng nhập vào hệ thống.
                     @else
-                        {{-- Không tìm thấy người dùng --}}
-                        <div class="alert alert-warning text-center">
-                            <i class="bi bi-exclamation-triangle me-2"></i>
-                            Không tìm thấy thông tin người dùng cần khóa.
-                        </div>
-                        <div class="text-center">
-                            <a href="/admin/quan-ly-nguoi-dung" class="btn btn-primary">
-                                <i class="bi bi-arrow-left me-2"></i>Quay lại danh sách
-                            </a>
-                        </div>
+                        Sau khi mở khóa, người dùng có thể đăng nhập lại bình thường.
                     @endif
                 </div>
+
+                <form method="POST" action="/khoa-nguoi-dung">
+                    <input type="hidden" name="id" value="{{ $nguoidung['nd_id'] }}">
+                    
+                    <div class="text-center">
+                        <button type="submit" class="btn btn-{{ $currentStatus === 'active' ? 'danger' : 'success' }} me-2">
+                            @if($currentStatus === 'active')
+                                <i class="bi bi-lock me-2"></i>Xác nhận khóa
+                            @else
+                                <i class="bi bi-unlock me-2"></i>Xác nhận mở khóa
+                            @endif
+                        </button>
+                        <a href="/quan-ly-nguoi-dung" class="btn btn-secondary">
+                            <i class="bi bi-x-circle me-2"></i>Hủy bỏ
+                        </a>
+                    </div>
+                </form>
             </div>
         </div>
-    </div>
+    @else
+        {{-- Không tìm thấy người dùng --}}
+        <div class="alert alert-warning text-center">
+            <i class="bi bi-exclamation-triangle me-2"></i>
+            Không tìm thấy thông tin người dùng.
+        </div>
+        <div class="text-center">
+            <a href="/quan-ly-nguoi-dung" class="btn btn-primary">
+                <i class="bi bi-arrow-left me-2"></i>Quay lại danh sách
+            </a>
+        </div>
+    @endif
 </div>
-@endsection
-
-@section('page-js')
-    <script>
-        // Auto hide alerts after 5 seconds
-        setTimeout(function() {
-            const alerts = document.querySelectorAll('.alert');
-            alerts.forEach(function(alert) {
-                if (alert.classList.contains('alert-success') || alert.classList.contains('alert-danger')) {
-                    const bsAlert = new bootstrap.Alert(alert);
-                    bsAlert.close();
-                }
-            });
-        }, 5000);
-    </script>
 @endsection

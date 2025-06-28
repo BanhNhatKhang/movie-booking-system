@@ -87,13 +87,14 @@ $router->add('POST', '/them-uu-dai', 'UuDaiAdminController@storeUuDai');
 $router->add('GET', '/sua-uu-dai', 'UuDaiAdminController@suaUuDai');
 $router->add('POST', '/sua-uu-dai', 'UuDaiAdminController@updateUuDai');
 
-//user
+//quanlynguoidung
 $router->add('GET', '/quan-ly-nguoi-dung', 'QuanLyNguoiDungController@quanLyNguoiDung');
 $router->add('GET', '/chi-tiet-nguoi-dung', 'QuanLyNguoiDungController@chiTietNguoiDung');
-$router->add('GET', '/khoa-nguoi-dung', 'QuanLyNguoiDungController@khoaNguoiDung');
-$router->add('POST', '/khoa-nguoi-dung', 'QuanLyNguoiDungController@processKhoaNguoiDung');
 $router->add('GET', '/sua-nguoi-dung', 'QuanLyNguoiDungController@suaNguoiDung');
-$router->add('POST', '/sua-nguoi-dung', 'QuanLyNguoiDungController@xuLySuaNguoiDung');
+$router->add('POST', '/sua-nguoi-dung', 'QuanLyNguoiDungController@suaNguoiDung');
+$router->add('GET', '/khoa-nguoi-dung', 'QuanLyNguoiDungController@khoaNguoiDung');
+$router->add('POST', '/khoa-nguoi-dung', 'QuanLyNguoiDungController@khoaNguoiDung');
+$router->add('POST', '/reset-mat-khau', 'QuanLyNguoiDungController@resetMatKhau');
 
 //thanhtoan
 $router->add('GET', '/quan-ly-thanh-toan', 'QuanLyThanhToanController@quanLyThanhToan');
