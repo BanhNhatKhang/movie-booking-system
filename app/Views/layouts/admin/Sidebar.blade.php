@@ -15,7 +15,7 @@
     <a class="nav-link <?= ($activePage == 'admin-orders') ? 'active' : '' ?>" href="/quan-ly-don-dat-ve"><i class="bi bi-ticket-detailed"></i> Quản lý đơn đặt vé</a>
     <a class="nav-link <?= ($activePage == 'book-ticket') ? 'active' : '' ?>" href="/dat-ve-tai-quay"><i class="bi bi-ticket-perforated"></i> Đặt vé tại quầy</a>
     <a class="nav-link <?= ($activePage == 'uudai') ? 'active' : '' ?>" href="/quan-ly-uu-dai"><i class="bi bi-gift"></i> Ưu đãi</a>
-    <a class="nav-link <?= ($activePage == 'user') ? 'active' : '' ?>" href="/quan-ly-nguoi-dung"><i class="bi bi-people"></i> Người dùng</a>
+    <a class="nav-link <?= ($activePage == 'user') ? 'active' : '' ?>" href="/quan-ly-nguoi-dung"><i class="bi bi-people"></i> Khách hàng</a>
     <a class="nav-link <?= ($activePage == 'pay') ? 'active' : '' ?>" href="/quan-ly-thanh-toan"><i class="bi bi-credit-card"></i> Thanh toán</a>
     <a class="nav-link <?= ($activePage == 'NhanVien') ? 'active' : '' ?>" href="/quan-ly-nhan-vien"><i class="bi bi-person-badge"></i> Quản lý nhân viên</a>
 </div>

@@ -40,7 +40,7 @@
                             <h1>Chương trình Thành viên KHF Cinema</h1><br>
 
                             <div class="card">
-                                <h2>1. Hạng KHF Member</h2>
+                                <h2>1. Hạng KHF Bạc</h2>
                                 <p>Tất cả khách hàng từ 12 tuổi trở lên khi đăng ký tham gia chương trình sẽ trở thành thành viên KHF Member.</p>
                                 <p><strong>Quyền lợi:</strong></p>
                                 <ul>
@@ -52,7 +52,7 @@
                             </div>
 
                             <div class="card mt-4">
-                                <h2>2. Hạng KHF VIP</h2>
+                                <h2>2. Hạng KHF Vàng</h2>
                                 <p>Thành viên có tổng chi tiêu từ 2.000.000 đến 3.999.999 VNĐ sẽ được nâng cấp lên KHF VIP.</p>
                                 <p><strong>Quyền lợi:</strong></p>
                                 <ul>
@@ -73,7 +73,7 @@
                             </div>
 
                             <div class="card mt-4">
-                                <h2>3. Hạng KHF VVIP</h2>
+                                <h2>3. Hạng KHF Kim cương</h2>
                                 <p>Thành viên có tổng chi tiêu từ 4.000.000 VNĐ trở lên sẽ được nâng cấp lên KHF VVIP.</p>
                                 <p><strong>Quyền lợi:</strong></p>
                                 <ul>

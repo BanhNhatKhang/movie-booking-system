@@ -17,11 +17,12 @@ class QuanLyNguoiDungController
         
         $search = $_GET['q'] ?? '';
         $status = $_GET['status'] ?? '';
+        $sort = $_GET['sort'] ?? 'newest'; 
         $role = 'user';
         $page = (int)($_GET['page'] ?? 1);
         $limit = 15;
         
-        $users = $nguoiDungModel->getAllWithFilterPaginated($search, $role, $status, $page, $limit);
+        $users = $nguoiDungModel->getAllWithFilterPaginated($search, $role, $status, $page, $limit, $sort);
         $totalUsers = $nguoiDungModel->getTotalCount($search, $role, $status);
         $totalPages = ceil($totalUsers / $limit);
                 
@@ -35,6 +36,7 @@ class QuanLyNguoiDungController
             'users' => $users,
             'search' => $search,
             'status' => $status,
+            'sort' => $sort,
             'currentPage' => $page,
             'totalPages' => $totalPages,
             'totalUsers' => $totalUsers
@@ -61,6 +63,7 @@ class QuanLyNguoiDungController
             exit;
         }
         
+        $memberInfo = $nguoiDungModel->getMemberInfo($id);
         $bookingHistory = $this->getUserBookingHistory($id);
         $userStats = $this->getUserStats($id);
         
@@ -72,6 +75,7 @@ class QuanLyNguoiDungController
         echo $blade->render('admin-views.QuanLyNguoiDung.ChiTietNguoiDung', [
             'activePage' => 'user',
             'user' => $user,
+            'memberInfo' => $memberInfo,
             'bookingHistory' => $bookingHistory,
             'userStats' => $userStats
         ]);

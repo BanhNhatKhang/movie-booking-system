@@ -45,9 +45,9 @@
                             <table class="boder boder-secondary table table-striped table-bordered">
                                 <tr>
                                     <th>Giao dịch</th>
-                                    <th>Member</th>
-                                    <th>VIP</th>
-                                    <th>VVIP</th>
+                                    <th>Bạc</th>
+                                    <th>Vàng</th>
+                                    <th>Kim cương</th>
                                 </tr>
                                 <tr>
                                     <td>Quầy vé</td>
@@ -68,7 +68,8 @@
                             <p>Điểm có thể quy đổi thành voucher điện tử với giá trị tương đương tiền mặt.</p>
                             <ul>
                                 <li><strong>1 điểm = 1.000 VNĐ</strong></li>
-                                <li>Dùng để mua vé, combo, thức uống tại các rạp KHF Cinema.</li>
+                                <li>Dùng để mua vé, combo, thức uống tại rạp KHF Cinema.</li>
+                                <li>Điểm thưởng chỉ được quy đổi thành ưu đãi trực tiếp tại quầy.</li>
                             </ul>
 
                             <div class="note">

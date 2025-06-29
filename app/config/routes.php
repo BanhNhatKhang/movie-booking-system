@@ -100,11 +100,11 @@ $router->add('POST', '/reset-mat-khau', 'QuanLyNguoiDungController@resetMatKhau'
 $router->add('GET', '/quan-ly-thanh-toan', 'QuanLyThanhToanController@quanLyThanhToan');
 $router->add('GET', '/chi-tiet-thanh-toan', 'QuanLyThanhToanController@chiTietThanhToan');
 
-//nhanvien - CRUD hoàn chỉnh
-$router->add('GET', '/quan-ly-nhan-vien', 'QuanLyNhanVienController@index');
-$router->add('GET', '/them-nhan-vien', 'QuanLyNhanVienController@create');
-$router->add('POST', '/them-nhan-vien', 'QuanLyNhanVienController@store');
-$router->add('GET', '/sua-nhan-vien', 'QuanLyNhanVienController@edit');
-$router->add('POST', '/sua-nhan-vien', 'QuanLyNhanVienController@update');
-$router->add('GET', '/xoa-nhan-vien', 'QuanLyNhanVienController@delete');
-$router->add('POST', '/xoa-nhan-vien', 'QuanLyNhanVienController@destroy');
+//nhanvien
+$router->add('GET', '/quan-ly-nhan-vien', 'QuanLyNhanVienController@quanLyNhanVien');
+$router->add('GET', '/chi-tiet-nhan-vien', 'QuanLyNhanVienController@chiTietNhanVien');
+$router->add('GET', '/sua-nhan-vien', 'QuanLyNhanVienController@suaNhanVien');
+$router->add('POST', '/sua-nhan-vien', 'QuanLyNhanVienController@capNhatNhanVien');
+$router->add('GET', '/khoa-nhan-vien', 'QuanLyNhanVienController@khoaNhanVien');
+$router->add('GET', '/them-nhan-vien', 'QuanLyNhanVienController@themNhanVien');
+$router->add('POST', '/them-nhan-vien', 'QuanLyNhanVienController@storeNhanVien');

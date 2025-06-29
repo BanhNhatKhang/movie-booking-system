@@ -24,7 +24,7 @@ class ThongTinCaNhanController
             exit;
         }
         
-        $blade = new Blade('../app/Views', '../storage/cache');
+        $blade = new Blade('../app/Views', '../../cache');
         echo $blade->render('users-views.ThongTinCaNhan.ThongTinCaNhan', ['user' => $user]);
     }
 

@@ -14,10 +14,15 @@ class NguoiDung extends BaseModel
     // Sinh id ngẫu nhiên 7 số, đảm bảo không trùng
     public function generateRandomId()
     {
-        do {
-            $id = str_pad(strval(mt_rand(1000000, 9999999)), 7, '0', STR_PAD_LEFT);  // ✅ Sửa: bắt đầu từ 1000000
-            $exists = $this->getById($id);
-        } while ($exists);
+        // Cách đơn giản và chắc chắn
+        $timestamp = date('ymdHis'); 
+        $random = mt_rand(100, 999); 
+        $id = substr($timestamp . $random, -7); 
+        
+        if ($this->getById($id)) {
+            $id = substr(str_replace('.', '', microtime(true)) . mt_rand(10, 99), -7);
+        }
+        
         return $id;
     }
 
@@ -116,7 +121,7 @@ class NguoiDung extends BaseModel
         $params = [];
         
         if (!empty($search)) {
-            $sql .= " AND (nd_hoten LIKE ? OR nd_email LIKE ? OR nd_tendangnhap LIKE ?)";
+            $sql .= " AND (nd_hoten LIKE ? OR nd_email LIKE ? OR nd_sdt LIKE ?)";
             $searchParam = "%{$search}%";
             $params[] = $searchParam;
             $params[] = $searchParam;
@@ -249,7 +254,7 @@ class NguoiDung extends BaseModel
             return [];
         }
     }
-    public function getAllWithFilterPaginated($search = '', $role = '', $status = '', $page = 1, $limit = 15)
+    public function getAllWithFilterPaginated($search = '', $role = '', $status = '', $page = 1, $limit = 15, $sort = 'newest') // ✅ THÊM sort
     {
         $offset = ($page - 1) * $limit;
         
@@ -257,7 +262,8 @@ class NguoiDung extends BaseModel
         $params = [];
         
         if (!empty($search)) {
-            $sql .= " AND (nd_hoten LIKE ? OR nd_email LIKE ?)";
+            $sql .= " AND (nd_hoten LIKE ? OR nd_email LIKE ? OR nd_sdt LIKE ?)";
+            $params[] = "%{$search}%";
             $params[] = "%{$search}%";
             $params[] = "%{$search}%";
         }
@@ -272,7 +278,23 @@ class NguoiDung extends BaseModel
             $params[] = $status;
         }
         
-        $sql .= " ORDER BY nd_ngaydangky DESC LIMIT ? OFFSET ?";
+        switch($sort) {
+            case 'name':
+                $sql .= " ORDER BY nd_hoten ASC";
+                break;
+            case 'status':
+                $sql .= " ORDER BY CASE WHEN nd_trangthai = 'active' THEN 0 ELSE 1 END, nd_hoten ASC";
+                break;
+            case 'id':
+                $sql .= " ORDER BY nd_id ASC";
+                break;
+            case 'newest':
+            default:
+                $sql .= " ORDER BY nd_ngaydangky DESC, nd_hoten ASC";
+                break;
+        }
+        
+        $sql .= " LIMIT ? OFFSET ?";
         $params[] = $limit;
         $params[] = $offset;
         
@@ -287,7 +309,8 @@ class NguoiDung extends BaseModel
         $params = [];
         
         if (!empty($search)) {
-            $sql .= " AND (nd_hoten LIKE ? OR nd_email LIKE ?)";
+            $sql .= " AND (nd_hoten LIKE ? OR nd_email LIKE ? OR nd_sdt LIKE ?)";
+            $params[] = "%{$search}%";
             $params[] = "%{$search}%";
             $params[] = "%{$search}%";
         }
@@ -295,6 +318,102 @@ class NguoiDung extends BaseModel
         if (!empty($role)) {
             $sql .= " AND nd_role = ?";
             $params[] = $role;
+        }
+        
+        if (!empty($status)) {
+            $sql .= " AND nd_trangthai = ?";
+            $params[] = $status;
+        }
+        
+        $stmt = $this->db->prepare($sql);
+        $stmt->execute($params);
+        return $stmt->fetchColumn();
+    }
+
+    public function getMemberInfo($userId)
+    {
+        $sql = "SELECT tv_mathanhvien, tv_loaithanhvien, tv_diemtichluy 
+                FROM thanh_vien 
+                WHERE nd_id = ?";
+        
+        try {
+            $stmt = $this->db->prepare($sql);
+            $stmt->execute([$userId]);
+            $result = $stmt->fetch(\PDO::FETCH_ASSOC);
+
+            if (!$result) {
+                return [
+                    'tv_mathanhvien' => null,
+                    'tv_loaithanhvien' => null,
+                    'tv_diemtichluy' => 0
+                ];
+            }
+            
+            return $result;
+            
+        } catch (Exception $e) {
+            error_log("Get member info error: " . $e->getMessage());
+            return [
+                'tv_mathanhvien' => null,
+                'tv_loaithanhvien' => null,
+                'tv_diemtichluy' => 0
+            ];
+        }
+    }
+    public function getAllWithFilterPaginatedByRole($search = '', $role = '', $status = '', $page = 1, $limit = 15, $sort = 'newest') // ✅ THÊM sort
+    {
+        $offset = ($page - 1) * $limit;
+        
+        $sql = "SELECT * FROM {$this->table} WHERE nd_role = ?";
+        $params = [$role];
+        
+        if (!empty($search)) {
+            $sql .= " AND (nd_hoten LIKE ? OR nd_email LIKE ? OR nd_sdt LIKE ?)";
+            $params[] = "%{$search}%";
+            $params[] = "%{$search}%"; 
+            $params[] = "%{$search}%";
+        }
+        
+        if (!empty($status)) {
+            $sql .= " AND nd_trangthai = ?";
+            $params[] = $status;
+        }
+        
+        switch($sort) {
+            case 'name':
+                $sql .= " ORDER BY nd_hoten ASC";
+                break;
+            case 'status':
+                $sql .= " ORDER BY CASE WHEN nd_trangthai = 'active' THEN 0 ELSE 1 END, nd_hoten ASC";
+                break;
+            case 'id':
+                $sql .= " ORDER BY nd_id ASC";
+                break;
+            case 'newest':
+            default:
+                $sql .= " ORDER BY nd_ngaydangky DESC, nd_hoten ASC";
+                break;
+        }
+        
+        $sql .= " LIMIT ? OFFSET ?";
+        $params[] = $limit;
+        $params[] = $offset;
+        
+        $stmt = $this->db->prepare($sql);
+        $stmt->execute($params);
+        return $stmt->fetchAll(\PDO::FETCH_ASSOC);
+    }
+
+    public function getTotalCountByRole($search = '', $role = '', $status = '')
+    {
+        $sql = "SELECT COUNT(*) FROM {$this->table} WHERE nd_role = ?";
+        $params = [$role];
+        
+        if (!empty($search)) {
+            $sql .= " AND (nd_hoten LIKE ? OR nd_email LIKE ? OR nd_sdt LIKE ?)";
+            $params[] = "%{$search}%";
+            $params[] = "%{$search}%";
+            $params[] = "%{$search}%";
         }
         
         if (!empty($status)) {
