@@ -8,7 +8,6 @@ use Exception;
 
 class QuanLyPhimController
 {
-<<<<<<< HEAD
     private $phimModel;
     private $blade;
 
@@ -92,33 +91,6 @@ class QuanLyPhimController
                 'error' => 'Có lỗi xảy ra khi tải dữ liệu'
             ]);
         }
-=======
-    private function checkAdminAuth()
-    {
-        // Kiểm tra đăng nhập
-        if (!isset($_SESSION['logged_in']) || $_SESSION['logged_in'] !== true) {
-            $_SESSION['error_message'] = 'Vui lòng đăng nhập để truy cập trang admin!';
-            header('Location: /dang-nhap');
-            exit;
-        }
-        
-        // Kiểm tra role admin
-        if (!isset($_SESSION['user_role']) || $_SESSION['user_role'] !== 'admin') {
-            $_SESSION['error_message'] = 'Bạn không có quyền truy cập trang admin!';
-            header('Location: /'); // Chuyển về trang chủ user
-            exit;
-        }
-    }
-
-    public function quanLyPhim()
-    {
-        $this->checkAdminAuth();
-        $blade = new Blade(
-            realpath(__DIR__ . '/../Views'),
-            cachePath: realpath(__DIR__ . '/../../cache')
-        );
-        echo $blade->render('admin-views.QuanLyPhim.QuanLyPhim', ['activePage' => 'admin-movies']);
->>>>>>> a2e2ecd9234ab833a726b305e3143dc81c3a10d7
     }
 
     /**
@@ -126,18 +98,9 @@ class QuanLyPhimController
      */
     public function themPhim()
     {
-<<<<<<< HEAD
         echo $this->blade->render('admin-views.QuanLyPhim.ThemPhim', [
             'activePage' => 'admin-movies'
         ]);
-=======
-        $this->checkAdminAuth();
-        $blade = new Blade(
-            realpath(__DIR__ . '/../Views'),
-            cachePath: realpath(__DIR__ . '/../../cache')
-        );
-        echo $blade->render('admin-views.QuanLyPhim.ThemPhim', ['activePage' => 'admin-movies']);
->>>>>>> a2e2ecd9234ab833a726b305e3143dc81c3a10d7
     }
 
     /**
@@ -230,7 +193,6 @@ class QuanLyPhimController
      */
     public function suaPhim()
     {
-<<<<<<< HEAD
         $id = $_GET['id'] ?? '';
         if (empty($id)) {
             header('Location: /quan-ly-phim?error=invalid_id');
@@ -268,14 +230,6 @@ class QuanLyPhimController
             header('Location: /quan-ly-phim?error=system_error');
             exit;
         }
-=======
-        $this->checkAdminAuth();
-        $blade = new Blade(
-            realpath(__DIR__ . '/../Views'),
-            cachePath: realpath(__DIR__ . '/../../cache')
-        );
-        echo $blade->render('admin-views.QuanLyPhim.SuaPhim', ['activePage' => 'admin-movies']);
->>>>>>> a2e2ecd9234ab833a726b305e3143dc81c3a10d7
     }
 
     /**
@@ -369,7 +323,6 @@ class QuanLyPhimController
      */
     public function doiTrangThaiPhim()
     {
-<<<<<<< HEAD
         $id = $_GET['id'] ?? '';
         if (empty($id)) {
             header('Location: /quan-ly-phim?error=invalid_id');
@@ -439,17 +392,6 @@ class QuanLyPhimController
         }
         exit;
     }
-=======
-        $this->checkAdminAuth();
-        header('Location: /quan-ly-phim?msg=status_success');
-        exit;
-    }
-    
-    public function xoaPhim()
-    {
-        $this->checkAdminAuth();
-        $id = isset($_GET['id']) ? intval($_GET['id']) : 0;
->>>>>>> a2e2ecd9234ab833a726b305e3143dc81c3a10d7
 
     /**
      * Upload poster image

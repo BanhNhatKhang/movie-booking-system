@@ -45,7 +45,6 @@ $router->add('GET', '/quan-ly-trang-chu', 'QuanLyTrangChuController@trangChu');
 $router->add('GET', '/them-poster', 'QuanLyTrangChuController@themPoster');
 $router->add('POST', '/them-poster', 'QuanLyTrangChuController@storePoster');
 $router->add('GET', '/sua-poster', 'QuanLyTrangChuController@suaPoster');
-<<<<<<< HEAD
 $router->add('POST', '/sua-poster', 'QuanLyTrangChuController@capNhatPoster');
 $router->add('GET', '/danh-sach-poster', 'QuanLyTrangChuController@danhSachPoster');
 $router->add('POST', '/cap-nhat-poster', 'QuanLyTrangChuController@capNhatPoster');
@@ -67,22 +66,6 @@ $router->add('GET', '/sua-phim', 'QuanLyPhimController@suaPhim');
 $router->add('POST', '/cap-nhat-phim', 'QuanLyPhimController@capNhatPhim');      
 $router->add('GET', '/doi-trang-thai-phim', 'QuanLyPhimController@doiTrangThaiPhim');  
 $router->add('POST', '/cap-nhat-trang-thai', 'QuanLyPhimController@capNhatTrangThai'); 
-=======
-$router->add('POST', '/sua-poster', 'QuanLyTrangChuController@updatePoster');
-$router->add('GET', '/them-uu-dai', 'QuanLyTrangChuController@themUuDai');
-$router->add('POST', '/them-uu-dai', 'QuanLyTrangChuController@storeUuDai');
-$router->add('GET', '/sua-uu-dai', 'QuanLyTrangChuController@suauuDai');
-$router->add('POST', '/sua-uu-dai', 'QuanLyTrangChuController@updateUuDai');
-
-//quanlyphim
-$router->add('GET', '/quan-ly-phim', 'QuanLyPhimController@quanLyPhim');
-$router->add('GET', '/them-phim', 'QuanLyPhimController@themPhim');
-$router->add('POST', '/them-phim', 'QuanLyPhimController@storePhim');
-$router->add('GET', '/sua-phim', 'QuanLyPhimController@suaPhim');
-$router->add('POST', '/sua-phim', 'QuanLyPhimController@updatePhim');
-$router->add('GET', '/doi-trang-thai-phim', 'QuanLyPhimController@doiTrangThaiPhim');
-$router->add('POST', '/doi-trang-thai-phim', 'QuanLyPhimController@changeStatus');
->>>>>>> a2e2ecd9234ab833a726b305e3143dc81c3a10d7
 
 //quanlylichchieu
 $router->add('GET', '/quan-ly-lich-chieu', 'QuanLyLichChieuController@quanLyLichChieu');

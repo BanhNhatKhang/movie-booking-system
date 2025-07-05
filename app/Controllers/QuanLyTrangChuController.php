@@ -9,7 +9,6 @@ use Exception;
 
 class QuanLyTrangChuController
 {
-<<<<<<< HEAD
     private $posterModel;
     private $uuDaiModel;
     private $blade;
@@ -19,31 +18,6 @@ class QuanLyTrangChuController
         $this->posterModel = new Poster();
         $this->uuDaiModel = new UuDaiTrangChu();
         $this->blade = new Blade(
-=======
-    private function checkAdminAuth()
-    {
-        // Kiểm tra đăng nhập
-        if (!isset($_SESSION['logged_in']) || $_SESSION['logged_in'] !== true) {
-            $_SESSION['error_message'] = 'Vui lòng đăng nhập để truy cập trang admin!';
-            header('Location: /dang-nhap');
-            exit;
-        }
-        
-        // Kiểm tra role admin
-        if (!isset($_SESSION['user_role']) || $_SESSION['user_role'] !== 'admin') {
-            $_SESSION['error_message'] = 'Bạn không có quyền truy cập trang admin!';
-            header('Location: /'); // Chuyển về trang chủ user
-            exit;
-        }
-    }
-    public function trangChu()
-    {
-        $this->checkAdminAuth(); // Kiểm tra quyền truy cập admin
-        $posterModel = new \App\Models\Poster();
-        $posters = $posterModel->getAll(); // Lấy tất cả poster từ DB
-    
-        $blade = new \Jenssegers\Blade\Blade(
->>>>>>> a2e2ecd9234ab833a726b305e3143dc81c3a10d7
             realpath(__DIR__ . '/../Views'),
             realpath(__DIR__ . '/../../cache')
         );
@@ -79,28 +53,16 @@ class QuanLyTrangChuController
     
     public function themPoster()
     {
-<<<<<<< HEAD
         $newId = $this->posterModel->generateNewId();
         echo $this->blade->render('admin-views.TrangChu.ThemPoster', [
             'activePage' => 'quan-ly-trang-chu',
-=======
-        $this->checkAdminAuth(); // Kiểm tra quyền truy cập admin
-        $posterModel = new \App\Models\Poster();
-        $newId = $posterModel->generateNewId();
-        $blade = new \Jenssegers\Blade\Blade(
-            realpath(__DIR__ . '/../Views'),
-            realpath(__DIR__ . '/../../cache')
-        );
-        echo $blade->render('admin-views.TrangChu.ThemPoster', [
-            'activePage' => 'home',
->>>>>>> a2e2ecd9234ab833a726b305e3143dc81c3a10d7
             'newId' => $newId
         ]);
     }
 
     public function luuPoster()
     {
-        $this->checkAdminAuth(); // Kiểm tra quyền truy cập admin
+        // $this->checkAdminAuth(); // Kiểm tra quyền truy cập admin
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $file = $_FILES['anhPoster'];
             $imgPath = null;
@@ -124,27 +86,9 @@ class QuanLyTrangChuController
             header('Location: /quan-ly-trang-chu?success=add_poster');
         }
     }
-<<<<<<< HEAD
-
-=======
-    public function danhSachPoster()
-    {
-        $this->checkAdminAuth(); // Kiểm tra quyền truy cập admin
-        $posterModel = new \App\Models\Poster();
-        $posters = $posterModel->getAll();
-        $blade = new \Jenssegers\Blade\Blade(
-            realpath(__DIR__ . '/../Views'),
-            realpath(__DIR__ . '/../../cache')
-        );
-        echo $blade->render('admin-views.TrangChu.DanhSachPoster', [
-            'posters' => $posters,
-            'activePage' => 'home'
-        ]);
-    }
->>>>>>> a2e2ecd9234ab833a726b305e3143dc81c3a10d7
     public function suaPoster()
     {
-        $this->checkAdminAuth(); // Kiểm tra quyền truy cập admin
+        // $this->checkAdminAuth(); // Kiểm tra quyền truy cập admin
         $id = $_GET['id'] ?? '';
         $poster = $this->posterModel->getById($id);
         echo $this->blade->render('admin-views.TrangChu.SuaPoster', [
@@ -152,50 +96,6 @@ class QuanLyTrangChuController
             'activePage' => 'quan-ly-trang-chu'
         ]);
     }
-<<<<<<< HEAD
-=======
-    public function capNhatPoster()
-{
-    $this->checkAdminAuth(); // Kiểm tra quyền truy cập admin
-    if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-        $id = $_POST['pt_maposter'];
-        $file = $_FILES['anhPoster'];
-        $imgPath = $_POST['old_img'];
-        if ($file && $file['error'] === UPLOAD_ERR_OK) {
-            $ext = pathinfo($file['name'], PATHINFO_EXTENSION);
-            $imgPath = '/static/upload/posters/' . uniqid('poster_') . '.' . $ext;
-            move_uploaded_file($file['tmp_name'], $_SERVER['DOCUMENT_ROOT'] . $imgPath);
-        }
-        $posterModel = new \App\Models\Poster();
-        $posterModel->update($id, ['pt_anhposter' => $imgPath]);
-        header('Location: /quan-ly-trang-chu');
-    }
-}
-public function xoaPoster()
-{
-    $this->checkAdminAuth(); // Kiểm tra quyền truy cập admin
-    $id = $_GET['id'] ?? '';
-    $db = \App\Core\Database::getInstance()->getConnection();
-    $stmt = $db->prepare("SELECT COUNT(*) FROM phim WHERE p_maposter = ?");
-    $stmt->execute([$id]);
-    $count = $stmt->fetchColumn();
-    if ($count > 0) {
-        header('Location: /quan-ly-trang-chu?error=poster_in_use');
-        exit;
-    }
-    // Lấy đường dẫn ảnh poster
-    $posterModel = new \App\Models\Poster();
-    $poster = $posterModel->getById($id);
-    if ($poster && !empty($poster['pt_anhposter'])) {
-        $filePath = $_SERVER['DOCUMENT_ROOT'] . $poster['pt_anhposter'];
-        if (file_exists($filePath)) {
-            unlink($filePath);
-        }
-    }
-    $posterModel->delete($id);
-    header('Location: /quan-ly-trang-chu');
-}
->>>>>>> a2e2ecd9234ab833a726b305e3143dc81c3a10d7
 
     public function capNhatPoster()
     {
@@ -253,18 +153,9 @@ public function xoaPoster()
      */
     public function themUuDai()
     {
-<<<<<<< HEAD
         echo $this->blade->render('admin-views.TrangChu.ThemUuDaiHome', [
             'activePage' => 'quan-ly-trang-chu'
         ]);
-=======
-        $this->checkAdminAuth(); // Kiểm tra quyền truy cập admin
-        $blade = new \Jenssegers\Blade\Blade(
-            realpath(__DIR__ . '/../Views'),
-            realpath(__DIR__ . '/../../cache')
-        );
-        echo $blade->render('admin-views.TrangChu.ThemUuDaiHome', ['activePage' => 'home']);
->>>>>>> a2e2ecd9234ab833a726b305e3143dc81c3a10d7
     }
 
     /**
@@ -272,7 +163,6 @@ public function xoaPoster()
      */
     public function luuUuDai()
     {
-<<<<<<< HEAD
         try {
             if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
                 header('Location: /them-uu-dai-home');
@@ -495,13 +385,5 @@ public function xoaPoster()
             error_log("Error in handleImageUpload: " . $e->getMessage());
             return false;
         }
-=======
-        $this->checkAdminAuth(); // Kiểm tra quyền truy cập admin
-        $blade = new \Jenssegers\Blade\Blade(
-            realpath(__DIR__ . '/../Views'),
-            realpath(__DIR__ . '/../../cache')
-        );
-        echo $blade->render('admin-views.TrangChu.SuaUuDaiHome', ['activePage' => 'home']);
->>>>>>> a2e2ecd9234ab833a726b305e3143dc81c3a10d7
     }
 }

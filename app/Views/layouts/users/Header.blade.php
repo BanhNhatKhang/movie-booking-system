@@ -106,7 +106,6 @@
 
                         <div class="collapse navbar-collapse" id="navbarNav">
                             <ul class="navbar-nav mx-auto">
-<<<<<<< HEAD
                             <li class="nav-item">
                                 <a class="nav-link {{ ($activePage == 'home') ? 'active' : '' }}" href="/">LỊCH CHIẾU</a>
                             </li>
@@ -128,29 +127,6 @@
                             <li class="nav-item">
                                 <a class="nav-link {{ ($activePage == 'member') ? 'active' : '' }}" href="/thanh-vien">THÀNH VIÊN</a>
                             </li>
-=======
-                                <li class="nav-item">
-                                    <a class="nav-link {{ isset($activePage) && $activePage == 'home' ? 'active' : '' }}" href="/">LỊCH CHIẾU</a>
-                                </li>
-                                <li class="nav-item dropdown">
-                                    <a class="nav-link {{ isset($activePage) && $activePage == 'movies' ? 'active' : '' }}" href="#" id="phimDropdown"
-                                    role="button" data-bs-toggle="dropdown" aria-expanded="false">PHIM</a>
-                                    <ul class="dropdown-menu" aria-labelledby="phimDropdown">
-                                        <li>
-                                            <a class="dropdown-item hover-red-nav" href="/phim-dang-chieu">Phim đang chiếu</a>
-                                        </li>
-                                        <li>
-                                            <a class="dropdown-item hover-red-nav" href="/phim-sap-chieu">Phim sắp chiếu</a>
-                                        </li>
-                                    </ul>
-                                </li>
-                                <li class="nav-item">
-                                    <a class="nav-link {{ isset($activePage) && $activePage == 'offers' ? 'active' : '' }}" href="/uu-dai">ƯU ĐÃI</a>
-                                </li>
-                                <li class="nav-item">
-                                    <a class="nav-link {{ isset($activePage) && $activePage == 'member' ? 'active' : '' }}" href="/thanh-vien">THÀNH VIÊN</a>
-                                </li>
->>>>>>> a2e2ecd9234ab833a726b305e3143dc81c3a10d7
                             </ul>
                         </div>
                     </div>

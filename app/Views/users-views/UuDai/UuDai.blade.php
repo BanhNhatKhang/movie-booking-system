@@ -1,5 +1,3 @@
-{{-- filepath: d:\Server\ct27501-project-BanhNhatKhang\app\Views\users-views\UuDai.blade.php --}}
-
 @extends('layouts.users.master')
 
 @section('page-css')
@@ -39,162 +37,113 @@
                             </div>
                         </div>
                     </div>
-
-                    <div class="featured-offer">
-                        <div class="row align-items-center">
-                            <div class="col-md-6 order-md-2">
-                                <div class="featured-content">
-                                    <h3>MIỄN PHÍ VÉ THỨ 3</h3>
-                                    <p>
-                                        Khi mua 2 vé bất kỳ, nhận ngay vé thứ 3 miễn phí. Chương trình
-                                        áp dụng vào thứ 4 hàng tuần tại tất cả các rạp KHF Cinema trên
-                                        toàn quốc.
-                                    </p>
-                                    <button class="featured-btn">SỬ DỤNG NGAY</button>
-                                </div>
-                            </div>
-                            <div class="col-md-6 order-md-1">
-                                <img
-                                    src="/static/imgs/tichdiem2x.jpg"
-                                    alt="Miễn phí vé"
-                                    class="img-fluid rounded"
-                                />
-                            </div>
-                        </div>
-                    </div>
                 </section>
 
-                {{-- TẤT CẢ ƯU ĐÃI - Dữ liệu động từ database --}}
-                <section class="offers-section">
-                    <div class="row p-3">
-                        <div class="col-md-12">
-                            <div class="d-flex justify-content-between align-items-center mb-4">
-                                <h2 class="section-title">TẤT CẢ ƯU ĐÃI</h2>
-                                <div class="d-flex flex-wrap">
-                                    <button class="btn filter-btn active" data-filter="all">
-                                        Tất cả ({{ count($allOffers ?? []) }})
-                                    </button>
-                                    <button class="btn filter-btn" data-filter="ongoing">
-                                        Đang diễn ra ({{ count($ongoingOffers ?? []) }})
-                                    </button>
-                                    <button class="btn filter-btn" data-filter="upcoming">
-                                        Sắp diễn ra ({{ count($upcomingOffers ?? []) }})
-                                    </button>
-                                    <button class="btn filter-btn" data-filter="expired">
-                                        Đã kết thúc ({{ count($expiredOffers ?? []) }})
-                                    </button>
-                                </div>
-                            </div>
+                {{-- TRANG CHỦ ƯU ĐÃI ĐỘNG --}}
+                <section class="dynamic-offers">
+                    <div class="offers-filter">
+                        <h2 class="section-title">TẤT CẢ ƯU ĐÃI</h2>
+                        <div class="filter-buttons">
+                            <button class="filter-btn active" data-filter="all">Tất cả ({{ count($allOffers ?? []) }})</button>
+                            <button class="filter-btn" data-filter="ongoing">Đang diễn ra ({{ count($ongoingOffers ?? []) }})</button>
+                            <button class="filter-btn" data-filter="upcoming">Sắp diễn ra ({{ count($upcomingOffers ?? []) }})</button>
+                            <button class="filter-btn" data-filter="expired">Đã kết thúc ({{ count($expiredOffers ?? []) }})</button>
                         </div>
                     </div>
 
-                    <div class="row">
-                        @forelse($allOffers ?? [] as $offer)
-                            <div class="col-lg-4 col-md-6 offer-item" 
-                                 data-status="{{ 
-                                     $offer['ud_trangthai'] === 'Đang diễn ra' ? 'ongoing' : 
-                                     ($offer['ud_trangthai'] === 'Sắp diễn ra' ? 'upcoming' : 'expired') 
-                                 }}">
-                                <div class="offer-card">
-                                    <div class="offer-img">
-                                        @if($offer['ud_anhuudai'])
-                                            <img src="{{ $offer['ud_anhuudai'] }}" 
-                                                 alt="{{ $offer['ud_tenuudai'] }}"
-                                                 onerror="this.src='/static/imgs/placeholder-offer.jpg'" />
+                    @if(isset($error))
+                        <div class="alert alert-danger">{{ $error }}</div>
+                    @endif
+
+                    {{-- HIỂN THỊ ƯU ĐÃI --}}
+                    <div class="offers-grid" id="offers-container">
+                        @if(isset($allOffers) && count($allOffers) > 0)
+                            @foreach($allOffers as $offer)
+                                <div class="offer-card" 
+                                     data-status="{{ strtolower(str_replace(' ', '-', $offer['ud_trangthai'])) }}">
+                                    <div class="offer-image">
+                                        @if(!empty($offer['ud_anhuudai']))
+                                            <img src="{{ $offer['ud_anhuudai'] }}" alt="{{ $offer['ud_tenuudai'] }}">
                                         @else
-                                            <img src="/static/imgs/placeholder-offer.jpg" 
-                                                 alt="{{ $offer['ud_tenuudai'] }}" />
+                                            <img src="/static/imgs/default-offer.jpg" alt="{{ $offer['ud_tenuudai'] }}">
                                         @endif
+                                        <div class="offer-status status-{{ strtolower(str_replace(' ', '-', $offer['ud_trangthai'])) }}">
+                                            {{ $offer['ud_trangthai'] }}
+                                        </div>
                                     </div>
+                                    
                                     <div class="offer-content">
-                                        <span class="offer-badge">{{ $offer['ud_loaiuudai'] }}</span>
-                                        <h4 class="offer-title">{{ $offer['ud_tenuudai'] }}</h4>
-                                        
+                                        <div class="offer-type">{{ $offer['ud_loaiuudai'] ?? 'Ưu đãi' }}</div>
+                                        <h3 class="offer-title">{{ $offer['ud_tenuudai'] }}</h3>
                                         <p class="offer-desc">
                                             {{ mb_strlen($offer['ud_noidung']) > 120 ? mb_substr($offer['ud_noidung'], 0, 120) . '...' : $offer['ud_noidung'] }}
                                         </p>
-                                        <div class="offer-details">
-                                            <span class="offer-expiry">
-                                                HSD: {{ date('d/m/Y', strtotime($offer['ud_thoigianketthuc'])) }}
-                                            </span>
-                                            <a href="#" class="offer-btn">Chi tiết</a>
+                                        
+                                        <div class="offer-validity">
+                                            <i class="bi bi-calendar3"></i>
+                                            Từ {{ date('d/m/Y', strtotime($offer['ud_thoigianbatdau'])) }} 
+                                            đến {{ date('d/m/Y', strtotime($offer['ud_thoigianketthuc'])) }}
                                         </div>
+                                        
+                                        @if($offer['ud_trangthai'] === 'Đang diễn ra')
+                                            <button class="offer-use-btn">SỬ DỤNG NGAY</button>
+                                        @elseif($offer['ud_trangthai'] === 'Sắp diễn ra')
+                                            <button class="offer-use-btn disabled">SẮP DIỄN RA</button>
+                                        @else
+                                            <button class="offer-use-btn disabled">ĐÃ KẾT THÚC</button>
+                                        @endif
                                     </div>
                                 </div>
-                            </div>
-                        @empty
-                            {{-- Empty state khi không có ưu đãi --}}
-                            <div class="col-12">
-                                <div class="text-center py-5">
-                                    <div style="color: #888; padding: 3rem;">
-                                        <i class="bi bi-gift" style="font-size: 4rem; color: #555; margin-bottom: 1rem;"></i>
-                                        <h4 style="color: #ccc; margin-bottom: 1rem;">Chưa có ưu đãi nào</h4>
-                                        <p style="color: #888;">Các ưu đãi hấp dẫn sẽ sớm được cập nhật. Hãy quay lại sau nhé!</p>
-                                    </div>
+                            @endforeach
+                        @else
+                            <div class="no-offers">
+                                <div class="no-offers-icon">
+                                    <i class="bi bi-gift"></i>
                                 </div>
+                                <h3>Chưa có ưu đãi nào</h3>
+                                <p>Các ưu đãi hấp dẫn sẽ sớm được cập nhật. Hãy quay lại sau nhé!</p>
                             </div>
-                        @endforelse
+                        @endif
                     </div>
                 </section>
             </div>
         </div>   
     </div>
 </main>
-@endsection
 
-@section('page-js')
-    <script src="/static/js/users/UuDai.js"></script>
-<<<<<<< HEAD
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+// Filter functionality
+document.addEventListener('DOMContentLoaded', function() {
+    const filterBtns = document.querySelectorAll('.filter-btn');
+    const offerCards = document.querySelectorAll('.offer-card');
     
-    {{-- Custom JavaScript cho filter --}}
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            const filterButtons = document.querySelectorAll('.filter-btn');
-            const offerItems = document.querySelectorAll('.offer-item');
-
-            filterButtons.forEach(button => {
-                button.addEventListener('click', function() {
-                    const filter = this.getAttribute('data-filter');
-
-                    // Update active button
-                    filterButtons.forEach(btn => btn.classList.remove('active'));
-                    this.classList.add('active');
-
-                    // Filter offers
-                    offerItems.forEach(item => {
-                        if (filter === 'all') {
-                            item.style.display = 'block';
-                            item.classList.add('fade-in');
-                        } else {
-                            const status = item.getAttribute('data-status');
-                            if (status === filter) {
-                                item.style.display = 'block';
-                                item.classList.add('fade-in');
-                            } else {
-                                item.style.display = 'none';
-                                item.classList.remove('fade-in');
-                            }
-                        }
-                    });
-                });
+    filterBtns.forEach(btn => {
+        btn.addEventListener('click', function() {
+            const filter = this.dataset.filter;
+            
+            // Update active button
+            filterBtns.forEach(b => b.classList.remove('active'));
+            this.classList.add('active');
+            
+            // Filter cards
+            offerCards.forEach(card => {
+                if (filter === 'all') {
+                    card.style.display = 'block';
+                } else {
+                    const cardStatus = card.dataset.status;
+                    if (filter === 'ongoing' && cardStatus === 'đang-diễn-ra') {
+                        card.style.display = 'block';
+                    } else if (filter === 'upcoming' && cardStatus === 'sắp-diễn-ra') {
+                        card.style.display = 'block';
+                    } else if (filter === 'expired' && cardStatus === 'kết-thúc') {
+                        card.style.display = 'block';
+                    } else {
+                        card.style.display = 'none';
+                    }
+                }
             });
         });
-    </script>
-    
-    <style>
-        .offer-item {
-            transition: all 0.3s ease;
-        }
-        .fade-in {
-            animation: fadeIn 0.5s ease-in;
-        }
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(20px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-    </style>
+    });
+});
+</script>
 @endsection
-=======
-@endsection
->>>>>>> a2e2ecd9234ab833a726b305e3143dc81c3a10d7

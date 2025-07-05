@@ -1,29 +1,33 @@
 .movie-card {
   display: flex;
   flex-direction: column;
-  height: 500px; /* ✅ Set chiều cao cố định */
+  height: 500px;
   background-color: #f8f9fa;
   border: 1px solid #dee2e6;
   border-radius: 8px;
   overflow: hidden;
   padding: 0;
-  position: relative; /* ✅ Để đặt background */
-  background-size: cover; /* ✅ Cover toàn bộ card */
-  background-position: center; /* ✅ Căn giữa */
-  background-repeat: no-repeat; /* ✅ Không lặp */
+  position: relative;
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+
+.movie-card[data-poster] {
+  background-image: var(--poster-url);
 }
 
 .movie-header {
-  height: 100%; /* ✅ Chiếm toàn bộ card */
+  height: 100%;
   position: relative;
 }
 
 .movie-header img {
-  display: none; /* ✅ Ẩn img tag vì dùng background */
+  display: none;
 }
 
 .movie-content {
-  position: absolute; /* ✅ Đặt content lên trên background */
+  position: absolute;
   bottom: 0;
   left: 0;
   right: 0;
@@ -31,18 +35,18 @@
     transparent,
     rgba(0, 0, 0, 0.8),
     rgba(0, 0, 0, 0.95)
-  ); /* ✅ Gradient overlay */
-  color: white; /* ✅ Chữ màu trắng */
-  padding: 60px 16px 16px; /* ✅ Padding với gradient */
+  );
+  color: white;
+  padding: 60px 16px 16px;
 }
 
 .movie-title {
   font-size: 1.1rem;
   font-weight: 600;
-  color: white; /* ✅ Chữ trắng */
+  color: white;
   text-align: left;
   margin-bottom: 8px;
-  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.8); /* ✅ Shadow cho dễ đọc */
+  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.8);
 }
 
 .movie-buttons {
@@ -53,10 +57,10 @@
 }
 
 .movie-footer {
-  color: rgba(255, 255, 255, 0.9); /* ✅ Chữ trắng nhạt */
+  color: rgba(255, 255, 255, 0.9);
   font-size: 0.85rem;
   text-align: left;
-  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.8); /* ✅ Shadow cho dễ đọc */
+  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.8);
 }
 
 .movie-footer p {

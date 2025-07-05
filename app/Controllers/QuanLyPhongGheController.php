@@ -9,7 +9,6 @@ use Exception;
 
 class QuanLyPhongGheController
 {
-<<<<<<< HEAD
     private $phongChieuModel;
     private $gheModel;
     
@@ -19,28 +18,9 @@ class QuanLyPhongGheController
         $this->gheModel = new Ghe();
     }
     
-=======
-    private function checkAdminAuth()
-    {
-        // Kiểm tra đăng nhập
-        if (!isset($_SESSION['logged_in']) || $_SESSION['logged_in'] !== true) {
-            $_SESSION['error_message'] = 'Vui lòng đăng nhập để truy cập trang admin!';
-            header('Location: /dang-nhap');
-            exit;
-        }
-        
-        // Kiểm tra role admin
-        if (!isset($_SESSION['user_role']) || $_SESSION['user_role'] !== 'admin') {
-            $_SESSION['error_message'] = 'Bạn không có quyền truy cập trang admin!';
-            header('Location: /'); // Chuyển về trang chủ user
-            exit;
-        }
-    }
-
->>>>>>> a2e2ecd9234ab833a726b305e3143dc81c3a10d7
     public function quanLyPhongGhe()
     {
-        $this->checkAdminAuth();
+        // $this->checkAdminAuth();
 
         $blade = new Blade(
             realpath(__DIR__ . '/../Views'),

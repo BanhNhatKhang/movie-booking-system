@@ -4,6 +4,16 @@
 <?php $__env->startSection('content'); ?>
 <main>
     <div class="container">
+        
+        <?php if(isset($_SESSION['success_message'])): ?>
+            <div class="alert alert-success alert-dismissible fade show" role="alert">
+                <strong><?php echo e($_SESSION['success_message']); ?></strong>
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+            <?php
+                unset($_SESSION['success_message']);
+            ?>
+        <?php endif; ?>
         <div class="row div-pad">
             <div class="col">
                 <!--Poster quảng cáo phim-->
@@ -67,7 +77,7 @@
                     </ul><br>
 
                     <div class="tab-content mt-3" id="phimTabContent">
-                        <!-- Tab PHIM ĐANG CHIẾU - Dynamic Data -->
+                        <!-- Tab PHIM ĐANG CHIẾU  -->
                         <div
                         class="tab-pane fade show active"
                         id="dang-chieu"
@@ -127,7 +137,7 @@
                             </button>
                         </div>
                     </div>
-                    <!-- Tab PHIM SẮP CHIẾU - Dynamic Data -->
+                    <!-- Tab PHIM SẮP CHIẾU  -->
                     <div
                     class="tab-pane fade"
                     id="sap-chieu"
@@ -185,7 +195,7 @@
                 <br>
                 <hr style="color:#fff; border-width: 2px;">
                 <br><br>
-                <!-- ƯU ĐÃI VÀ DỊCH VỤ - Dynamic Data -->
+                <!-- ƯU ĐÃI VÀ DỊCH VỤ -->
                 <div>
                     <h1 class="align-text">ƯU ĐÃI VÀ DỊCH VỤ</h1><br>
                     

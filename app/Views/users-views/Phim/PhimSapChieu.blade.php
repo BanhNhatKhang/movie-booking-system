@@ -12,7 +12,7 @@
             <div class="row p-2">
                 @forelse($phimSapChieu ?? [] as $phim)
                     <div class="col-12 col-sm-6 col-lg-3 mb-4">
-                        <div class="movie-card" style="background-image: url('{{ $phim['poster'] }}');">
+                    <div class="movie-card" data-poster="{{ $phim['poster'] ?? '/static/imgs/default-poster.jpg' }}">
                             <div class="movie-header">
                                 <a href="/chi-tiet-phim?id={{ $phim['id'] }}" style="display: block; height: 100%; text-decoration: none;">
                                 </a>
@@ -84,6 +84,16 @@
 </main>
 
 <script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Set poster backgrounds
+    const movieCards = document.querySelectorAll('.movie-card[data-poster]');
+    movieCards.forEach(card => {
+        const posterUrl = card.getAttribute('data-poster');
+        if (posterUrl) {
+            card.style.backgroundImage = `url('${posterUrl}')`;
+        }
+    });
+
     const modal = document.getElementById("trailerModal");
     const iframe = document.getElementById("trailerVideo");
     const closeBtn = document.getElementById("closeTrailerBtn");
@@ -140,5 +150,6 @@
             iframe.src = "";
         }
     });
+});
 </script>
 @endsection

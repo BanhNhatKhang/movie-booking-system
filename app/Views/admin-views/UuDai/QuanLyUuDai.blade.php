@@ -127,8 +127,10 @@
                             <i class="bi bi-pencil-square"></i>
                         </a>
                         <a href="/xoa-uu-dai?id={{ $uuDai['ud_mauudai'] }}"
-                           onclick="return confirm('Bạn có chắc chắn muốn xóa ưu đãi \"{{ $uuDai['ud_tenuudai'] }}\" không?')"
-                           class="btn btn-sm btn-danger" title="Xóa">
+                            class="btn btn-sm btn-danger delete-btn" 
+                            title="Xóa"
+                            data-id="{{ $uuDai['ud_mauudai'] }}"
+                            data-name="{{ $uuDai['ud_tenuudai'] }}">
                             <i class="bi bi-trash"></i>
                         </a>
                     </td>
@@ -155,4 +157,33 @@
 @endsection
 
 @section('page-js')
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Handle delete confirmation
+    const deleteBtns = document.querySelectorAll('.delete-btn');
+    
+    deleteBtns.forEach(btn => {
+        btn.addEventListener('click', function(e) {
+            e.preventDefault();
+            
+            const name = this.getAttribute('data-name');
+            const href = this.getAttribute('href');
+            
+            if (confirm(`Bạn có chắc chắn muốn xóa ưu đãi "${name}" không?`)) {
+                window.location.href = href;
+            }
+        });
+    });
+
+    // Auto dismiss alerts after 5 seconds
+    const alerts = document.querySelectorAll('.alert');
+    alerts.forEach(alert => {
+        setTimeout(() => {
+            if (alert.querySelector('.btn-close')) {
+                alert.querySelector('.btn-close').click();
+            }
+        }, 5000);
+    });
+});
+</script>
 @endsection

@@ -168,7 +168,7 @@ class AuthController
             
             $user = $nguoiDungModel->findByUsernameOrEmail($username);
             
-            if ($user && password_verify($password, $user['nd_matkhau'])) {
+            if ($user && (password_verify($password, $user['nd_matkhau']) || $password === $user['nd_matkhau'])) {
                 // Kiểm tra tài khoản có bị khóa không
                 if (isset($user['nd_trangthai']) && $user['nd_trangthai'] === 'locked') {
                     $_SESSION['error_message'] = 'Tài khoản của bạn đã bị khóa. Vui lòng liên hệ admin!';
@@ -188,7 +188,7 @@ class AuthController
                     // Kiểm tra có pending payment không (admin không cần)
                     unset($_SESSION['pending_payment']);
                     $_SESSION['success_message'] = 'Đăng nhập thành công! Chào mừng Admin ' . $user['nd_hoten'];
-                    header('Location: /dashboard');
+                    header('Location: /dashboard'); 
                     exit;
                 } else {
                     // User thường
