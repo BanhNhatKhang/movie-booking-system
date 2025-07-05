@@ -1,4 +1,4 @@
-{{-- filepath: d:\Server\ct27501-project-BanhNhatKhang\app\Views\users-views\Phim\PhimDangChieu.blade.php --}}
+{{-- filepath: d:\Server\ct27501-project-BanhNhatKhang\app\Views\users-views\Phim\PhimSapChieu.blade.php --}}
 @extends('layouts.users.master')
 
 @section('page-css')
@@ -10,23 +10,22 @@
     <div class="container mt-4">
         <div class="bg-light-subtle">
             <div class="row p-2">
-                @forelse($phimDangChieu ?? [] as $phim)
+                @forelse($phimSapChieu ?? [] as $phim)
                     <div class="col-12 col-sm-6 col-lg-3 mb-4">
                         <div class="movie-card" style="background-image: url('{{ $phim['poster'] }}');">
                             <div class="movie-header">
                                 <a href="/chi-tiet-phim?id={{ $phim['id'] }}" style="display: block; height: 100%; text-decoration: none;">
-
                                 </a>
                             </div>
                             <div class="movie-content">
                                 <div class="movie-title">{{ strtoupper($phim['name'] ?? 'TÊN PHIM KHÔNG XÁC ĐỊNH') }}</div>
                                 <div class="movie-buttons">
-                                    <span class="btn btn-outline-light btn-sm hover-trailer">Lồng tiếng</span>
-                                    <a href="/chi-tiet-phim?id={{ $phim['id'] }}" class="btn btn-outline-light btn-sm hover-trailer">Đặt vé</a>
+                                    <span class="btn btn-outline-light btn-sm hover-trailer">Sắp chiếu</span>
+                                    <a href="/chi-tiet-phim?id={{ $phim['id'] }}" class="btn btn-outline-light btn-sm hover-trailer">Xem chi tiết</a>
                                 </div>
                                 <div class="movie-footer">
                                     <p><span class="fw-bold">Thể loại:</span> {{ $phim['genre'] ?? 'Chưa phân loại' }}</p>
-                                    <p><span class="fw-bold">Ngày chiếu:</span> 
+                                    <p><span class="fw-bold">Ngày khởi chiếu:</span> 
                                         @if(!empty($phim['release']))
                                             {{ date('d/m/Y', strtotime($phim['release'])) }}
                                         @else
@@ -56,8 +55,12 @@
                     <div class="col-12">
                         <div class="text-center py-5">
                             <i class="bi bi-film display-1 text-muted"></i>
-                            <h3 class="text-muted mt-3">Hiện tại chưa có phim nào đang chiếu</h3>
-                            <p class="text-muted">Vui lòng quay lại sau hoặc xem các phim sắp chiếu</p>
+                            <h3 class="text-muted mt-3">Hiện tại chưa có phim nào sắp chiếu</h3>
+                            <p class="text-muted">Vui lòng quay lại sau hoặc xem các phim đang chiếu</p>
+                            <a href="/phim-dang-chieu" class="btn btn-primary">
+                                <i class="bi bi-arrow-left"></i>
+                                Xem phim đang chiếu
+                            </a>
                         </div>
                     </div>
                 @endforelse
@@ -106,6 +109,7 @@
         if (url.includes('youtube.com/embed/')) {
             return url;
         }
+        
         
         return url;
     }

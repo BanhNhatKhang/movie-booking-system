@@ -1,5 +1,6 @@
 
 
+
 <?php $__env->startSection('page-css'); ?>
     <link rel="stylesheet" href="/static/css/users/PhimDangChieu.css">
 <?php $__env->stopSection(); ?>
@@ -9,98 +10,58 @@
     <div class="container mt-4">
         <div class="bg-light-subtle">
             <div class="row p-2">
-                <!-- Card phim 1 -->
-                <div class="col-12 col-sm-6 col-lg-3 mb-4">
-                    <div class="movie-card">
-                        <div class="movie-header">
-                            <a href="/chi-tiet-phim"><img src="/static/imgs/latmat1.jpg" alt="Lật Mặt 7" /></a>
-                        </div>
-                        <div class="movie-title fs-4">LẬT MẶT 7: MỘT ĐIỀU ƯỚC</div>
-                        <div class="movie-buttons">
-                            <span class="btn btn-danger btn-sm">Lồng tiếng</span>
-                            <a href="/chi-tiet-phim" class="btn btn-danger btn-sm">Đặt vé</a>
-                        </div>
-                        <div class="movie-footer">
-                            <p><span class="fw-bold">Thể loại:</span> Tình cảm, Gia đình</p>
-                            <p><span class="fw-bold">Ngày chiếu:</span> 26/04/2024</p>
-                            <p><span class="fw-bold">Đạo diễn:</span> Lý Hải</p><br>
-                            <button class="openTrailerBtn btn btn-light border hover-trailer" 
-                                    data-trailer="https://www.youtube.com/embed/d1ZHdosjNX8">
-                                <i class="bi bi-play"></i>
-                                Trailer
-                            </button>
-                        </div>
-                    </div>
-                </div>
-                <!-- Card phim 2 -->
-                <div class="col-12 col-sm-6 col-lg-3 mb-4">
-                    <div class="movie-card">
-                        <div class="movie-header">
-                            <a href="#"><img src="/static/imgs/1-onl-17217488966071748078747-2402.jpg" alt="Làm giàu với ma" /></a>
-                        </div>
-                        <div class="movie-title fs-4">LÀM GIÀU VỚI MA</div>
-                        <div class="movie-buttons">
-                            <span class="btn btn-danger btn-sm">Lồng tiếng</span>
-                            <button class="btn btn-danger btn-sm">Đặt vé</button>
-                        </div>
-                        <div class="movie-footer">
-                            <p><span class="fw-bold">Thể loại:</span> Gia đình, Hài</p>
-                            <p><span class="fw-bold">Ngày chiếu:</span> 30/08/2024</p>
-                            <p><span class="fw-bold">Đạo diễn:</span> Nguyễn Nhật Trung</p><br>
-                            <button class="openTrailerBtn btn btn-light border hover-trailer" 
-                                    data-trailer="https://www.youtube.com/embed/MtZ_hf7tLxk">
-                                <i class="bi bi-play"></i>
-                                Trailer
-                            </button>
+                <?php $__empty_1 = true; $__currentLoopData = $phimDangChieu ?? []; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $phim): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); $__empty_1 = false; ?>
+                    <div class="col-12 col-sm-6 col-lg-3 mb-4">
+                        <div class="movie-card" style="background-image: url('<?php echo e($phim['poster']); ?>');">
+                            <div class="movie-header">
+                                <a href="/chi-tiet-phim?id=<?php echo e($phim['id']); ?>" style="display: block; height: 100%; text-decoration: none;">
+
+                                </a>
+                            </div>
+                            <div class="movie-content">
+                                <div class="movie-title"><?php echo e(strtoupper($phim['name'] ?? 'TÊN PHIM KHÔNG XÁC ĐỊNH')); ?></div>
+                                <div class="movie-buttons">
+                                    <span class="btn btn-outline-light btn-sm hover-trailer">Lồng tiếng</span>
+                                    <a href="/chi-tiet-phim?id=<?php echo e($phim['id']); ?>" class="btn btn-outline-light btn-sm hover-trailer">Đặt vé</a>
+                                </div>
+                                <div class="movie-footer">
+                                    <p><span class="fw-bold">Thể loại:</span> <?php echo e($phim['genre'] ?? 'Chưa phân loại'); ?></p>
+                                    <p><span class="fw-bold">Ngày chiếu:</span> 
+                                        <?php if(!empty($phim['release'])): ?>
+                                            <?php echo e(date('d/m/Y', strtotime($phim['release']))); ?>
+
+                                        <?php else: ?>
+                                            Chưa xác định
+                                        <?php endif; ?>
+                                    </p>
+                                    <p><span class="fw-bold">Đạo diễn:</span> <?php echo e($phim['director'] ?? 'Chưa xác định'); ?></p>
+                                    
+                                    <?php if(!empty($phim['trailer'])): ?>
+                                        <button class="openTrailerBtn btn btn-light border hover-trailer btn-sm mt-2" 
+                                                data-trailer="<?php echo e($phim['trailer']); ?>">
+                                            <i class="bi bi-play"></i>
+                                            Trailer
+                                        </button>
+                                    <?php else: ?>
+                                        <button class="btn btn-secondary btn-sm mt-2" disabled>
+                                            <i class="bi bi-film"></i>
+                                            Chưa có trailer
+                                        </button>
+                                    <?php endif; ?>
+                                </div>
+                            </div>
                         </div>
                     </div>
-                </div>
-                <!-- Card phim 3 -->
-                <div class="col-12 col-sm-6 col-lg-3 mb-4">
-                    <div class="movie-card">
-                        <div class="movie-header">
-                            <a href="#"><img src="/static/imgs/conan-movie-26-16932064940221048161862.webp" alt="Conan 26" /></a>
-                        </div>
-                        <div class="movie-title fs-4">THÁM TỬ LỪNG DANH CONAN: TÀU NGẦM SẮT MÀU ĐEN</div>
-                        <div class="movie-buttons">
-                            <span class="btn btn-danger btn-sm">Lồng tiếng</span>
-                            <button class="btn btn-danger btn-sm">Đặt vé</button>
-                        </div>
-                        <div class="movie-footer">
-                            <p><span class="fw-bold">Thể loại:</span> Hành động, Hoạt hình, Phiêu lưu</p>
-                            <p><span class="fw-bold">Ngày chiếu:</span> 21/07/2023</p>
-                            <p><span class="fw-bold">Đạo diễn:</span> Yuzuru Tachikawa</p><br>
-                            <button class="openTrailerBtn btn btn-light border hover-trailer" 
-                                    data-trailer="https://www.youtube.com/embed/NwnQI9izPFc">
-                                <i class="bi bi-play"></i>
-                                Trailer
-                            </button>
+                <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); if ($__empty_1): ?>
+                    <!-- Hiển thị khi không có phim -->
+                    <div class="col-12">
+                        <div class="text-center py-5">
+                            <i class="bi bi-film display-1 text-muted"></i>
+                            <h3 class="text-muted mt-3">Hiện tại chưa có phim nào đang chiếu</h3>
+                            <p class="text-muted">Vui lòng quay lại sau hoặc xem các phim sắp chiếu</p>
                         </div>
                     </div>
-                </div>
-                <!-- Card phim 4 -->
-                <div class="col-12 col-sm-6 col-lg-3 mb-4">
-                    <div class="movie-card">
-                        <div class="movie-header">
-                            <a href="#"><img src="/static/imgs/lilo-500_1747389395062.jpg" alt="Lilo & Stitch" /></a>
-                        </div>
-                        <div class="movie-title fs-4">LILO & STITCH</div>
-                        <div class="movie-buttons">
-                            <span class="btn btn-danger btn-sm">Lồng tiếng</span>
-                            <button class="btn btn-danger btn-sm">Đặt vé</button>
-                        </div>
-                        <div class="movie-footer">
-                            <p><span class="fw-bold">Thể loại:</span> Gia đình, Hài, Phiêu lưu</p>
-                            <p><span class="fw-bold">Ngày chiếu:</span> 23/05/2025</p>
-                            <p><span class="fw-bold">Đạo diễn:</span> Dean Fleischer Camp</p><br>
-                            <button class="openTrailerBtn btn btn-light border hover-trailer" 
-                                    data-trailer="https://www.youtube.com/embed/9qhrQqijrOU">
-                                <i class="bi bi-play"></i>
-                                Trailer
-                            </button>
-                        </div>
-                    </div>
-                </div>
+                <?php endif; ?>
             </div>
         </div>
 
@@ -126,10 +87,42 @@
     const closeBtn = document.getElementById("closeTrailerBtn");
     const openBtns = document.querySelectorAll(".openTrailerBtn");
 
+    // Function to convert YouTube URL to embed format
+    function getEmbedUrl(url) {
+        if (!url) return '';
+        
+        // YouTube watch URL: https://www.youtube.com/watch?v=VIDEO_ID
+        if (url.includes('youtube.com/watch?v=')) {
+            const videoId = url.split('v=')[1].split('&')[0];
+            return `https://www.youtube.com/embed/${videoId}`;
+        }
+        
+        // YouTube short URL: https://youtu.be/VIDEO_ID
+        if (url.includes('youtu.be/')) {
+            const videoId = url.split('youtu.be/')[1].split('?')[0];
+            return `https://www.youtube.com/embed/${videoId}`;
+        }
+        
+        // YouTube embed URL: https://www.youtube.com/embed/VIDEO_ID
+        if (url.includes('youtube.com/embed/')) {
+            return url;
+        }
+        
+        // If not recognized, return original URL
+        return url;
+    }
+
     openBtns.forEach(btn => {
         btn.addEventListener("click", () => {
-            const youtubeLink = btn.getAttribute("data-trailer");
-            iframe.src = youtubeLink + "?autoplay=1&rel=0";
+            const originalUrl = btn.getAttribute("data-trailer");
+            let embedUrl = getEmbedUrl(originalUrl);
+            
+            // Add autoplay parameter
+            if (embedUrl.includes('youtube.com/embed/')) {
+                embedUrl += "?autoplay=1&rel=0";
+            }
+            
+            iframe.src = embedUrl;
             modal.style.display = "block";
         });
     });

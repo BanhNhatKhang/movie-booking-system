@@ -1,6 +1,7 @@
 
 
 
+
 <?php $__env->startSection('page-css'); ?>
     <link rel="stylesheet" href="/static/css/users/UuDai.css" />
 <?php $__env->stopSection(); ?>
@@ -17,6 +18,8 @@
                         nhiều hơn với mỗi lần đặt vé!
                     </p>
                 </section>
+                
+                
                 <section class="mb-5">
                     <h2 class="section-title">ƯU ĐÃI NỔI BẬT</h2>
                     <div class="featured-offer">
@@ -61,7 +64,7 @@
                     </div>
                 </section>
 
-                <!-- All Offers Section -->
+                
                 <section class="offers-section">
                     <div class="row p-3">
                         <div class="col-md-12">
@@ -69,16 +72,16 @@
                                 <h2 class="section-title">TẤT CẢ ƯU ĐÃI</h2>
                                 <div class="d-flex flex-wrap">
                                     <button class="btn filter-btn active" data-filter="all">
-                                        Tất cả
+                                        Tất cả (<?php echo e(count($allOffers ?? [])); ?>)
                                     </button>
                                     <button class="btn filter-btn" data-filter="ongoing">
-                                        Đang diễn ra
+                                        Đang diễn ra (<?php echo e(count($ongoingOffers ?? [])); ?>)
                                     </button>
                                     <button class="btn filter-btn" data-filter="upcoming">
-                                        Sắp diễn ra
+                                        Sắp diễn ra (<?php echo e(count($upcomingOffers ?? [])); ?>)
                                     </button>
                                     <button class="btn filter-btn" data-filter="expired">
-                                        Đã kết thúc
+                                        Đã kết thúc (<?php echo e(count($expiredOffers ?? [])); ?>)
                                     </button>
                                 </div>
                             </div>
@@ -86,131 +89,51 @@
                     </div>
 
                     <div class="row">
-                        <!-- Offer 1: Đang diễn ra -->
-                        <div class="col-lg-4 col-md-6 offer-item" data-status="ongoing">
-                            <div class="offer-card">
-                                <div class="offer-img">
-                                    <img src="/static/imgs/bapnuoc.jpg" alt="Combo bắp nước" />
-                                </div>
-                                <div class="offer-content">
-                                    <span class="offer-badge">COMBO</span>
-                                    <h4 class="offer-title">Combo bắp nước chỉ 99k</h4>
-                                    <p class="offer-desc">
-                                        Combo 1 bắp lớn + 2 nước lớn chỉ với 99.000đ. Áp dụng cho tất
-                                        cả các suất chiếu và rạp trên toàn quốc.
-                                    </p>
-                                    <div class="offer-details">
-                                        <span class="offer-expiry">HSD: 30/11/2024</span>
-                                        <a href="#" class="offer-btn">Chi tiết</a>
+                        <?php $__empty_1 = true; $__currentLoopData = $allOffers ?? []; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $offer): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); $__empty_1 = false; ?>
+                            <div class="col-lg-4 col-md-6 offer-item" 
+                                 data-status="<?php echo e($offer['ud_trangthai'] === 'Đang diễn ra' ? 'ongoing' : 
+                                     ($offer['ud_trangthai'] === 'Sắp diễn ra' ? 'upcoming' : 'expired')); ?>">
+                                <div class="offer-card">
+                                    <div class="offer-img">
+                                        <?php if($offer['ud_anhuudai']): ?>
+                                            <img src="<?php echo e($offer['ud_anhuudai']); ?>" 
+                                                 alt="<?php echo e($offer['ud_tenuudai']); ?>"
+                                                 onerror="this.src='/static/imgs/placeholder-offer.jpg'" />
+                                        <?php else: ?>
+                                            <img src="/static/imgs/placeholder-offer.jpg" 
+                                                 alt="<?php echo e($offer['ud_tenuudai']); ?>" />
+                                        <?php endif; ?>
                                     </div>
-                                </div>
-                            </div>
-                        </div>
+                                    <div class="offer-content">
+                                        <span class="offer-badge"><?php echo e($offer['ud_loaiuudai']); ?></span>
+                                        <h4 class="offer-title"><?php echo e($offer['ud_tenuudai']); ?></h4>
+                                        
+                                        <p class="offer-desc">
+                                            <?php echo e(mb_strlen($offer['ud_noidung']) > 120 ? mb_substr($offer['ud_noidung'], 0, 120) . '...' : $offer['ud_noidung']); ?>
 
-                        <!-- Offer 2: Đang diễn ra -->
-                        <div class="col-lg-4 col-md-6 offer-item" data-status="ongoing">
-                            <div class="offer-card">
-                                <div class="offer-img">
-                                    <img src="/static/imgs/member600_800.jpg" alt="Giảm giá" />
-                                </div>
-                                <div class="offer-content">
-                                    <span class="offer-badge">GIẢM GIÁ</span>
-                                    <h4 class="offer-title">Giảm 50% cho vé thứ 2</h4>
-                                    <p class="offer-desc">
-                                        Mua 1 tặng 1 cho tất cả các suất chiếu vào thứ 3 hàng tuần. Áp
-                                        dụng cho tất cả các rạp trên toàn quốc.
-                                    </p>
-                                    <div class="offer-details">
-                                        <span class="offer-expiry">HSD: 31/12/2024</span>
-                                        <a href="#" class="offer-btn">Chi tiết</a>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
+                                        </p>
+                                        <div class="offer-details">
+                                            <span class="offer-expiry">
+                                                HSD: <?php echo e(date('d/m/Y', strtotime($offer['ud_thoigianketthuc']))); ?>
 
-                        <!-- Offer 3: Sắp diễn ra -->
-                        <div class="col-lg-4 col-md-6 offer-item" data-status="upcoming">
-                            <div class="offer-card">
-                                <div class="offer-img">
-                                    <img src="/static/imgs/tichdiem2x.jpg" alt="Thẻ thành viên" />
-                                </div>
-                                <div class="offer-content">
-                                    <span class="offer-badge">THÀNH VIÊN</span>
-                                    <h4 class="offer-title">Tích điểm 2x cho thành viên VIP</h4>
-                                    <p class="offer-desc">
-                                        Tích điểm gấp đôi cho tất cả các giao dịch đặt vé qua ứng dụng
-                                        KHF Cinema. Áp dụng từ 01/06 đến 31/12/2024.
-                                    </p>
-                                    <div class="offer-details">
-                                        <span class="offer-expiry">HSD: 31/12/2024</span>
-                                        <a href="#" class="offer-btn">Chi tiết</a>
+                                            </span>
+                                            <a href="#" class="offer-btn">Chi tiết</a>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
-                        </div>
-
-                        <!-- Offer 4: Sắp diễn ra -->
-                        <div class="col-lg-4 col-md-6 offer-item" data-status="upcoming">
-                            <div class="offer-card">
-                                <div class="offer-img">
-                                    <img src="/static/imgs/uudaisinhnhatdacbiet.avif" alt="Sinh nhật" />
-                                </div>
-                                <div class="offer-content">
-                                    <span class="offer-badge">SINH NHẬT</span>
-                                    <h4 class="offer-title">Ưu đãi sinh nhật đặc biệt</h4>
-                                    <p class="offer-desc">
-                                        Nhận ngay 1 vé xem phim miễn phí trong tháng sinh nhật của
-                                        bạn. Áp dụng cho thành viên từ level 2 trở lên.
-                                    </p>
-                                    <div class="offer-details">
-                                        <span class="offer-expiry">HSD: 31/12/2024</span>
-                                        <a href="#" class="offer-btn">Chi tiết</a>
+                        <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); if ($__empty_1): ?>
+                            
+                            <div class="col-12">
+                                <div class="text-center py-5">
+                                    <div style="color: #888; padding: 3rem;">
+                                        <i class="bi bi-gift" style="font-size: 4rem; color: #555; margin-bottom: 1rem;"></i>
+                                        <h4 style="color: #ccc; margin-bottom: 1rem;">Chưa có ưu đãi nào</h4>
+                                        <p style="color: #888;">Các ưu đãi hấp dẫn sẽ sớm được cập nhật. Hãy quay lại sau nhé!</p>
                                     </div>
                                 </div>
                             </div>
-                        </div>
-
-                        <!-- Offer 5: Đang diễn ra -->
-                        <div class="col-lg-4 col-md-6 offer-item" data-status="ongoing">
-                            <div class="offer-card">
-                                <div class="offer-img">
-                                    <img src="/static/imgs/uudainoibat2.avif" alt="Đặt vé sớm" />
-                                </div>
-                                <div class="offer-content">
-                                    <span class="offer-badge">SỚM</span>
-                                    <h4 class="offer-title">Giảm 20% khi đặt vé trước</h4>
-                                    <p class="offer-desc">
-                                        Giảm 20% khi đặt vé trước 3 ngày cho các phim mới. Áp dụng cho
-                                        tất cả các rạp trên toàn quốc.
-                                    </p>
-                                    <div class="offer-details">
-                                        <span class="offer-expiry">HSD: 31/12/2024</span>
-                                        <a href="#" class="offer-btn">Chi tiết</a>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Offer 6: Đã kết thúc -->
-                        <div class="col-lg-4 col-md-6 offer-item" data-status="expired">
-                            <div class="offer-card">
-                                <div class="offer-img">
-                                    <img src="/static/imgs/uudainganhang.jpg" alt="Ngân hàng" />
-                                </div>
-                                <div class="offer-content">
-                                    <span class="offer-badge">NGÂN HÀNG</span>
-                                    <h4 class="offer-title">Giảm 30% với thẻ ngân hàng</h4>
-                                    <p class="offer-desc">
-                                        Giảm 30% khi thanh toán bằng thẻ ngân hàng đối tác. Áp dụng
-                                        cho tất cả các suất chiếu và rạp trên toàn quốc.
-                                    </p>
-                                    <div class="offer-details">
-                                        <span class="offer-expiry">HSD: 15/05/2024</span>
-                                        <a href="#" class="offer-btn">Chi tiết</a>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
+                        <?php endif; ?>
                     </div>
                 </section>
             </div>
@@ -222,6 +145,53 @@
 <?php $__env->startSection('page-js'); ?>
     <script src="/static/js/users/UuDai.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-<?php $__env->stopSection(); ?>
+    
+    
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const filterButtons = document.querySelectorAll('.filter-btn');
+            const offerItems = document.querySelectorAll('.offer-item');
 
+            filterButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    const filter = this.getAttribute('data-filter');
+
+                    // Update active button
+                    filterButtons.forEach(btn => btn.classList.remove('active'));
+                    this.classList.add('active');
+
+                    // Filter offers
+                    offerItems.forEach(item => {
+                        if (filter === 'all') {
+                            item.style.display = 'block';
+                            item.classList.add('fade-in');
+                        } else {
+                            const status = item.getAttribute('data-status');
+                            if (status === filter) {
+                                item.style.display = 'block';
+                                item.classList.add('fade-in');
+                            } else {
+                                item.style.display = 'none';
+                                item.classList.remove('fade-in');
+                            }
+                        }
+                    });
+                });
+            });
+        });
+    </script>
+    
+    <style>
+        .offer-item {
+            transition: all 0.3s ease;
+        }
+        .fade-in {
+            animation: fadeIn 0.5s ease-in;
+        }
+        @keyframes  fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+<?php $__env->stopSection(); ?>
 <?php echo $__env->make('layouts.users.master', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?><?php /**PATH D:\Server\ct27501-project-BanhNhatKhang\app\Views/users-views/UuDai/UuDai.blade.php ENDPATH**/ ?>

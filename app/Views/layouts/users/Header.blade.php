@@ -48,7 +48,7 @@
                                         <a class="dropdown-item hover-red-nav" href="/phim-dang-chieu">Phim đang chiếu</a>
                                     </li>
                                     <li>
-                                        <a class="dropdown-item hover-red-nav" href="#">Phim sắp chiếu</a>
+                                        <a class="dropdown-item hover-red-nav" href="/phim-sap-chieu">Phim sắp chiếu</a>
                                     </li>
                                 </ul>
                             </li>

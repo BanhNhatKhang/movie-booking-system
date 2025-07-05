@@ -1,3 +1,5 @@
+{{-- filepath: d:\Server\ct27501-project-BanhNhatKhang\app\Views\admin-views\UuDai\QuanLyUuDai.blade.php --}}
+
 @extends('layouts.admin.master')
 
 @section('title', 'Quản lý ưu đãi')
@@ -13,35 +15,60 @@
 <div class="container py-4 content">
     <h1>Quản lý ưu đãi</h1>
     <hr>
+    
+    {{-- Success/Error Messages --}}
+    @if(isset($success))
+        <div class="alert alert-success alert-dismissible fade show" role="alert">
+            <i class="bi bi-check-circle"></i> {{ $success }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    @endif
+    
+    @if(isset($error))
+        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+            <i class="bi bi-exclamation-triangle"></i> {{ $error }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    @endif
+    
     <div class="d-flex justify-content-between align-items-center mb-3">
         <a href="/them-uu-dai" class="btn btn-primary text-white text-decoration-none">
             <i class="bi bi-plus-circle"></i> Thêm ưu đãi mới
         </a>
-        <form class="d-flex gap-2 w-75 justify-content-end flex-wrap">
-            <select class="form-select w-auto" style="min-width:140px;">
+        <form class="d-flex gap-2 w-75 justify-content-end flex-wrap" method="GET">
+            <select name="ten_uu_dai" class="form-select w-auto" style="min-width:140px;">
                 <option value="">Tên ưu đãi</option>
-                <option>Combo gia đình siêu tiết kiệm</option>
-                <option>Giảm giá vé thứ 3</option>
+                @foreach($uuDaiList ?? [] as $uuDai)
+                    <option value="{{ $uuDai['ud_tenuudai'] }}" {{ ($filters['ten_uu_dai'] ?? '') === $uuDai['ud_tenuudai'] ? 'selected' : '' }}>
+                        {{ $uuDai['ud_tenuudai'] }}
+                    </option>
+                @endforeach
             </select>
-            <select class="form-select w-auto" style="min-width:140px;">
+            <select name="loai_uu_dai" class="form-select w-auto" style="min-width:140px;">
                 <option value="">Loại ưu đãi</option>
-                <option>COMBO</option>
-                <option>GIẢM GIÁ</option>
-                <option>SINH NHẬT</option>
-                <option>SỚM</option>
-                <option>NGÂN HÀNG</option>
+                <option value="COMBO" {{ ($filters['loai_uu_dai'] ?? '') === 'COMBO' ? 'selected' : '' }}>COMBO</option>
+                <option value="GIẢM GIÁ" {{ ($filters['loai_uu_dai'] ?? '') === 'GIẢM GIÁ' ? 'selected' : '' }}>GIẢM GIÁ</option>
+                <option value="SINH NHẬT" {{ ($filters['loai_uu_dai'] ?? '') === 'SINH NHẬT' ? 'selected' : '' }}>SINH NHẬT</option>
+                <option value="SỚM" {{ ($filters['loai_uu_dai'] ?? '') === 'SỚM' ? 'selected' : '' }}>SỚM</option>
+                <option value="NGÂN HÀNG" {{ ($filters['loai_uu_dai'] ?? '') === 'NGÂN HÀNG' ? 'selected' : '' }}>NGÂN HÀNG</option>
             </select>
-            <select class="form-select w-auto" style="min-width:140px;">
+            <select name="trang_thai" class="form-select w-auto" style="min-width:140px;">
                 <option value="">Trạng thái ưu đãi</option>
-                <option>Đang diễn ra</option>
-                <option>Sắp diễn ra</option>
-                <option>Kết thúc</option>
+                <option value="Đang diễn ra" {{ ($filters['trang_thai'] ?? '') === 'Đang diễn ra' ? 'selected' : '' }}>Đang diễn ra</option>
+                <option value="Sắp diễn ra" {{ ($filters['trang_thai'] ?? '') === 'Sắp diễn ra' ? 'selected' : '' }}>Sắp diễn ra</option>
+                <option value="Kết thúc" {{ ($filters['trang_thai'] ?? '') === 'Kết thúc' ? 'selected' : '' }}>Kết thúc</option>
             </select>
             <button class="btn btn-outline-primary" type="submit">
                 <i class="bi bi-search"></i>
             </button>
+            @if(!empty($filters['ten_uu_dai']) || !empty($filters['loai_uu_dai']) || !empty($filters['trang_thai']))
+                <a href="/quan-ly-uu-dai" class="btn btn-outline-secondary">
+                    <i class="bi bi-x-circle"></i> Clear
+                </a>
+            @endif
         </form>
     </div>
+    
     <div class="table-responsive p-3">
         <table class="table align-middle table-hover">
             <thead class="table-dark">
@@ -57,56 +84,69 @@
                 </tr>
             </thead>
             <tbody>
+                @forelse($uuDaiList ?? [] as $index => $uuDai)
                 <tr>
-                    <td>1</td>
+                    <td>{{ $index + 1 }}</td>
                     <td>
-                        <img src="uudai1.jpg" alt="Ưu đãi" width="100">
+                        @if($uuDai['ud_anhuudai'])
+                            <img src="{{ $uuDai['ud_anhuudai'] }}" 
+                                 alt="{{ $uuDai['ud_tenuudai'] }}" 
+                                 width="100" 
+                                 class="img-thumbnail"
+                                 onerror="this.src='/static/imgs/placeholder-uudai.jpg'">
+                        @else
+                            <div class="bg-light d-flex align-items-center justify-content-center" style="width: 100px; height: 70px;">
+                                <i class="bi bi-image text-muted"></i>
+                            </div>
+                        @endif
                     </td>
-                    <td>Combo gia đình siêu tiết kiệm</td>
-                    <td>COMBO</td>
+                    <td>{{ $uuDai['ud_tenuudai'] }}</td>
+                    <td>
+                        <span class="badge bg-info">{{ $uuDai['ud_loaiuudai'] }}</span>
+                    </td>
                     <td class="detail-cell">
-                        Combo 1 bắp lớn + 2 nước lớn chỉ với 99.000đ. Áp dụng cho tất cả các suất chiếu và rạp trên toàn quốc.
-                    </td>
-                    <td>01/06/2024 - 31/12/2024</td>
-                    <td>
-                        <span class="badge bg-success">Đang diễn ra</span>
+                        {{ $uuDai['ud_noidung'] }}
                     </td>
                     <td>
-                        <a href="/sua-uu-dai?id=1" class="btn btn-sm btn-warning" title="Sửa">
+                        <small>
+                            {{ date('d/m/Y', strtotime($uuDai['ud_thoigianbatdau'])) }} - 
+                            {{ date('d/m/Y', strtotime($uuDai['ud_thoigianketthuc'])) }}
+                        </small>
+                    </td>
+                    <td>
+                        @if($uuDai['ud_trangthai'] === 'Đang diễn ra')
+                            <span class="badge bg-success">Đang diễn ra</span>
+                        @elseif($uuDai['ud_trangthai'] === 'Sắp diễn ra')
+                            <span class="badge bg-warning text-dark">Sắp diễn ra</span>
+                        @else
+                            <span class="badge bg-secondary">Kết thúc</span>
+                        @endif
+                    </td>
+                    <td>
+                        <a href="/sua-uu-dai?id={{ $uuDai['ud_mauudai'] }}" class="btn btn-sm btn-warning" title="Sửa">
                             <i class="bi bi-pencil-square"></i>
                         </a>
-                        <a href="/xoa-uu-dai?id=1"
-                        onclick="return confirm('Bạn có chắc chắn muốn xóa ưu đãi này không?')"
-                        class="btn btn-sm btn-danger" title="Xóa">
+                        <a href="/xoa-uu-dai?id={{ $uuDai['ud_mauudai'] }}"
+                           onclick="return confirm('Bạn có chắc chắn muốn xóa ưu đãi \"{{ $uuDai['ud_tenuudai'] }}\" không?')"
+                           class="btn btn-sm btn-danger" title="Xóa">
                             <i class="bi bi-trash"></i>
                         </a>
                     </td>
                 </tr>
+                @empty
                 <tr>
-                    <td>2</td>
-                    <td>
-                        <img src="uudai2.jpg" alt="Ưu đãi" width="100">
-                    </td>
-                    <td>Giảm giá vé thứ 3</td>
-                    <td>GIẢM GIÁ</td>
-                    <td class="detail-cell">
-                        Mua 1 tặng 1 cho tất cả các suất chiếu vào thứ 3 hàng tuần. Áp dụng cho tất cả các rạp trên toàn quốc.
-                    </td>
-                    <td>01/06/2024 - 31/08/2024</td>
-                    <td>
-                        <span class="badge bg-warning text-dark">Sắp diễn ra</span>
-                    </td>
-                    <td>
-                        <a href="/sua-uu-dai?id=2" class="btn btn-sm btn-warning" title="Sửa">
-                            <i class="bi bi-pencil-square"></i>
-                        </a>
-                        <a href="/xoa-uu-dai?id=2"
-                        onclick="return confirm('Bạn có chắc chắn muốn xóa ưu đãi này không?')"
-                        class="btn btn-sm btn-danger" title="Xóa">
-                            <i class="bi bi-trash"></i>
-                        </a>
+                    <td colspan="8" class="text-center py-4">
+                        <div class="text-muted">
+                            <i class="bi bi-inbox" style="font-size: 3rem;"></i>
+                            <h5 class="mt-3">Không có ưu đãi nào</h5>
+                            <p>Hãy thêm ưu đãi mới để bắt đầu quản lý.</p>
+                            <a href="/them-uu-dai" class="btn btn-primary">
+                                <i class="bi bi-plus-circle"></i> Thêm ưu đãi đầu tiên
+                            </a>
+                        </div>
                     </td>
                 </tr>
+                @endforelse
             </tbody>
         </table>
     </div>

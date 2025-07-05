@@ -67,7 +67,7 @@
                     </ul><br>
 
                     <div class="tab-content mt-3" id="phimTabContent">
-                        <!-- Tab PHIM ĐANG CHIẾU -->
+                        <!-- Tab PHIM ĐANG CHIẾU - Dynamic Data -->
                         <div
                         class="tab-pane fade show active"
                         id="dang-chieu"
@@ -76,110 +76,48 @@
                         >
                         <div id="carouselDangChieu" class="carousel slide" data-bs-ride="carousel" data-bs-interval="5000">
                             <div class="carousel-inner">
-                                <div class="carousel-item active">
-                                    <div class="row">
-                                        <div class="col-6 col-md-4 col-lg-3">
-                                            <div class="movie-card">
-                                                <img src="/static/imgs/latmat1.jpg" class="img-fluid  carousel-img-inner" alt="...">
-                                                <a href="#" class="book-hover-btn">Đặt vé</a>
-                                            </div>  
-                                            <div class="movie-card-text">
-                                                <p>Lật mặt 7: Một điều ước</p>
+                                <?php if(count($phimDangChieu ?? []) > 0): ?>
+                                    <?php
+                                        $chunks = array_chunk($phimDangChieu, 4);
+                                    ?>
+                                    <?php $__currentLoopData = $chunks; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $index => $chunk): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                                    <div class="carousel-item <?php echo e($index === 0 ? 'active' : ''); ?>">
+                                        <div class="row">
+                                            <?php $__currentLoopData = $chunk; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $phim): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                                            <div class="col-6 col-md-4 col-lg-3">
+                                                <div class="movie-card">
+                                                    <img src="<?php echo e($phim['pt_anhposter'] ?? '/static/imgs/placeholder-movie.jpg'); ?>" class="img-fluid carousel-img-inner" alt="<?php echo e($phim['p_tenphim']); ?>" onerror="this.src='/static/imgs/placeholder-movie.jpg'">
+                                                    <a href="/dat-ve?phim=<?php echo e($phim['p_maphim']); ?>" class="book-hover-btn">Đặt vé</a>
+                                                </div>  
+                                                <div class="movie-card-text">
+                                                    <p><?php echo e($phim['p_tenphim']); ?></p>
+                                                </div>
+                                                <div class="book-bg">
+                                                    <a href="/dat-ve?phim=<?php echo e($phim['p_maphim']); ?>" class="book-tk">Đặt vé</a>
+                                                </div>                                                                    
                                             </div>
-                                            <div class="book-bg">
-                                                <a href="#" class="book-tk">Đặt vé</a>
-                                            </div>                                                                    
+                                            <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                                         </div>
-                                        <div class="col-6 col-md-4 col-lg-3">
-                                            <div class="movie-card">
-                                                <img src="./static/imgs/1-onl-17217488966071748078747-2402.jpg" class="img-fluid  carousel-img-inner" alt="...">
-                                                <a href="#" class="book-hover-btn">Đặt vé</a>
-                                            </div>
-                                            <div class="movie-card-text">
-                                                <p>Lật mặt 7: Một điều ước</p>
-                                            </div>
-                                            <div class="book-bg">
-                                                <a href="#" class="book-tk">Đặt vé</a>
-                                            </div>   
-                                        </div>
-                                        <div class="col-6 col-md-4 col-lg-3">
-                                            <div class="movie-card">
-                                                <img src="/static/imgs/conan-movie-26-16932064940221048161862.webp" class="img-fluid  carousel-img-inner" alt="...">
-                                                <a href="#" class="book-hover-btn">Đặt vé</a>
-                                            </div>
-                                            <div class="movie-card-text">
-                                                <p>Lật mặt 7: Một điều ước</p>
-                                            </div>
-                                            <div class="book-bg">
-                                                <a href="#" class="book-tk">Đặt vé</a>
-                                            </div>
-                                        </div>
-                                        <div class="col-6 col-md-4 col-lg-3">
-                                            <div class="movie-card">
-                                                <img src="/static/imgs/lilo-500_1747389395062.jpg" class="img-fluid carousel-img-inner" alt="...">
-                                                <a href="#" class="book-hover-btn">Đặt vé</a>
-                                            </div>
-                                            <div class="movie-card-text">
-                                                <p>Lật mặt 7: Một điều ước</p>
-                                            </div>
-                                            <div class="book-bg">
-                                                <a href="#" class="book-tk">Đặt vé</a>
+                                    </div>
+                                    <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+                                <?php else: ?>
+                                    <div class="carousel-item active">
+                                        <div class="row">
+                                            <div class="col-6 col-md-4 col-lg-3">
+                                                <div class="movie-card">
+                                                    <img src="/static/imgs/latmat1.jpg" class="img-fluid carousel-img-inner" alt="...">
+                                                    <a href="#" class="book-hover-btn">Đặt vé</a>
+                                                </div>  
+                                                <div class="movie-card-text">
+                                                    <p>Chưa có phim đang chiếu</p>
+                                                </div>
+                                                <div class="book-bg">
+                                                    <a href="#" class="book-tk">Đặt vé</a>
+                                                </div>                                                                    
                                             </div>
                                         </div>
                                     </div>
-                                </div>
-                                <div class="carousel-item">
-                                    <div class="row">
-                                        <div class="col-6 col-md-4 col-lg-3">
-                                            <div class="movie-card">
-                                                <img src="/static/imgs/latmat1.jpg" class="img-fluid  carousel-img-inner" alt="...">
-                                                <a href="#" class="book-hover-btn">Đặt vé</a>
-                                            </div>  
-                                            <div class="movie-card-text">
-                                                <p>Lật mặt 7: Một điều ước</p>
-                                            </div>
-                                            <div class="book-bg">
-                                                <a href="#" class="book-tk">Đặt vé</a>
-                                            </div>   
-                                        </div>
-                                        <div class="col-6 col-md-4 col-lg-3">
-                                            <div class="movie-card">
-                                                <img src="/static/imgs/1-onl-17217488966071748078747-2402.jpg" class="img-fluid  carousel-img-inner" alt="...">
-                                                <a href="#" class="book-hover-btn">Đặt vé</a>
-                                            </div>
-                                            <div class="movie-card-text">
-                                                <p>Lật mặt 7: Một điều ước</p>
-                                            </div>
-                                            <div class="book-bg">
-                                                <a href="#" class="book-tk">Đặt vé</a>
-                                            </div>   
-                                        </div>
-                                        <div class="col-6 col-md-4 col-lg-3">
-                                            <div class="movie-card">
-                                                <img src="/static/imgs/conan-movie-26-16932064940221048161862.webp" class="img-fluid  carousel-img-inner" alt="...">
-                                                <a href="#" class="book-hover-btn">Đặt vé</a>
-                                            </div>
-                                            <div class="movie-card-text">
-                                                <p>Lật mặt 7: Một điều ước</p>
-                                            </div>
-                                            <div class="book-bg">
-                                                <a href="#" class="book-tk">Đặt vé</a>
-                                            </div>
-                                        </div>
-                                        <div class="col-6 col-md-4 col-lg-3">
-                                            <div class="movie-card">
-                                                <img src="/static/imgs/lilo-500_1747389395062.jpg" class="img-fluid carousel-img-inner" alt="...">
-                                                <a href="#" class="book-hover-btn">Đặt vé</a>
-                                            </div>
-                                            <div class="movie-card-text">
-                                                <p>Lật mặt 7: Một điều ước</p>
-                                            </div>
-                                            <div class="book-bg">
-                                                <a href="#" class="book-tk">Đặt vé</a>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
+                                <?php endif; ?>
                             </div>
                             <button class="carousel-control-prev" type="button" data-bs-target="#carouselDangChieu" data-bs-slide="prev">
                                 <span class="carousel-control-prev-icon"></span>
@@ -189,7 +127,7 @@
                             </button>
                         </div>
                     </div>
-                    <!-- Tab PHIM SẮP CHIẾU -->
+                    <!-- Tab PHIM SẮP CHIẾU - Dynamic Data -->
                     <div
                     class="tab-pane fade"
                     id="sap-chieu"
@@ -198,86 +136,42 @@
                     >
                         <div id="carouselSapChieu" class="carousel slide" data-bs-ride="carousel" data-bs-interval="5000">
                             <div class="carousel-inner">
-                                <div class="carousel-item active">
-                                    <div class="row">
-                                        <div class="col-6 col-md-4 col-lg-3">
-                                            <img src="/static/imgs/C2-1.webp" class="img-fluid carousel-img-inner" alt="...">
-                                            <div class="movie-card-text">
-                                                <p>Lật mật 7: Một điều ước</p>
+                                <?php if(count($phimSapChieu ?? []) > 0): ?>
+                                    <?php
+                                        $chunks = array_chunk($phimSapChieu, 4);
+                                    ?>
+                                    <?php $__currentLoopData = $chunks; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $index => $chunk): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                                    <div class="carousel-item <?php echo e($index === 0 ? 'active' : ''); ?>">
+                                        <div class="row">
+                                            <?php $__currentLoopData = $chunk; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $phim): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                                            <div class="col-6 col-md-4 col-lg-3">
+                                                <img src="<?php echo e($phim['pt_anhposter'] ?? '/static/imgs/C2-1.webp'); ?>" class="img-fluid carousel-img-inner" alt="<?php echo e($phim['p_tenphim']); ?>" onerror="this.src='/static/imgs/C2-1.webp'">
+                                                <div class="movie-card-text">
+                                                    <p><?php echo e($phim['p_tenphim']); ?></p>
+                                                </div>
+                                                <div class="book-bg">
+                                                    <a href="#" class="book-tk">Sắp chiếu</a>
+                                                </div>
                                             </div>
-                                            <div class="book-bg">
-                                                <a href="#" class="book-tk">Đặt vé</a>
-                                            </div>
-                                        </div>
-                                        <div class="col-6 col-md-4 col-lg-3">
-                                            <img src="/static/imgs/C2-2.jpg" class="img-fluid carousel-img-inner" alt="...">
-                                            <div class="movie-card-text">
-                                                <p>Lật mật 7: Một điều ước</p>
-                                            </div>
-                                            <div class="book-bg">
-                                                <a href="#" class="book-tk">Đặt vé</a>
-                                            </div>
-                                        </div>
-                                        <div class="col-6 col-md-4 col-lg-3">
-                                            <img src="/static/imgs/C2-4.webp" class="img-fluid carousel-img-inner" alt="...">
-                                            <div class="movie-card-text">
-                                                <p>Lật mật 7: Một điều ước</p>
-                                            </div>
-                                            <div class="book-bg">
-                                                <a href="#" class="book-tk">Đặt vé</a>
-                                            </div>
-                                        </div>
-                                        <div class="col-6 col-md-4 col-lg-3">
-                                            <img src="/static/imgs/C2-5.jpg" class="img-fluid carousel-img-inner" alt="...">
-                                            <div class="movie-card-text">
-                                                <p>Lật mật 7: Một điều ước</p>
-                                            </div>
-                                            <div class="book-bg">
-                                                <a href="#" class="book-tk">Đặt vé</a>
-                                            </div>
+                                            <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                                         </div>
                                     </div>
-                                </div>
-                                <div class="carousel-item">
-                                    <div class="row">
-                                        <div class="col-6 col-md-4 col-lg-3">
-                                            <img src="/static/imgs/C2-1.webp" class="img-fluid carousel-img-inner" alt="...">
-                                            <div class="movie-card-text">
-                                                    <p>Lật mật 7: Một điều ước</p>
+                                    <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+                                <?php else: ?>
+                                    <div class="carousel-item active">
+                                        <div class="row">
+                                            <div class="col-6 col-md-4 col-lg-3">
+                                                <img src="/static/imgs/C2-1.webp" class="img-fluid carousel-img-inner" alt="...">
+                                                <div class="movie-card-text">
+                                                    <p>Chưa có phim sắp chiếu</p>
                                                 </div>
                                                 <div class="book-bg">
                                                     <a href="#" class="book-tk">Đặt vé</a>
-                                            </div>
-                                        </div>
-                                        <div class="col-6 col-md-4 col-lg-3">
-                                            <img src="/static/imgs/C2-2.jpg" class="img-fluid carousel-img-inner" alt="...">
-                                            <div class="movie-card-text">
-                                                <p>Lật mật 7: Một điều ước</p>
-                                            </div>
-                                            <div class="book-bg">
-                                                <a href="#" class="book-tk">Đặt vé</a>
-                                            </div>
-                                        </div>                                         
-                                        <div class="col-6 col-md-4 col-lg-3">
-                                            <img src="/static/imgs/C2-4.webp" class="img-fluid carousel-img-inner" alt="...">
-                                            <div class="movie-card-text">
-                                                <p>Lật mật 7: Một điều ước</p>
-                                            </div>
-                                            <div class="book-bg">
-                                                <a href="#" class="book-tk">Đặt vé</a>
-                                            </div>
-                                        </div>
-                                        <div class="col-6 col-md-4 col-lg-3">
-                                            <img src="/static/imgs/C2-5.jpg" class="img-fluid carousel-img-inner" alt="...">
-                                            <div class="movie-card-text">
-                                                <p>Lật mật 7: Một điều ước</p>
-                                            </div>
-                                            <div class="book-bg">
-                                                <a href="#" class="book-tk">Đặt vé</a>
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
-                                </div>
+                                <?php endif; ?>
                             </div>
                             <button class="carousel-control-prev" type="button" data-bs-target="#carouselSapChieu" data-bs-slide="prev">
                                 <span class="carousel-control-prev-icon"></span>
@@ -291,29 +185,45 @@
                 <br>
                 <hr style="color:#fff; border-width: 2px;">
                 <br><br>
+                <!-- ƯU ĐÃI VÀ DỊCH VỤ - Dynamic Data -->
                 <div>
                     <h1 class="align-text">ƯU ĐÃI VÀ DỊCH VỤ</h1><br>
+                    
                     <div class="row">
-                        <div class="col-6 col-md-3 mb-3">
-                            <a href="#">
-                                <img src="/static/imgs/DV-1.jpg" alt="..." class="img-fluid service-img">
-                            </a>                             
-                        </div>
-                        <div class="col-6 col-md-3 mb-3">
-                            <a href="#">
-                                <img src="/static/imgs/DV-2.png" alt="..." class="img-fluid service-img">
-                            </a>                              
-                        </div>
-                        <div class="col-6 col-md-3 mb-3">
-                            <a href="#">
-                                <img src="/static/imgs/DV-3.jpg" alt="..." class="img-fluid service-img">
-                            </a>                              
-                        </div>
-                        <div class="col-6 col-md-3 mb-3">
-                            <a href="#">
-                                <img src="/static/imgs/DV-4.jpg" alt="..." class="img-fluid service-img">
-                            </a>                               
-                        </div>
+                        <?php $__empty_1 = true; $__currentLoopData = $uuDaiList ?? []; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $index => $uuDai): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); $__empty_1 = false; ?>
+                            <?php if($index < 4): ?>
+                            <div class="col-6 col-md-3 mb-3">
+                                <a href="/uu-dai">
+                                    <img src="<?php echo e($uuDai['udtc_anhuudai']); ?>" 
+                                         alt="<?php echo e($uuDai['udtc_tenuudai']); ?>" 
+                                         class="img-fluid service-img" 
+                                         onerror="this.src='/static/imgs/DV-<?php echo e($index + 1); ?>.jpg'">
+                                </a>                             
+                            </div>
+                            <?php endif; ?>
+                        <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); if ($__empty_1): ?>
+                            
+                            <div class="col-6 col-md-3 mb-3">
+                                <a href="/uu-dai">
+                                    <img src="/static/imgs/DV-1.jpg" alt="..." class="img-fluid service-img">
+                                </a>                             
+                            </div>
+                            <div class="col-6 col-md-3 mb-3">
+                                <a href="/uu-dai">
+                                    <img src="/static/imgs/DV-2.png" alt="..." class="img-fluid service-img">
+                                </a>                              
+                            </div>
+                            <div class="col-6 col-md-3 mb-3">
+                                <a href="/uu-dai">
+                                    <img src="/static/imgs/DV-3.jpg" alt="..." class="img-fluid service-img">
+                                </a>                              
+                            </div>
+                            <div class="col-6 col-md-3 mb-3">
+                                <a href="/uu-dai">
+                                    <img src="/static/imgs/DV-4.jpg" alt="..." class="img-fluid service-img">
+                                </a>                               
+                            </div>
+                        <?php endif; ?>
                     </div>
                 </div>
             </div><br>

@@ -29,22 +29,26 @@ $router->add('GET', '/them-poster', 'QuanLyTrangChuController@themPoster');
 $router->add('POST', '/them-poster', 'QuanLyTrangChuController@storePoster');
 $router->add('GET', '/sua-poster', 'QuanLyTrangChuController@suaPoster');
 $router->add('POST', '/sua-poster', 'QuanLyTrangChuController@capNhatPoster');
-$router->add('GET', '/them-uu-dai', 'QuanLyTrangChuController@themUuDai');
-$router->add('POST', '/them-uu-dai', 'QuanLyTrangChuController@storeUuDai');
-$router->add('POST', '/luu-poster', 'QuanLyTrangChuController@luuPoster');
-$router->add('GET', '/sua-uu-dai', 'QuanLyTrangChuController@suauuDai');
-$router->add('POST', '/sua-uu-dai', 'QuanLyTrangChuController@updateUuDai');
 $router->add('GET', '/danh-sach-poster', 'QuanLyTrangChuController@danhSachPoster');
 $router->add('POST', '/cap-nhat-poster', 'QuanLyTrangChuController@capNhatPoster');
 $router->add('GET', '/xoa-poster', 'QuanLyTrangChuController@xoaPoster');
-//quanlyphim
-$router->add('GET', '/quan-ly-phim', 'QuanLyPhimController@quanLyPhim');
-$router->add('GET', '/them-phim', 'QuanLyPhimController@themPhim');
-$router->add('POST', '/them-phim', 'QuanLyPhimController@storePhim');
-$router->add('GET', '/sua-phim', 'QuanLyPhimController@suaPhim');
-$router->add('POST', '/sua-phim', 'QuanLyPhimController@updatePhim');
-$router->add('GET', '/doi-trang-thai-phim', 'QuanLyPhimController@doiTrangThaiPhim');
-$router->add('POST', '/doi-trang-thai-phim', 'QuanLyPhimController@changeStatus');
+$router->add('POST', '/luu-poster', 'QuanLyTrangChuController@luuPoster');
+
+$router->add('GET', '/them-uu-dai-home', 'QuanLyTrangChuController@themUuDai');
+$router->add('POST', '/luu-uu-dai-home', 'QuanLyTrangChuController@luuUuDai');
+$router->add('GET', '/sua-uu-dai-home', 'QuanLyTrangChuController@suaUuDai');
+$router->add('POST', '/cap-nhat-uu-dai-home', 'QuanLyTrangChuController@capNhatUuDai');
+$router->add('GET', '/xoa-uu-dai-home', 'QuanLyTrangChuController@xoaUuDai');
+
+
+//quanlyphim - CRUD hoàn chỉnh
+$router->add('GET', '/quan-ly-phim', 'QuanLyPhimController@quanLyPhim');       
+$router->add('GET', '/them-phim', 'QuanLyPhimController@themPhim');              
+$router->add('POST', '/luu-phim', 'QuanLyPhimController@luuPhim');              
+$router->add('GET', '/sua-phim', 'QuanLyPhimController@suaPhim');             
+$router->add('POST', '/cap-nhat-phim', 'QuanLyPhimController@capNhatPhim');      
+$router->add('GET', '/doi-trang-thai-phim', 'QuanLyPhimController@doiTrangThaiPhim');  
+$router->add('POST', '/cap-nhat-trang-thai', 'QuanLyPhimController@capNhatTrangThai'); 
 
 //quanlylichchieu
 $router->add('GET', '/quan-ly-lich-chieu', 'QuanLyLichChieuController@quanLyLichChieu');
@@ -55,6 +59,14 @@ $router->add('POST', '/sua-lich-chieu', 'QuanLyLichChieuController@updateLichChi
 
 //phongghe
 $router->add('GET', '/quan-ly-phong-ghe', 'QuanLyPhongGheController@quanLyPhongGhe');
+$router->add('GET', '/quan-ly-phong-ghe', 'QuanLyPhongGheController@quanLyPhongGhe');
+$router->add('GET', '/tao-so-do-ghe', 'QuanLyPhongGheController@showTaoSoDoGhe');
+$router->add('POST', '/luu-so-do-ghe', 'QuanLyPhongGheController@luuSoDoGhe');
+$router->add('GET', '/check-room-available', 'QuanLyPhongGheController@checkRoomAvailable');
+$router->add('POST', '/update-seat-status', 'QuanLyPhongGheController@updateSeatStatus');
+$router->add('POST', '/update-seat-type', 'QuanLyPhongGheController@updateSeatType');
+$router->add('GET', '/get-seat-statistics', 'QuanLyPhongGheController@getSeatStatistics');
+$router->add('POST', '/bulk-update-seat-types', 'QuanLyPhongGheController@bulkUpdateSeatTypes');
 
 //quanlydondatve
 $router->add('GET', '/quan-ly-don-dat-ve', 'QuanLyDonDatVeController@quanLyDonDatVe');
@@ -66,12 +78,13 @@ $router->add('POST', '/huy-don-dat-ve', 'QuanLyDonDatVeController@huyDonDatVe');
 $router->add('GET', '/dat-ve-tai-quay', 'DatVeTaiQuayController@datVeTaiQuay');
 $router->add('POST', '/dat-ve-tai-quay', 'DatVeTaiQuayController@storeDatVe');
 
-//uudai
+// UuDai Admin Routes
 $router->add('GET', '/quan-ly-uu-dai', 'UuDaiAdminController@uuDai');
 $router->add('GET', '/them-uu-dai', 'UuDaiAdminController@themUuDai');
 $router->add('POST', '/them-uu-dai', 'UuDaiAdminController@storeUuDai');
 $router->add('GET', '/sua-uu-dai', 'UuDaiAdminController@suaUuDai');
 $router->add('POST', '/sua-uu-dai', 'UuDaiAdminController@updateUuDai');
+$router->add('GET', '/xoa-uu-dai', 'UuDaiAdminController@deleteUuDai');
 
 //user
 $router->add('GET', '/quan-ly-nguoi-dung', 'QuanLyNguoiDungController@quanLyNguoiDung');
