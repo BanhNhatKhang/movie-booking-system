@@ -4,6 +4,16 @@
 @section('content')
 <main>
     <div class="container">
+        {{-- Thông báo đăng nhập thành công --}}
+        @if(isset($_SESSION['success_message']))
+            <div class="alert alert-success alert-dismissible fade show" role="alert">
+                <strong>{{ $_SESSION['success_message'] }}</strong>
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+            @php
+                unset($_SESSION['success_message']);
+            @endphp
+        @endif
         <div class="row div-pad">
             <div class="col">
                 <!--Poster quảng cáo phim-->

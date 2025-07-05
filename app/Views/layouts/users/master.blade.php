@@ -16,6 +16,21 @@
     @yield('content')
     @include('layouts.users.Footer')
     @yield('page-js')
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/dist/js/bootstrap.bundle.min.js" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Tự động ẩn alert sau 3 giây
+            const alerts = document.querySelectorAll('.alert');
+            alerts.forEach(function(alert) {
+                setTimeout(function() {
+                    if (alert && alert.parentNode) {
+                        // Sử dụng Bootstrap fade out
+                        const bsAlert = new bootstrap.Alert(alert);
+                        bsAlert.close();
+                    }
+                }, 3000); // 3000ms = 3 giây
+            });
+        });
+    </script>
 </body>
 </html>

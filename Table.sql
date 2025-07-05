@@ -16,6 +16,7 @@ CREATE TABLE nguoi_dung (
     nd_tendangnhap VARCHAR(255),
     nd_matkhau VARCHAR(255),
     nd_ngaydangky DATE,
+    nd_trangthai VARCHAR(15),
     nd_role VARCHAR(10)
 );
 
