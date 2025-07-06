@@ -68,7 +68,7 @@
     <!-- Form -->
     <form method="POST" enctype="multipart/form-data" action="/luu-phim" id="form-them-phim">
         
-        <!-- ✅ Section 1: Thông tin cơ bản -->
+        <!--  Section 1: Thông tin cơ bản -->
         <div class="form-section">
             <h4 class="section-title">
                 <i class="bi bi-info-circle"></i> Thông tin cơ bản
@@ -141,7 +141,7 @@
             </div>
         </div>
 
-        <!-- ✅ Section 2: Thông tin sản xuất -->
+        <!--  Section 2: Thông tin sản xuất -->
         <div class="form-section">
             <h4 class="section-title">
                 <i class="bi bi-camera-reels"></i> Thông tin sản xuất

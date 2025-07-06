@@ -1,3 +1,4 @@
+
 @extends('layouts.admin.master')
 
 @section('title', 'Quản lý lịch chiếu')
@@ -12,32 +13,61 @@
 <div class="container py-4 content">
     <h1>Quản lý Lịch chiếu</h1>
     <hr>
+
+    {{-- Thông báo --}}
+    @if(isset($_SESSION['success_message']))
+        <div class="alert alert-success alert-dismissible fade show">
+            {{ $_SESSION['success_message'] }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+        @php unset($_SESSION['success_message']); @endphp
+    @endif
+
+    @if(isset($_SESSION['error_message']))
+        <div class="alert alert-danger alert-dismissible fade show">
+            {{ $_SESSION['error_message'] }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+        @php unset($_SESSION['error_message']); @endphp
+    @endif
+
     <div class="d-flex justify-content-between align-items-center mb-3">
         <a href="/them-lich-chieu" class="btn btn-primary">
             <i class="bi bi-plus-circle"></i> Thêm lịch chiếu mới
         </a>
-        <form class="d-flex gap-2 w-75 justify-content-end flex-wrap">
-            <input type="date" class="form-control w-auto" placeholder="Lọc theo ngày">
-            <select class="form-select w-auto" style="min-width:140px;">
+        
+        {{-- Filter Form --}}
+        <form class="d-flex gap-2 w-75 justify-content-end flex-wrap" method="GET">
+            <input type="date" class="form-control w-auto" name="ngay_chieu" 
+                   value="{{ $filters['ngay_chieu'] ?? '' }}" placeholder="Lọc theo ngày">
+            
+            <select class="form-select w-auto" name="trang_thai" style="min-width:140px;">
                 <option value="">Tất cả trạng thái</option>
-                <option>Sắp chiếu</option>
-                <option>Đang chiếu</option>
-                <option>Đã chiếu</option>
-                <option>Ẩn</option>
+                <option value="Sắp chiếu" {{ ($filters['trang_thai'] ?? '') === 'Sắp chiếu' ? 'selected' : '' }}>Sắp chiếu</option>
+                <option value="Đang chiếu" {{ ($filters['trang_thai'] ?? '') === 'Đang chiếu' ? 'selected' : '' }}>Đang chiếu</option>
+                <option value="Đã chiếu" {{ ($filters['trang_thai'] ?? '') === 'Đã chiếu' ? 'selected' : '' }}>Đã chiếu</option>
+                <option value="Hủy" {{ ($filters['trang_thai'] ?? '') === 'Hủy' ? 'selected' : '' }}>Hủy</option>
             </select>
-            <select class="form-select w-auto" style="min-width:170px;">
+            
+            <select class="form-select w-auto" name="ma_phim" style="min-width:170px;">
                 <option value="">Tất cả phim</option>
-                <option>Avengers: Endgame</option>
-                <option>Fast & Furious 10</option> 
+                @foreach($phimList ?? [] as $phim)
+                    <option value="{{ $phim['p_maphim'] }}" 
+                            {{ ($filters['ma_phim'] ?? '') === $phim['p_maphim'] ? 'selected' : '' }}>
+                        {{ $phim['p_tenphim'] }}
+                    </option>
+                @endforeach
             </select>
-            <select class="form-select w-auto" style="min-width:130px;">
-                <option value="">Tất cả phòng</option>
-                <option>Phòng 1</option>
-                <option>Phòng 2</option>
-            </select>
+            
             <button class="btn btn-outline-primary" type="submit">
                 <i class="bi bi-search"></i>
             </button>
+            
+            @if(array_filter($filters ?? []))
+                <a href="/quan-ly-lich-chieu" class="btn btn-outline-secondary">
+                    <i class="bi bi-arrow-clockwise"></i>
+                </a>
+            @endif
         </form>
     </div>
 
@@ -46,70 +76,106 @@
             <thead class="table-dark">
                 <tr>
                     <th>STT</th>
+                    <th>Mã LC</th>
                     <th>Phim</th>
-                    <th>Phòng chiếu</th>
                     <th>Ngày chiếu</th>
                     <th>Giờ bắt đầu</th>
-                    <th>Giá vé</th>
-                    <th>Định dạng</th>
-                    <th>Đã bán/SL ghế</th>
+                    <th>Thể loại</th>
+                    <th>Thời lượng</th>
                     <th>Trạng thái</th>
                     <th>Hành động</th>
                 </tr>
             </thead>
             <tbody>
-                <tr>
-                    <td>1</td>
-                    <td>Avengers: Endgame</td>
-                    <td>Phòng 1</td>
-                    <td>2024-06-18</td>
-                    <td>18:30</td>
-                    <td>100.000đ</td>
-                    <td>2D</td>
-                    <td>80/120</td>
-                    <td>
-                        <span class="badge bg-success">Sắp chiếu</span>
-                    </td>
-                    <td>
-                        <a href="/sua-lich-chieu" class="btn btn-sm btn-warning" title="Sửa">
-                            <i class="bi bi-pencil-square"></i>
-                        </a>
-                        <a href="/xoa-lich-chieu?id=5"
-                        onclick="return confirm('Bạn có chắc chắn muốn xóa lịch chiếu này không?')"
-                        class="btn btn-sm btn-danger" title="Xóa">
-                            <i class="bi bi-trash"></i>
-                        </a>
-                    </td>
-                </tr>
-                <tr>
-                    <td>2</td>
-                    <td>Fast & Furious 10</td>
-                    <td>Phòng 2</td>
-                    <td>2024-06-18</td>
-                    <td>20:00</td>
-                    <td>120.000đ</td>
-                    <td>3D</td>
-                    <td>50/100</td>
-                    <td>
-                        <span class="badge bg-secondary">Đã chiếu</span>
-                    </td>
-                    <td>
-                        <a href="/sua-lich-chieu" class="btn btn-sm btn-warning" title="Sửa">
-                            <i class="bi bi-pencil-square"></i>
-                        </a>
-                        <a href="/xoa-lich-chieu?id=6"
-                        onclick="return confirm('Bạn có chắc chắn muốn xóa lịch chiếu này không?')"
-                        class="btn btn-sm btn-danger" title="Xóa">
-                            <i class="bi bi-trash"></i>
-                        </a>
-                    </td>
-                </tr>
+                @forelse($lichChieuList ?? [] as $index => $lichChieu)
+                    <tr>
+                        <td>{{ $index + 1 }}</td>
+                        <td>{{ $lichChieu['lc_malichchieu'] }}</td>
+                        <td>
+                            <strong>{{ $lichChieu['p_tenphim'] ?? 'N/A' }}</strong>
+                        </td>
+                        <td>{{ date('d/m/Y', strtotime($lichChieu['lc_ngaychieu'])) }}</td>
+                        <td>{{ date('H:i', strtotime($lichChieu['lc_giobatdau'])) }}</td>
+                        <td>{{ $lichChieu['p_theloai'] ?? 'N/A' }}</td>
+                        <td>{{ $lichChieu['p_thoiluong'] ?? 'N/A' }} phút</td>
+                        <td>
+                            @if($lichChieu['lc_trangthai'] === 'Sắp chiếu')
+                                <span class="badge bg-warning text-dark">Sắp chiếu</span>
+                            @elseif($lichChieu['lc_trangthai'] === 'Đang chiếu')
+                                <span class="badge bg-success">Đang chiếu</span>
+                            @elseif($lichChieu['lc_trangthai'] === 'Đã chiếu')
+                                <span class="badge bg-secondary">Đã chiếu</span>
+                            @else
+                                <span class="badge bg-danger">{{ $lichChieu['lc_trangthai'] }}</span>
+                            @endif
+                        </td>
+                        <td>
+                            <a href="/sua-lich-chieu?id={{ $lichChieu['lc_malichchieu'] }}" 
+                               class="btn btn-sm btn-warning me-1" title="Sửa">
+                                <i class="bi bi-pencil-square"></i>
+                            </a>
+                            <a href="/xoa-lich-chieu?id={{ $lichChieu['lc_malichchieu'] }}"
+                               class="btn btn-sm btn-danger delete-btn" 
+                               title="Xóa"
+                               data-name="{{ $lichChieu['p_tenphim'] ?? 'lịch chiếu này' }}">
+                                <i class="bi bi-trash"></i>
+                            </a>
+                        </td>
+                    </tr>
+                @empty
+                    <tr>
+                        <td colspan="9" class="text-center py-4">
+                            <div class="text-muted">
+                                <i class="bi bi-calendar-x fs-1"></i>
+                                <p class="mt-2">Không có lịch chiếu nào</p>
+                                <a href="/them-lich-chieu" class="btn btn-primary">
+                                    <i class="bi bi-plus-circle"></i> Thêm lịch chiếu đầu tiên
+                                </a>
+                            </div>
+                        </td>
+                    </tr>
+                @endforelse
             </tbody>
         </table>
     </div>
+    
+    @if(count($lichChieuList ?? []) > 0)
+        <div class="text-muted small">
+            Tổng số: {{ count($lichChieuList) }} lịch chiếu
+        </div>
+    @endif
+    
     <hr>
 </div>
 @endsection
 
 @section('page-js')
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Handle delete confirmation
+    const deleteBtns = document.querySelectorAll('.delete-btn');
+    deleteBtns.forEach(btn => {
+        btn.addEventListener('click', function(e) {
+            e.preventDefault();
+            const name = this.getAttribute('data-name');
+            const href = this.getAttribute('href');
+            
+            if (confirm(`Bạn có chắc chắn muốn xóa lịch chiếu "${name}" không?`)) {
+                window.location.href = href;
+            }
+        });
+    });
+
+    // Auto dismiss alerts
+    setTimeout(function() {
+        const alerts = document.querySelectorAll('.alert');
+        alerts.forEach(alert => {
+            if (alert.querySelector('.btn-close')) {
+                alert.querySelector('.btn-close').click();
+            }
+        });
+    }, 5000);
+});
+</script>
 @endsection
