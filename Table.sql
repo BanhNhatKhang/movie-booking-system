@@ -81,7 +81,7 @@ CREATE TABLE uu_dai_trang_chu (
 CREATE TABLE loai_ve (
     lv_maloaive VARCHAR(10) PRIMARY KEY,
     lv_tenloaive VARCHAR(255),
-    lv_giatien MONEY
+    lv_giatien NUMERIC(10, 0),
 );
 
 -- Bảng LICH_CHIEU
@@ -90,13 +90,14 @@ CREATE TABLE lich_chieu (
     lc_ngaychieu DATE,
     lc_giobatdau TIMESTAMP,
     lc_trangthai VARCHAR(15),
-    p_maphim VARCHAR(10) REFERENCES phim(p_maphim)
+    p_maphim VARCHAR(10) REFERENCES phim(p_maphim),
+    pc_maphongchieu VARCHAR(10) REFERENCES phong_chieu(pc_maphongchieu)
 );
 
 -- Bảng THANH_TOAN
 CREATE TABLE thanh_toan (
     tt_mathanhtoan VARCHAR(10) PRIMARY KEY,
-    tt_sotien MONEY,
+    tt_sotien NUMERIC(10, 0),
     tt_phuongthuc VARCHAR(255),
     tt_thoigianthanhtoan TIMESTAMP,
     nd_id VARCHAR(10) REFERENCES nguoi_dung(nd_id)
@@ -106,7 +107,8 @@ CREATE TABLE thanh_toan (
 CREATE TABLE ve (
     v_mave VARCHAR(10) PRIMARY KEY,
     v_ngaydat DATE,
-    v_tongtien MONEY,
+    v_tongtien NUMERIC(10, 0),
+    v_trangthai VARCHAR(20) DEFAULT 'chua_in', 
     nd_id VARCHAR(10) REFERENCES nguoi_dung(nd_id),
     tt_mathanhtoan VARCHAR(10) REFERENCES thanh_toan(tt_mathanhtoan),
     g_maghe VARCHAR(10) REFERENCES ghe(g_maghe),

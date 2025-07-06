@@ -3,101 +3,180 @@
 namespace App\Controllers;
 
 use Jenssegers\Blade\Blade;
+use App\Models\Ve;
+use App\Helpers\AuthHelper;
+use Exception;
 
 class QuanLyDonDatVeController
 {
-    private function checkAdminAuth()
+    private $veModel;
+    private $blade;
+
+    public function __construct()
     {
-        // Kiểm tra đăng nhập
-        if (!isset($_SESSION['logged_in']) || $_SESSION['logged_in'] !== true) {
-            $_SESSION['error_message'] = 'Vui lòng đăng nhập để truy cập trang admin!';
-            header('Location: /dang-nhap');
-            exit;
-        }
-        
-        // Kiểm tra role admin
-        if (!isset($_SESSION['user_role']) || $_SESSION['user_role'] !== 'admin') {
-            $_SESSION['error_message'] = 'Bạn không có quyền truy cập trang admin!';
-            header('Location: /'); // Chuyển về trang chủ user
-            exit;
-        }
+        $this->veModel = new Ve();
+        $this->blade = new Blade(
+            realpath(__DIR__ . '/../Views'),
+            realpath(__DIR__ . '/../../cache')
+        );
     }
 
     public function quanLyDonDatVe()
     {
-        $this->checkAdminAuth();
-        $blade = new Blade(
-            realpath(__DIR__ . '/../Views'),
-            realpath(__DIR__ . '/../../cache')
-        );
-        echo $blade->render('admin-views.QuanLyDonDatVe.QuanLyDonDatVe', ['activePage' => 'admin-orders']);
+        AuthHelper::checkAccess('admin_only');
+        
+        try {
+            $search = $_GET['search'] ?? '';
+            $paymentMethod = $_GET['payment_method'] ?? '';
+            $date = $_GET['date'] ?? '';
+            $printStatus = $_GET['print_status'] ?? ''; // Thêm filter trạng thái in
+            $page = max(1, (int)($_GET['page'] ?? 1));
+            $limit = 10;
+            $offset = ($page - 1) * $limit;
+            
+            $filters = [
+                'search' => $search,
+                'payment_method' => $paymentMethod,
+                'date' => $date,
+                'print_status' => $printStatus
+            ];
+            
+            $stats = $this->veModel->getVeStatsByTime();
+            $orders = $this->veModel->getAllVeWithDetails($limit, $offset, $filters);
+            $totalOrders = $this->veModel->countVe($filters);
+            $totalPages = max(1, ceil($totalOrders / $limit));
+            
+            echo $this->blade->render('admin-views.QuanLyDonDatVe.QuanLyDonDatVe', [
+                'activePage' => 'admin-orders',
+                'orders' => $orders,
+                'currentPage' => $page,
+                'totalPages' => $totalPages,
+                'totalOrders' => $totalOrders,
+                'filters' => $filters,
+                'stats' => $stats
+            ]);
+            
+        } catch (Exception $e) {
+            error_log("Error in quanLyDonDatVe: " . $e->getMessage());
+            
+            echo $this->blade->render('admin-views.QuanLyDonDatVe.QuanLyDonDatVe', [
+                'activePage' => 'admin-orders',
+                'orders' => [],
+                'currentPage' => 1,
+                'totalPages' => 1,
+                'totalOrders' => 0,
+                'filters' => [],
+                'stats' => []
+            ]);
+        }
     }
+
     public function chiTietDonDatVe()
     {
-        $this->checkAdminAuth();
-        $blade = new Blade(
-            realpath(__DIR__ . '/../Views'),
-            realpath(__DIR__ . '/../../cache')
-        );
-        echo $blade->render('admin-views.QuanLyDonDatVe.ChiTietDon', ['activePage' => 'admin-orders']);
-    }
-    public function xuatve()
-    {
-        $this->checkAdminAuth();
-        $orders = [
-            [
-                'id'=>1001,
-                'user'=>'Nguyễn Văn B',
-                'movie'=>'Thanh Gươm Diệt Quỷ',
-                'showtime'=>'08:30 25/06/2024',
-                'seats'=>'G09, G10',
-                'price'=>170000,
-                'date'=>'2024-06-20',
-                'status'=>'paid'
-            ],
-            [
-                'id'=>1002,
-                'user'=>'Trần Thị C',
-                'movie'=>'Hành Trình Về Miền Đất Hứa',
-                'showtime'=>'10:00 26/06/2024',
-                'seats'=>'A01',
-                'price'=>70000,
-                'date'=>'2024-06-21',
-                'status'=>'unpaid'
-            ],
-            [
-                'id'=>1003,
-                'user'=>'Lê Văn D',
-                'movie'=>'Ký Ức Mùa Hè',
-                'showtime'=>'14:00 22/06/2024',
-                'seats'=>'B05, B06, B07',
-                'price'=>210000,
-                'date'=>'2024-06-19',
-                'status'=>'cancelled'
-            ],
-        ];
-
-        $id = isset($_GET['id']) ? intval($_GET['id']) : 0;
-        $order = null;
-        foreach($orders as $o) {
-            if($o['id'] == $id) {
-                $order = $o;
-                break;
+        AuthHelper::checkAccess('admin_only');
+        
+        try {
+            $veMaVe = $_GET['id'] ?? '';
+            
+            if (empty($veMaVe)) {
+                $_SESSION['error_message'] = 'Mã vé không hợp lệ';
+                header('Location: /quan-ly-don-dat-ve');
+                exit;
             }
+            
+            $order = $this->veModel->getVeById($veMaVe);
+            
+            echo $this->blade->render('admin-views.QuanLyDonDatVe.ChiTietDon', [
+                'activePage' => 'admin-orders',
+                'order' => $order
+            ]);
+            
+        } catch (Exception $e) {
+            error_log("Error in chiTietDonDatVe: " . $e->getMessage());
+            $_SESSION['error_message'] = 'Có lỗi xảy ra: ' . $e->getMessage();
+            header('Location: /quan-ly-don-dat-ve');
+            exit;
         }
+    }
 
-        if(!$order) {
-            die('Không tìm thấy đơn đặt vé!');
+    public function xuatVeWord()
+    {
+        AuthHelper::checkAccess('admin_only');
+        
+        try {
+            $veMaVe = $_GET['id'] ?? '';
+            
+            if (empty($veMaVe)) {
+                $_SESSION['error_message'] = 'Mã vé không hợp lệ';
+                header('Location: /quan-ly-don-dat-ve');
+                exit;
+            }
+            
+            $order = $this->veModel->getVeById($veMaVe);
+            
+            if (!$order) {
+                $_SESSION['error_message'] = 'Không tìm thấy vé';
+                header('Location: /quan-ly-don-dat-ve');
+                exit;
+            }
+            
+            // CHỈ HIỂN THỊ - KHÔNG TỰ ĐỘNG CẬP NHẬT
+            echo $this->blade->render('admin-views.QuanLyDonDatVe.XuatVeWord', [
+                'order' => $order
+            ]);
+            
+        } catch (Exception $e) {
+            error_log("Error in xuatVeWord: " . $e->getMessage());
+            $_SESSION['error_message'] = 'Có lỗi xảy ra khi xuất vé';
+            header('Location: /quan-ly-don-dat-ve');
+            exit;
         }
-
-        header("Content-type: application/vnd.ms-word");
-        header("Content-Disposition: attachment;Filename=Ve_{$order['id']}.doc");
-
-        $blade = new Blade(
-            realpath(__DIR__ . '/../Views'),
-            realpath(__DIR__ . '/../../cache')
-        );
-
-        echo $blade->render('admin-views.QuanLyDonDatVe.XuatVeWord', ['order' => $order]);
+    }
+    
+    public function processVePrint()
+    {
+        AuthHelper::checkAccess('admin_only');
+        
+        try {
+            $veMaVe = $_POST['ve_id'] ?? '';
+            
+            if (empty($veMaVe)) {
+                $_SESSION['error_message'] = 'Mã vé không hợp lệ';
+                header('Location: /quan-ly-don-dat-ve');
+                exit;
+            }
+            
+            $order = $this->veModel->getVeById($veMaVe);
+            
+            if (!$order) {
+                $_SESSION['error_message'] = 'Không tìm thấy vé';
+                header('Location: /quan-ly-don-dat-ve');
+                exit;
+            }
+            
+            // CẬP NHẬT trạng thái in vé
+            $currentStatus = $order['v_trangthai'] ?? 'chua_in';
+            $printSuccess = false;
+            
+            if ($currentStatus == 'chua_in') {
+                $updateResult = $this->veModel->updatePrintStatus($veMaVe, 'da_in');
+                if ($updateResult) {
+                    $printSuccess = true;
+                    $order['v_trangthai'] = 'da_in';
+                }
+            }
+            
+            // Hiển thị lại trang với thông báo
+            echo $this->blade->render('admin-views.QuanLyDonDatVe.XuatVeWord', [
+                'order' => $order,
+                'print_success' => $printSuccess
+            ]);
+            
+        } catch (Exception $e) {
+            error_log("Error in processVePrint: " . $e->getMessage());
+            $_SESSION['error_message'] = 'Có lỗi xảy ra khi in vé';
+            header('Location: /quan-ly-don-dat-ve');
+            exit;
+        }
     }
 }

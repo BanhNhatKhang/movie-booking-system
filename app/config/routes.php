@@ -88,8 +88,9 @@ $router->add('POST', '/bulk-update-seat-types', 'QuanLyPhongGheController@bulkUp
 //quanlydondatve
 $router->add('GET', '/quan-ly-don-dat-ve', 'QuanLyDonDatVeController@quanLyDonDatVe');
 $router->add('GET', '/chi-tiet-don-dat-ve', 'QuanLyDonDatVeController@chiTietDonDatVe');
-$router->add('GET', '/xuat-ve-word', 'QuanLyDonDatVeController@xuatve');
+$router->add('GET', '/xuat-ve-word', 'QuanLyDonDatVeController@xuatveWord');
 $router->add('POST', '/huy-don-dat-ve', 'QuanLyDonDatVeController@huyDonDatVe');
+$router->add('POST', '/process-ve-print', 'QuanLyDonDatVeController@processVePrint');
 
 //datvetaiquay
 $router->add('GET', '/dat-ve-tai-quay', 'DatVeTaiQuayController@datVeTaiQuay');

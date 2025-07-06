@@ -85,20 +85,20 @@
                                     <br><small class="text-muted">{{ $nv['nd_tendangnhap'] ?? 'N/A' }}</small>
                                 </td>
                                 <td>
-    <div class="d-flex align-items-center">
-        <div>
-            <strong>{{ $nv['nd_hoten'] }}</strong>
-            @if($nv['nd_id'] === $_SESSION['user_id'])
-                <span class="badge bg-primary ms-1">
-                    <i class="bi bi-person-check me-1"></i>Bạn
-                </span>
-            @endif
-            <br><span class="badge bg-danger">
-                <i class="bi bi-shield-check me-1"></i>Admin
-            </span>
-        </div>
-    </div>
-</td>
+                                    <div class="d-flex align-items-center">
+                                        <div>
+                                            <strong>{{ $nv['nd_hoten'] }}</strong>
+                                            @if($nv['nd_id'] === $_SESSION['user_id'])
+                                                <span class="badge bg-primary ms-1">
+                                                    <i class="bi bi-person-check me-1"></i>Bạn
+                                                </span>
+                                            @endif
+                                            <br><span class="badge bg-danger">
+                                                <i class="bi bi-shield-check me-1"></i>Admin
+                                            </span>
+                                        </div>
+                                    </div>
+                                </td>
                                 <td>{{ $nv['nd_email'] }}</td>
                                 <td>
                                     @if(!empty($nv['nd_sdt']))

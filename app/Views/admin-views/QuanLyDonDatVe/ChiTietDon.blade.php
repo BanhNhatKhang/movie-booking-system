@@ -1,4 +1,3 @@
-{{-- filepath: c:\Servers\test\app\Views\admin-views\QuanLyDonDatVe\ChiTietDon.blade.php --}}
 @extends('layouts.admin.master')
 
 @section('title', 'Chi tiết đơn đặt vé')
@@ -11,103 +10,171 @@
 @endsection
 
 @section('content')
-@php
-    // Dữ liệu mẫu, thực tế lấy từ DB
-    $orders = [
-        [
-            'id'=>1001,
-            'user'=>'Nguyễn Văn B',
-            'movie'=>'Thanh Gươm Diệt Quỷ',
-            'showtime'=>'08:30 25/06/2024',
-            'seats'=>'G09, G10',
-            'price'=>170000,
-            'date'=>'2024-06-20',
-            'status'=>'paid'
-        ],
-        [
-            'id'=>1002,
-            'user'=>'Trần Thị C',
-            'movie'=>'Hành Trình Về Miền Đất Hứa',
-            'showtime'=>'10:00 26/06/2024',
-            'seats'=>'A01',
-            'price'=>70000,
-            'date'=>'2024-06-21',
-            'status'=>'unpaid'
-        ],
-        [
-            'id'=>1003,
-            'user'=>'Lê Văn D',
-            'movie'=>'Ký Ức Mùa Hè',
-            'showtime'=>'14:00 22/06/2024',
-            'seats'=>'B05, B06, B07',
-            'price'=>210000,
-            'date'=>'2024-06-19',
-            'status'=>'cancelled'
-        ],
-    ];
-    $id = isset($_GET['id']) ? intval($_GET['id']) : 0;
-    $order = null;
-    foreach($orders as $o) {
-        if($o['id'] == $id) {
-            $order = $o;
-            break;
-        }
-    }
-@endphp
-
 <div class="container py-4 content">
     <div>
         @if($order)
-            <h1 class="mb-4">Chi tiết vé #{{ $order['id'] }}</h1>
-            <div class="mb-3 row">
-                <div class="order-label col-sm-4">Người dùng:</div>
-                <div class="order-value col-sm-8">{{ $order['user'] }}</div>
-            </div>
-            <div class="mb-3 row">
-                <div class="order-label col-sm-4">Tên phim:</div>
-                <div class="order-value col-sm-8">{{ $order['movie'] }}</div>
-            </div>
-            <div class="mb-3 row">
-                <div class="order-label col-sm-4">Suất chiếu:</div>
-                <div class="order-value col-sm-8">{{ $order['showtime'] }}</div>
-            </div>
-            <div class="mb-3 row">
-                <div class="order-label col-sm-4">Ghế:</div>
-                <div class="order-value col-sm-8">{{ $order['seats'] }}</div>
-            </div>
-            <div class="mb-3 row">
-                <div class="order-label col-sm-4">Giá:</div>
-                <div class="order-value col-sm-8">{{ number_format($order['price'],0,',','.') }} VNĐ</div>
-            </div>
-            <div class="mb-3 row">
-                <div class="order-label col-sm-4">Ngày đặt:</div>
-                <div class="order-value col-sm-8">{{ date('d/m/Y', strtotime($order['date'])) }}</div>
-            </div>
-            <div class="mb-3 row">
-                <div class="order-label col-sm-4">Thanh toán:</div>
-                <div class="order-value col-sm-8">
-                    @if($order['status']=='paid')
-                        <span class="badge status-paid">Đã thanh toán</span>
-                    @elseif($order['status']=='unpaid')
-                        <span class="badge status-unpaid">Chưa thanh toán</span>
-                    @else
-                        <span class="badge status-cancelled">Đã hủy</span>
-                    @endif
+            <h1 class="mb-4">Chi tiết vé #{{ $order['v_mave'] }}</h1>
+            
+            <!-- Thông báo -->
+            @if(isset($_SESSION['success_message']))
+                <div class="alert alert-success alert-dismissible fade show">
+                    {{ $_SESSION['success_message'] }}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                </div>
+                <?php unset($_SESSION['success_message']); ?>
+            @endif
+            
+            @if(isset($_SESSION['error_message']))
+                <div class="alert alert-danger alert-dismissible fade show">
+                    {{ $_SESSION['error_message'] }}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                </div>
+                <?php unset($_SESSION['error_message']); ?>
+            @endif
+            
+            <div class="row">
+                <div class="col-md-8">
+                    <div class="card">
+                        <div class="card-header">
+                            <h5>Thông tin vé</h5>
+                        </div>
+                        <div class="card-body">
+                            <div class="mb-3 row">
+                                <div class="order-label col-sm-4">Mã vé:</div>
+                                <div class="order-value col-sm-8"><strong>{{ $order['v_mave'] }}</strong></div>
+                            </div>
+                            <div class="mb-3 row">
+                                <div class="order-label col-sm-4">Khách hàng:</div>
+                                <div class="order-value col-sm-8">
+                                    {{ $order['nd_hoten'] ?: 'Khách vãng lai' }}
+                                    @if($order['nd_email'])
+                                        <br><small class="text-muted">{{ $order['nd_email'] }}</small>
+                                    @endif
+                                    @if($order['nd_sdt'])
+                                        <br><small class="text-muted">{{ $order['nd_sdt'] }}</small>
+                                    @endif
+                                </div>
+                            </div>
+                            <div class="mb-3 row">
+                                <div class="order-label col-sm-4">Tên phim:</div>
+                                <div class="order-value col-sm-8">{{ $order['p_tenphim'] }}</div>
+                            </div>
+                            <div class="mb-3 row">
+                                <div class="order-label col-sm-4">Suất chiếu:</div>
+                                <div class="order-value col-sm-8">
+                                    {{ date('H:i d/m/Y', strtotime($order['lc_giobatdau'])) }}
+                                    @if($order['lc_ngaychieu'])
+                                        <br><small class="text-muted">Ngày: {{ date('d/m/Y', strtotime($order['lc_ngaychieu'])) }}</small>
+                                    @endif
+                                </div>
+                            </div>
+                            <div class="mb-3 row">
+                                <div class="order-label col-sm-4">Phòng chiếu:</div>
+                                <div class="order-value col-sm-8">{{ $order['pc_tenphong'] }}</div>
+                            </div>
+                            <div class="mb-3 row">
+                                <div class="order-label col-sm-4">Ghế:</div>
+                                <div class="order-value col-sm-8">
+                                    <span class="badge bg-info fs-6">{{ $order['g_maghe'] }}</span>
+                                </div>
+                            </div>
+                            <div class="mb-3 row">
+                                <div class="order-label col-sm-4">Loại vé:</div>
+                                <div class="order-value col-sm-8">{{ $order['lv_tenloaive'] }}</div>
+                            </div>
+                            <div class="mb-3 row">
+                                <div class="order-label col-sm-4">Giá:</div>
+                                <div class="order-value col-sm-8">
+                                    <strong class="text-success">{{ number_format($order['v_tongtien'], 0, ',', '.') }} VNĐ</strong>
+                                </div>
+                            </div>
+                            <div class="mb-3 row">
+                                <div class="order-label col-sm-4">Ngày đặt:</div>
+                                <div class="order-value col-sm-8">{{ date('d/m/Y H:i', strtotime($order['v_ngaydat'])) }}</div>
+                            </div>
+                            <div class="mb-3 row">
+                                <div class="order-label col-sm-4">Trạng thái in:</div>
+                                <div class="order-value col-sm-8">
+                                    @if ($order['v_trangthai'] == 'chua_in')
+                                        <span class="badge bg-warning">
+                                            <i class="bi bi-clock me-1"></i>Chưa in
+                                        </span>
+                                    @else
+                                        <span class="badge bg-success">
+                                            <i class="bi bi-check-circle me-1"></i>Đã in
+                                        </span>
+                                    @endif
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="col-md-4">
+                    <div class="card">
+                        <div class="card-header">
+                            <h5>Thông tin thanh toán</h5>
+                        </div>
+                        <div class="card-body">
+                            <div class="mb-3">
+                                <div class="order-label">Trạng thái:</div>
+                                <div class="order-value">
+                                    @if($order['tt_mathanhtoan'])
+                                        <span class="badge bg-success status-paid">Đã thanh toán</span>
+                                    @else
+                                        <span class="badge bg-warning status-unpaid">Chưa thanh toán</span>
+                                    @endif
+                                </div>
+                            </div>
+                            
+                            @if($order['tt_phuongthuc'])
+                                <div class="mb-3">
+                                    <div class="order-label">Phương thức:</div>
+                                    <div class="order-value">{{ $order['tt_phuongthuc'] }}</div>
+                                </div>
+                            @endif
+                            
+                            @if($order['tt_thoigianthanhtoan'])
+                                <div class="mb-3">
+                                    <div class="order-label">Thời gian thanh toán:</div>
+                                    <div class="order-value">{{ date('d/m/Y H:i', strtotime($order['tt_thoigianthanhtoan'])) }}</div>
+                                </div>
+                            @endif
+                        </div>
+                    </div>
                 </div>
             </div>
+            
             <div class="mt-4">
-                <a href="/quan-ly-don-dat-ve" class="btn btn-secondary">Quay lại</a>
-                @if($order['status']!='cancelled')
-                <a href="/huy-don?id={{ $order['id'] }}" class="btn btn-danger" onclick="return confirm('Bạn chắc chắn muốn hủy vé này?')">Hủy vé</a>
+                <a href="/quan-ly-don-dat-ve" class="btn btn-secondary">
+                    <i class="bi bi-arrow-left me-2"></i>Quay lại
+                </a>
+                
+                @if($order['tt_mathanhtoan'])
+                    <a href="/xuat-ve-word?id={{ $order['v_mave'] }}" class="btn btn-success">
+                        <i class="bi bi-download me-2"></i>In vé
+                    </a>
                 @endif
-                <a href="/xuat-ve-word?id={{ $order['id'] }}" class="btn btn-success">Xuất vé Word</a>
+                
+                @php
+                    $canCancel = true;
+                    if ($order['lc_giobatdau']) {
+                        $showTime = strtotime($order['lc_giobatdau']);
+                        $currentTime = time();
+                        $timeDiff = $showTime - $currentTime;
+                        $canCancel = $timeDiff >= 7200; // 2 giờ
+                    }
+                @endphp
             </div>
         @else
             <div class="alert alert-danger text-center">
+                <i class="bi bi-exclamation-triangle fs-3 d-block mb-2"></i>
                 Không tìm thấy đơn đặt vé!
             </div>
             <div class="mt-4 text-center">
-                <a href="/quan-ly-don-dat-ve" class="btn btn-secondary">Quay lại</a>
+                <a href="/quan-ly-don-dat-ve" class="btn btn-secondary">
+                    <i class="bi bi-arrow-left me-2"></i>Quay lại
+                </a>
             </div>
         @endif
     </div>
