@@ -2,17 +2,20 @@
 
 namespace App\Controllers;
 use App\Models\Phim;
+use App\Models\LichChieu; 
 use Jenssegers\Blade\Blade;
 use Exception;
 
 class MovieController
 {
     private $phimModel;
+    private $lichChieuModel; 
     private $blade;
 
     public function __construct()
     {
         $this->phimModel = new Phim();
+        $this->lichChieuModel = new LichChieu(); 
         $this->blade = new Blade(
             realpath(__DIR__ . '/../Views'),
             cachePath: realpath(__DIR__ . '/../../cache')
@@ -37,7 +40,7 @@ class MovieController
             // Format dữ liệu cho view
             $phimDangChieu = [];
             foreach ($phimList as $phim) {
-                // ✅ Sửa cách format poster path
+                // Sửa cách format poster path
                 $posterPath = '';
                 if (!empty($phim['pt_anhposter'])) {
                     // Nếu đã có đường dẫn đầy đủ
@@ -59,7 +62,7 @@ class MovieController
                     'release' => $phim['p_phathanh'],
                     'desc' => $phim['p_mota'],
                     'trailer' => $phim['p_trailer'],
-                    'poster' => $posterPath, // ✅ Sử dụng đường dẫn đã format
+                    'poster' => $posterPath, 
                     'status' => $phim['p_trangthai'],
                     'director' => $phim['p_daodien'],
                     'actors' => $phim['p_dienvien']
@@ -130,40 +133,67 @@ class MovieController
     public function chiTietPhim()
     {
         try {
-            $id = $_GET['id'] ?? '';
-            if (empty($id)) {
+            $phimId = $_GET['id'] ?? '';
+            
+            error_log("=== CHI TIET PHIM DEBUG ===");
+            error_log("Phim ID: " . $phimId);
+            
+            if (empty($phimId)) {
+                error_log("Empty phim ID");
+                $_SESSION['error_message'] = 'Không tìm thấy thông tin phim!';
                 header('Location: /phim-dang-chieu');
                 exit;
             }
 
-            $phim = $this->phimModel->getPhimById($id);
+            // Lấy thông tin phim
+            $phim = $this->phimModel->getPhimById($phimId);
+            error_log("Phim data: " . json_encode($phim));
+            
             if (!$phim) {
-                header('Location: /phim-dang-chieu?error=not_found');
+                error_log("Phim not found in database");
+                $_SESSION['error_message'] = 'Phim không tồn tại!';
+                header('Location: /phim-dang-chieu');
                 exit;
             }
 
-            // Format dữ liệu cho view
-            $phimDetail = [
+            // Format dữ liệu phim
+            $phimData = [
                 'id' => $phim['p_maphim'],
                 'name' => $phim['p_tenphim'],
+                'poster' => $phim['pt_anhposter'] ?? '/static/imgs/no-poster.jpg',
                 'genre' => $phim['p_theloai'],
+                'director' => $phim['p_daodien'],
+                'actors' => $phim['p_dienvien'],
                 'duration' => $phim['p_thoiluong'],
                 'release' => $phim['p_phathanh'],
                 'desc' => $phim['p_mota'],
                 'trailer' => $phim['p_trailer'],
-                'poster' => $phim['pt_anhposter'] ?? '/static/imgs/no-poster.jpg',
-                'status' => $phim['p_trangthai'],
-                'director' => $phim['p_daodien'],
-                'actors' => $phim['p_dienvien']
+                'status' => $phim['p_trangthai']
             ];
+            
+            error_log("Formatted phim data: " . json_encode($phimData));
+
+            // Lấy lịch chiếu của phim
+            $lichChieuList = $this->lichChieuModel->getLichChieuByPhim($phimId);
+            error_log("LichChieu list count: " . count($lichChieuList));
+            
+            // Tổ chức lịch chiếu theo ngày
+            $lichChieuByDate = $this->organizeLichChieuByDate($lichChieuList);
+            error_log("Organized lichChieu: " . json_encode($lichChieuByDate));
 
             echo $this->blade->render('users-views.Phim.ChiTietPhim', [
-                'phim' => $phimDetail,
-                'activePage' => 'movies'
+                'activePage' => 'chi-tiet-phim',  
+                'phim' => $phimData,
+                'lichChieuByDate' => $lichChieuByDate
             ]);
+
         } catch (Exception $e) {
-            error_log("Error in chiTietPhim: " . $e->getMessage());
-            header('Location: /phim-dang-chieu?error=system_error');
+            error_log("=== ERROR IN CHI TIET PHIM ===");
+            error_log("Error message: " . $e->getMessage());
+            error_log("Error trace: " . $e->getTraceAsString());
+            
+            $_SESSION['error_message'] = 'Có lỗi xảy ra khi tải thông tin phim: ' . $e->getMessage();
+            header('Location: /phim-dang-chieu');
             exit;
         }
     }
@@ -173,8 +203,273 @@ class MovieController
      */
     public function chonGhe()
     {
-        echo $this->blade->render('users-views.Phim.ChonGhe', [
-            'activePage' => 'movies'
-        ]);
+        try {
+            $lichChieuId = $_GET['lich_chieu'] ?? '';
+            
+            error_log("=== CHON GHE DEBUG ===");
+            error_log("Lich Chieu ID: " . $lichChieuId);
+            
+            if (empty($lichChieuId)) {
+                $_SESSION['error_message'] = 'Không tìm thấy thông tin lịch chiếu!';
+                header('Location: /phim-dang-chieu');
+                exit;
+            }
+
+            // Lấy thông tin lịch chiếu với phòng chiếu
+            $lichChieu = $this->lichChieuModel->getLichChieuWithPhongChieu($lichChieuId);
+            error_log("Lich Chieu data: " . json_encode($lichChieu));
+            
+            if (!$lichChieu) {
+                $_SESSION['error_message'] = 'Lịch chiếu không tồn tại!';
+                header('Location: /phim-dang-chieu');
+                exit;
+            }
+
+            
+            if (!in_array($lichChieu['lc_trangthai'], ['Sắp chiếu', 'Đang chiếu'])) {
+                $_SESSION['error_message'] = 'Suất chiếu này không thể đặt vé! Trạng thái: ' . $lichChieu['lc_trangthai'];
+                header('Location: /chi-tiet-phim?id=' . $lichChieu['p_maphim']);
+                exit;
+            }
+
+            // Lấy danh sách ghế của phòng
+            $phongChieuModel = new \App\Models\PhongChieu();
+            $gheList = $phongChieuModel->getGheByPhongChieu($lichChieu['pc_maphongchieu']);
+            error_log("Ghe list count: " . count($gheList));
+            
+            
+            if (empty($gheList)) {
+                $_SESSION['error_message'] = 'Phòng chiếu chưa được thiết lập sơ đồ ghế!';
+                header('Location: /chi-tiet-phim?id=' . $lichChieu['p_maphim']);
+                exit;
+            }
+            
+            // Lấy danh sách ghế đã đặt cho lịch chiếu này
+            $gheDaDat = $phongChieuModel->getGheDaDatByLichChieu($lichChieuId);
+            error_log("Ghe da dat: " . json_encode($gheDaDat));
+            
+            // Tổ chức ghế theo hàng (A, B, C...)
+            $gheByRow = $this->organizeGheByRow($gheList, $gheDaDat);
+            error_log("Ghe by row: " . json_encode($gheByRow));
+            
+            // Tính giá vé theo loại ghế
+            $giaBanVe = $this->getGiaBanVe();
+
+            echo $this->blade->render('users-views.Phim.ChonGhe', [
+                'activePage' => 'movies',
+                'lichChieu' => $lichChieu,
+                'gheByRow' => $gheByRow,
+                'giaBanVe' => $giaBanVe,
+                'lichChieuId' => $lichChieuId
+            ]);
+
+        } catch (Exception $e) {
+            error_log("=== ERROR IN CHON GHE ===");
+            error_log("Error message: " . $e->getMessage());
+            error_log("Error trace: " . $e->getTraceAsString());
+            
+            $_SESSION['error_message'] = 'Có lỗi xảy ra khi tải trang chọn ghế: ' . $e->getMessage();
+            header('Location: /phim-dang-chieu');
+            exit;
+        }
+    }
+
+    /**
+     * Nhóm lịch chiếu theo ngày
+     */
+    private function groupLichChieuByDate($lichChieuList)
+    {
+        $grouped = [];
+        
+        foreach ($lichChieuList as $lichChieu) {
+            $ngayChieu = $lichChieu['lc_ngaychieu'];
+            $gioChieu = date('H:i', strtotime($lichChieu['lc_giobatdau']));
+            
+            if (!isset($grouped[$ngayChieu])) {
+                $grouped[$ngayChieu] = [];
+            }
+            
+            $grouped[$ngayChieu][] = [
+                'id' => $lichChieu['lc_malichchieu'],
+                'gio' => $gioChieu,
+                'trangthai' => $lichChieu['lc_trangthai']
+            ];
+        }
+
+        // Sắp xếp theo ngày và giờ
+        ksort($grouped);
+        foreach ($grouped as &$gioList) {
+            usort($gioList, function($a, $b) {
+                return strcmp($a['gio'], $b['gio']);
+            });
+        }
+
+        return $grouped;
+    }
+
+    /**
+     * Tổ chức ghế theo hàng
+     */
+    private function organizeGheByRow($gheList, $gheDaDat)
+    {
+        $organized = [];
+        
+        foreach ($gheList as $ghe) {
+            try {
+               
+                $maGhe = $ghe['g_maghe'];
+                
+                // Format 1: PC001_A01
+                if (strpos($maGhe, '_') !== false) {
+                    $parts = explode('_', $maGhe);
+                    if (count($parts) >= 2) {
+                        $rowAndSeat = $parts[1]; // A01, B01, etc.
+                        $row = substr($rowAndSeat, 0, 1); // A, B, C...
+                        $seatNumber = substr($rowAndSeat, 1); // 01, 02, 03...
+                    }
+                } 
+                // Format 2: A01, B01 (direct)
+                elseif (preg_match('/^([A-Z])(\d+)$/', $maGhe, $matches)) {
+                    $row = $matches[1];
+                    $seatNumber = $matches[2];
+                }
+                // Format 3: Fallback
+                else {
+                    // Thử extract từ 2 ký tự đầu
+                    $row = substr($maGhe, 0, 1);
+                    $seatNumber = substr($maGhe, 1);
+                }
+                
+                if (!isset($organized[$row])) {
+                    $organized[$row] = [];
+                }
+                
+                // Xác định trạng thái ghế
+                $trangThai = 'available';
+                if (in_array($ghe['g_maghe'], $gheDaDat)) {
+                    $trangThai = 'sold';
+                } elseif (isset($ghe['g_trangthai']) && $ghe['g_trangthai'] !== 'available') {
+                    $trangThai = $ghe['g_trangthai'];
+                }
+                
+                $organized[$row][] = [
+                    'ma_ghe' => $ghe['g_maghe'],
+                    'loai_ghe' => $ghe['g_loaighe'] ?? 'normal',
+                    'trang_thai' => $trangThai,
+                    'seat_number' => $seatNumber,
+                    'display_code' => $row . str_pad($seatNumber, 2, '0', STR_PAD_LEFT)
+                ];
+                
+            } catch (Exception $seatError) {
+                error_log("Error processing seat: " . $ghe['g_maghe'] . " - " . $seatError->getMessage());
+                continue; // Skip seat này
+            }
+        }
+        
+        // Sắp xếp theo thứ tự alphabet cho row và số ghế
+        ksort($organized);
+        foreach ($organized as &$seats) {
+            usort($seats, function($a, $b) {
+                return (int)$a['seat_number'] - (int)$b['seat_number'];
+            });
+        }
+        
+        return $organized;
+    }
+
+    /**
+     * Lấy bảng giá vé
+     */
+    private function getGiaBanVe()
+    {
+        return [
+            'normal' => 70000,
+            'vip' => 90000,
+            'luxury' => 120000,
+            'couple' => 150000
+        ];
+    }
+
+    /**
+     * Tổ chức lịch chiếu theo ngày
+     */
+    private function organizeLichChieuByDate($lichChieuList)
+    {
+        $organized = [];
+        
+        foreach ($lichChieuList as $lichChieu) {
+            try {
+                $ngay = $lichChieu['lc_ngaychieu'];
+                
+                
+                $gioChieuRaw = $lichChieu['lc_giobatdau'];
+                
+                // Nếu có cả ngày và giờ trong field
+                if (strpos($gioChieuRaw, ' ') !== false) {
+                    $gio = date('H:i', strtotime($gioChieuRaw));
+                } else {
+                    // Nếu chỉ có giờ
+                    $gio = date('H:i', strtotime($gioChieuRaw));
+                }
+                
+                
+                $trangthai = 'Sắp chiếu';
+                
+                try {
+                    $now = new \DateTime();
+                    
+                    // Tạo datetime cho lịch chiếu
+                    if (strpos($gioChieuRaw, ' ') !== false) {
+                        // Format: "2025-07-07 09:00:00"
+                        $lichChieuTime = new \DateTime($gioChieuRaw);
+                    } else {
+                        // Format: "09:00:00"
+                        $lichChieuTime = new \DateTime($ngay . ' ' . $gioChieuRaw);
+                    }
+                    
+                    if ($lichChieuTime < $now) {
+                        $trangthai = 'Đã chiếu';
+                    } else {
+                        // Tạo copy để avoid modifying original
+                        $nowPlus15 = clone $now;
+                        $nowPlus15->add(new \DateInterval('PT15M'));
+                        
+                        if ($lichChieuTime <= $nowPlus15) {
+                            $trangthai = 'Đang chiếu';
+                        }
+                    }
+                } catch (Exception $dateError) {
+                    error_log("Error processing datetime: " . $dateError->getMessage());
+                    // Keep default "Sắp chiếu"
+                }
+                
+                if (!isset($organized[$ngay])) {
+                    $organized[$ngay] = [];
+                }
+                
+                $organized[$ngay][] = [
+                    'id' => $lichChieu['lc_malichchieu'],
+                    'gio' => $gio,
+                    'trangthai' => $trangthai,
+                    'phong' => $lichChieu['pc_maphongchieu'] ?? 'N/A'
+                ];
+                
+            } catch (Exception $itemError) {
+                error_log("Error processing lich chieu item: " . $itemError->getMessage());
+                continue; 
+            }
+        }
+        
+        // Sắp xếp theo ngày
+        ksort($organized);
+        
+        // Sắp xếp theo giờ trong mỗi ngày
+        foreach ($organized as &$gioList) {
+            usort($gioList, function($a, $b) {
+                return strcmp($a['gio'], $b['gio']);
+            });
+        }
+        
+        return $organized;
     }
 }

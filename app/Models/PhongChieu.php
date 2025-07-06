@@ -4,6 +4,7 @@ namespace App\Models;
 
 use App\Core\BaseModel;
 use Exception;
+use PDO;
 
 class PhongChieu extends BaseModel
 {
@@ -110,6 +111,46 @@ class PhongChieu extends BaseModel
         } catch (Exception $e) {
             error_log("Error updating room: " . $e->getMessage());
             return false;
+        }
+    }
+
+    public function getGheByPhongChieu($phongChieuId)
+    {
+        try {
+            $sql = "SELECT g.*, 
+                           CASE 
+                               WHEN v.g_maghe IS NOT NULL THEN 'Đã đặt'
+                               ELSE g.g_trangthai
+                           END as trangthai_hienthi
+                    FROM ghe g
+                    LEFT JOIN ve v ON g.g_maghe = v.g_maghe
+                    WHERE g.pc_maphongchieu = ?
+                    ORDER BY g.g_maghe";
+            
+            $stmt = $this->db->prepare($sql);
+            $stmt->execute([$phongChieuId]);
+            return $stmt->fetchAll(PDO::FETCH_ASSOC);
+        } catch (Exception $e) {
+            error_log("Error getting ghe by phong chieu: " . $e->getMessage());
+            return [];
+        }
+    }
+
+    public function getGheDaDatByLichChieu($lichChieuId)
+    {
+        try {
+            $sql = "SELECT DISTINCT v.g_maghe
+                    FROM ve v
+                    WHERE v.lc_malichchieu = ?";
+            
+            $stmt = $this->db->prepare($sql);
+            $stmt->execute([$lichChieuId]);
+            $result = $stmt->fetchAll(PDO::FETCH_COLUMN);
+            
+            return $result ?: [];
+        } catch (Exception $e) {
+            error_log("Error getting ghe da dat: " . $e->getMessage());
+            return [];
         }
     }
 }

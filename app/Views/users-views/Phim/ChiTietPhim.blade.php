@@ -1,4 +1,3 @@
-
 @extends('layouts.users.master')
 
 @section('page-css')
@@ -10,52 +9,58 @@
     <div class="container mt-3">
         <div class="bg-light-subtle border rounded">
             <div class="row flex-column flex-lg-row p-2">
-                <div class="col-lg-4 mb-3 mb-lg-0 ">
-                    <img src="/static/imgs/latmat1.jpg" class="img-fluid" alt="Lật Mặt 7" />
+                <div class="col-lg-4 mb-3 mb-lg-0">
+                    <img src="{{ $phim['poster'] }}" class="img-fluid" alt="{{ $phim['name'] }}" 
+                         onerror="this.src='/static/imgs/no-poster.jpg'" />
                 </div>
                 <div class="col-lg-8">
                     <div class="row bg-light-subtle border rounded text-dark p-3 me-3 align-items-start">
                         <div class="col-lg-9 col-md-12">
                             <div>
-                                <p class="fs-3">LẬT MẶT 7: MỘT ĐIỀU ƯỚC</p>
-                                <p class="fs-5">FACE OFF 7: ONE WISH</p>
+                                <p class="fs-3">{{ strtoupper($phim['name']) }}</p>
+                                <p class="fs-5">{{ strtoupper($phim['name']) }}</p>
                                 <hr class="red-bold-hr">
                                 <div>
-                                    <p><span class="fw-semibold">Thể loại :</span> Tình cảm, Gia đình - Lồng tiếng</p>
-                                    <p><span class="fw-semibold">Đạo diễn :</span> Lý Hải</p>
-                                    <p><span class="fw-semibold">Ngày chiếu :</span> 26/04/2025</p>
-                                    <p><span class="fw-semibold">Diễn viên :</span> Thanh Hiền, Trương Minh Cường, Đinh Y Nhung, Quách Ngọc Tuyên, Trâm Anh, Trần Kim Hải</p>
-                                    <p><span class="fw-semibold">Thời lượng :</span> 138 phút</p>
+                                    <p><span class="fw-semibold">Thể loại :</span> {{ $phim['genre'] ?? 'Chưa xác định' }}</p>
+                                    <p><span class="fw-semibold">Đạo diễn :</span> {{ $phim['director'] ?? 'Chưa xác định' }}</p>
+                                    <p><span class="fw-semibold">Ngày chiếu :</span> 
+                                        @if($phim['release'])
+                                            {{ date('d/m/Y', strtotime($phim['release'])) }}
+                                        @else
+                                            Chưa xác định
+                                        @endif
+                                    </p>
+                                    <p><span class="fw-semibold">Diễn viên :</span> {{ $phim['actors'] ?? 'Chưa xác định' }}</p>
+                                    <p><span class="fw-semibold">Thời lượng :</span> {{ $phim['duration'] ?? 0 }} phút</p>
                                 </div>
                             </div>
                         </div>
-                        <div class="col-lg-3 col-md-12 mt-3 mt-lg-0 ">
-                            <button class="button-trailer openTrailerBtn w-100" data-trailer="https://www.youtube.com/embed/d1ZHdosjNX8">
-                                <i class="bi bi-play"></i>
-                                Trailer
-                            </button>
-                        </div>
-                        <div id="trailerModal" class="modal">
-                            <div class="modal-content">
-                                <span id="closeTrailerBtn" class="close">&times;</span>
-                                <iframe id="trailerVideo" width="100%" height="400px"
-                                    src=""
-                                    title="Trailer Video"
-                                    frameborder="0"
-                                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                                    allowfullscreen>
-                                </iframe>
-                            </div>
+                        <div class="col-lg-3 col-md-12 mt-3 mt-lg-0">
+                            @if($phim['trailer'])
+                                <button class="button-trailer openTrailerBtn w-100" data-trailer="{{ $phim['trailer'] }}">
+                                    <i class="bi bi-play"></i>
+                                    Trailer
+                                </button>
+                            @else
+                                <button class="btn btn-secondary w-100" disabled>
+                                    <i class="bi bi-film"></i>
+                                    Chưa có trailer
+                                </button>
+                            @endif
                         </div>
                     </div>
                 </div>
             </div>
+            
+            @if($phim['desc'])
             <div class="row p-4">
                 <div class="border rounded p-3 bg-danger-subtle">
                     <button class="btn btn-danger">Tóm tắt</button><hr>
-                    <p>Qua những lát cắt đan xen, ẩn chứa nhiều nụ cười và cả nước mắt, "Lật Mặt 7: Một Điều Ước" là câu chuyện cảm động về đại gia đình bà Hai 73 tuổi - người mẹ đơn thân tự mình nuôi 5 người con khôn lớn. Khi trưởng thành, mỗi người đều có cuộc sống và gia đình riêng. Bất chợt, biến cố ập đến, những góc khuất dần được hé lộ, những nỗi niềm, lo lắng, trĩu nặng ẩn sâu trong trái tim người mẹ. Trách nhiệm thuộc về ai?</p>
+                    <p>{{ $phim['desc'] }}</p>
                 </div>
             </div>
+            @endif
+            
             <div class="row p-4">
                 <div class="border rounded shadow-sm p-3 bg-white">
                     <button class="btn btn-danger mb-3 px-4 py-2 fw-bold">SUẤT CHIẾU</button>
@@ -65,77 +70,113 @@
                     <div class="border border-top-0 px-3 py-2">
                         3/2 Quận Ninh Kiều, TP Cần Thơ
                     </div>
-                    <div class="bg-dark text-white mt-3 px-3 py-2 rounded-top fw-bold">
-                        24/06/2024
-                    </div>
-                    <div class="border border-top-0 p-2 d-flex flex-wrap gap-2">
-                        <button class="btn btn-danger btn-sm">09:00</button>
-                        <button class="btn btn-danger btn-sm">10:30</button>
-                        <button class="btn btn-danger btn-sm">12:00</button>
-                        <button class="btn btn-danger btn-sm">13:45</button>
-                        <button class="btn btn-danger btn-sm">15:15</button>
-                        <button class="btn btn-danger btn-sm">16:45</button>
-                        <button class="btn btn-danger btn-sm">18:00</button>
-                        <button class="btn btn-danger btn-sm">19:30</button>
-                        <button class="btn btn-danger btn-sm">21:00</button>
-                        <button class="btn btn-danger btn-sm">22:30</button>
-                    </div>
-                    <div class="bg-dark text-white mt-3 px-3 py-2 rounded-top fw-bold">
-                        25/06/2024
-                    </div>
-                    <div class="border border-top-0 p-2 d-flex flex-wrap gap-2">
-                        <a href="/chon-ghe"><button class="btn btn-danger btn-sm">08:30</button></a>
-                        <button class="btn btn-danger btn-sm">10:00</button>
-                        <button class="btn btn-danger btn-sm">11:45</button>
-                        <button class="btn btn-danger btn-sm">13:00</button>
-                        <button class="btn btn-danger btn-sm">14:30</button>
-                        <button class="btn btn-danger btn-sm">16:00</button>
-                        <button class="btn btn-danger btn-sm">17:30</button>
-                        <button class="btn btn-danger btn-sm">19:00</button>
-                        <button class="btn btn-danger btn-sm">20:30</button>
-                        <button class="btn btn-danger btn-sm">22:00</button>
-                    </div>
-                    <div class="bg-dark text-white mt-3 px-3 py-2 rounded-top fw-bold">
-                        26/06/2024
-                    </div>
-                    <div class="border border-top-0 p-2 d-flex flex-wrap gap-2">
-                        <button class="btn btn-danger btn-sm">09:15</button>
-                        <button class="btn btn-danger btn-sm">10:45</button>
-                        <button class="btn btn-danger btn-sm">12:30</button>
-                        <button class="btn btn-danger btn-sm">14:00</button>
-                        <button class="btn btn-danger btn-sm">15:30</button>
-                        <button class="btn btn-danger btn-sm">17:00</button>
-                        <button class="btn btn-danger btn-sm">18:30</button>
-                        <button class="btn btn-danger btn-sm">20:00</button>
-                        <button class="btn btn-danger btn-sm">21:30</button>
-                        <button class="btn btn-danger btn-sm">23:00</button>
-                    </div>
+                    
+                    @forelse($lichChieuByDate as $ngay => $gioList)
+                        <div class="bg-dark text-white mt-3 px-3 py-2 rounded-top fw-bold">
+                            {{ date('d/m/Y', strtotime($ngay)) }}
+                        </div>
+                        <div class="border border-top-0 p-2 d-flex flex-wrap gap-2">
+                            @foreach($gioList as $lichChieu)
+                                @if($lichChieu['trangthai'] === 'Sắp chiếu')
+                                    <a href="/chon-ghe?lich_chieu={{ urlencode($lichChieu['id']) }}" class="text-decoration-none">
+                                        <button class="btn btn-danger btn-sm">
+                                            {{ $lichChieu['gio'] }}
+                                        </button>
+                                    </a>
+                                @elseif($lichChieu['trangthai'] === 'Đang chiếu')
+                                    <button class="btn btn-warning btn-sm" 
+                                            title="Phim đang chiếu - Không thể đặt vé">
+                                        {{ $lichChieu['gio'] }}
+                                    </button>
+                                @else
+                                    <button class="btn btn-secondary btn-sm" disabled 
+                                            title="Suất chiếu này đã {{ strtolower($lichChieu['trangthai']) }}">
+                                        {{ $lichChieu['gio'] }}
+                                    </button>
+                                @endif
+                            @endforeach
+                        </div>
+                    @empty
+                        <div class="text-center p-4">
+                            <i class="bi bi-calendar-x display-4 text-muted"></i>
+                            <h5 class="mt-3 text-muted">Hiện tại chưa có lịch chiếu</h5>
+                            <p class="text-muted">Vui lòng quay lại sau để xem lịch chiếu mới nhất</p>
+                        </div>
+                    @endforelse
                 </div>
             </div>
         </div>
     </div>
+
+    <!-- Modal Trailer -->
+    <div id="trailerModal" class="modal" style="display: none;">
+        <div class="modal-content">
+            <span id="closeTrailerBtn" class="close">&times;</span>
+            <iframe id="trailerVideo" width="100%" height="400px"
+                src=""
+                title="Trailer Video"
+                frameborder="0"
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                allowfullscreen>
+            </iframe>
+        </div>
+    </div>
 </main>
+
 <script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Trailer modal functionality
     const modal = document.getElementById("trailerModal");
     const iframe = document.getElementById("trailerVideo");
     const closeBtn = document.getElementById("closeTrailerBtn");
     const openBtns = document.querySelectorAll(".openTrailerBtn");
+
+    // Function to convert YouTube URL to embed URL
+    function getEmbedUrl(url) {
+        if (!url) return '';
+        
+        if (url.includes('youtube.com/watch?v=')) {
+            const videoId = url.split('v=')[1].split('&')[0];
+            return `https://www.youtube.com/embed/${videoId}`;
+        }
+        
+        if (url.includes('youtu.be/')) {
+            const videoId = url.split('youtu.be/')[1].split('?')[0];
+            return `https://www.youtube.com/embed/${videoId}`;
+        }
+        
+        if (url.includes('youtube.com/embed/')) {
+            return url;
+        }
+        
+        return url;
+    }
+
     openBtns.forEach(btn => {
         btn.addEventListener("click", () => {
-            const youtubeLink = btn.getAttribute("data-trailer");
-            iframe.src = youtubeLink + "?autoplay=1&rel=0";
+            const originalUrl = btn.getAttribute("data-trailer");
+            let embedUrl = getEmbedUrl(originalUrl);
+            
+            if (embedUrl.includes('youtube.com/embed/')) {
+                embedUrl += "?autoplay=1&rel=0";
+            }
+            
+            iframe.src = embedUrl;
             modal.style.display = "block";
         });
     });
+
     closeBtn.addEventListener("click", () => {
         modal.style.display = "none";
         iframe.src = "";
     });
+
     window.addEventListener("click", event => {
         if (event.target == modal) {
             modal.style.display = "none";
             iframe.src = "";
         }
     });
+});
 </script>
 @endsection

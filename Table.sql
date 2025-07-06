@@ -86,7 +86,7 @@ CREATE TABLE loai_ve (
 
 -- Bảng LICH_CHIEU
 CREATE TABLE lich_chieu (
-    lc_malichchieu VARCHAR(10) PRIMARY KEY,
+    lc_malichchieu VARCHAR(25) PRIMARY KEY,
     lc_ngaychieu DATE,
     lc_giobatdau TIMESTAMP,
     lc_trangthai VARCHAR(15),
@@ -113,5 +113,5 @@ CREATE TABLE ve (
     tt_mathanhtoan VARCHAR(10) REFERENCES thanh_toan(tt_mathanhtoan),
     g_maghe VARCHAR(10) REFERENCES ghe(g_maghe),
     lv_maloaive VARCHAR(10) REFERENCES loai_ve(lv_maloaive),
-    lc_malichchieu VARCHAR(10) REFERENCES lich_chieu(lc_malichchieu)
+    lc_malichchieu VARCHAR(25) REFERENCES lich_chieu(lc_malichchieu)
 );

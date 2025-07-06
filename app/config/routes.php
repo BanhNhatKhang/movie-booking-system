@@ -67,12 +67,13 @@ $router->add('POST', '/cap-nhat-phim', 'QuanLyPhimController@capNhatPhim');
 $router->add('GET', '/doi-trang-thai-phim', 'QuanLyPhimController@doiTrangThaiPhim');  
 $router->add('POST', '/cap-nhat-trang-thai', 'QuanLyPhimController@capNhatTrangThai'); 
 
-//quanlylichchieu
+//quanlylichchieu - CRUD hoàn chỉnh
 $router->add('GET', '/quan-ly-lich-chieu', 'QuanLyLichChieuController@quanLyLichChieu');
 $router->add('GET', '/them-lich-chieu', 'QuanLyLichChieuController@themLichChieu');
 $router->add('POST', '/them-lich-chieu', 'QuanLyLichChieuController@storeLichChieu');
 $router->add('GET', '/sua-lich-chieu', 'QuanLyLichChieuController@suaLichChieu');
 $router->add('POST', '/sua-lich-chieu', 'QuanLyLichChieuController@updateLichChieu');
+$router->add('GET', '/xoa-lich-chieu', 'QuanLyLichChieuController@deleteLichChieu');
 
 //phongghe
 $router->add('GET', '/quan-ly-phong-ghe', 'QuanLyPhongGheController@quanLyPhongGhe');
