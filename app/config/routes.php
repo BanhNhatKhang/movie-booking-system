@@ -125,3 +125,10 @@ $router->add('POST', '/sua-nhan-vien', 'QuanLyNhanVienController@capNhatNhanVien
 $router->add('GET', '/khoa-nhan-vien', 'QuanLyNhanVienController@khoaNhanVien');
 $router->add('GET', '/them-nhan-vien', 'QuanLyNhanVienController@themNhanVien');
 $router->add('POST', '/them-nhan-vien', 'QuanLyNhanVienController@storeNhanVien');
+
+// Thông tin cá nhân admin
+$router->add('GET', '/admin/thong-tin-ca-nhan', 'AdminController@thongTinCaNhan');
+
+// Đổi mật khẩu admin
+$router->add('GET', '/admin/doi-mat-khau', 'AdminController@doiMatKhau');
+$router->add('POST', '/admin/xu-ly-doi-mat-khau', 'AdminController@xuLyDoiMatKhau');

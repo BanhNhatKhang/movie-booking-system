@@ -20,6 +20,17 @@
                 </span></li>
                 <li><hr class="dropdown-divider"></li>
                 
+                {{-- THÊM: Thông tin cá nhân --}}
+                <li><h6 class="dropdown-header">Quản lý tài khoản</h6></li>
+                <li><a class="dropdown-item" href="/admin/thong-tin-ca-nhan">
+                    <i class="bi bi-person-badge me-2 text-primary"></i>Thông tin cá nhân
+                </a></li>
+                <li><a class="dropdown-item" href="/admin/doi-mat-khau">
+                    <i class="bi bi-key me-2 text-warning"></i>Đổi mật khẩu
+                </a></li>
+                
+                <li><hr class="dropdown-divider"></li>
+                
                 {{-- THÊM: Role switching --}}
                 <li><h6 class="dropdown-header">Chuyển đổi tài khoản</h6></li>
                 <li><a class="dropdown-item" href="/admin/switch-to-user">
