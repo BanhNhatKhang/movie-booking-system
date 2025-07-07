@@ -96,7 +96,7 @@
                                             @foreach($chunk as $phim)
                                             <div class="col-6 col-md-4 col-lg-3">
                                                 <div class="movie-card">
-                                                    <img src="{{ $phim['pt_anhposter'] ?? '/static/imgs/placeholder-movie.jpg' }}" class="img-fluid carousel-img-inner" alt="{{ $phim['p_tenphim'] }}" onerror="this.src='/static/imgs/placeholder-movie.jpg'">
+                                                    <img src="{{ $phim['p_poster'] }}" class="img-fluid carousel-img-inner" alt="{{ $phim['p_tenphim'] }}" onerror="this.src='/static/imgs/placeholder-movie.jpg'">
                                                     <a href="/dat-ve?phim={{ $phim['p_maphim'] }}" class="book-hover-btn">Đặt vé</a>
                                                 </div>  
                                                 <div class="movie-card-text">
@@ -155,7 +155,7 @@
                                         <div class="row">
                                             @foreach($chunk as $phim)
                                             <div class="col-6 col-md-4 col-lg-3">
-                                                <img src="{{ $phim['pt_anhposter'] ?? '/static/imgs/C2-1.webp' }}" class="img-fluid carousel-img-inner" alt="{{ $phim['p_tenphim'] }}" onerror="this.src='/static/imgs/C2-1.webp'">
+                                                <img src="{{ $phim['p_poster']}}" class="img-fluid carousel-img-inner" alt="{{ $phim['p_tenphim'] }}" onerror="this.src='/static/imgs/C2-1.webp'">
                                                 <div class="movie-card-text">
                                                     <p>{{ $phim['p_tenphim'] }}</p>
                                                 </div>
@@ -201,39 +201,38 @@
                     
                     <div class="row">
                         @forelse($uuDaiList ?? [] as $index => $uuDai)
-                            @if($index < 4)
+                            @if($index < 4) {{-- Giới hạn hiển thị tối đa 4 ưu đãi --}}
                             <div class="col-6 col-md-3 mb-3">
-                                <a href="/uu-dai">
-                                    <img src="{{ $uuDai['udtc_anhuudai'] }}" 
-                                         alt="{{ $uuDai['udtc_tenuudai'] }}" 
-                                         class="img-fluid service-img" 
-                                         onerror="this.src='/static/imgs/DV-{{ $index + 1 }}.jpg'">
+                                <a href="/uu-dai" class="text-decoration-none">
+                                    <img src="{{ $uuDai['udtc_anhuudai'] ?? '/static/imgs/default-offer.jpg' }}" 
+                                         alt="Ưu đãi {{ $uuDai['udtc_mauudai'] ?? '' }}" 
+                                         class="img-fluid service-img"
+                                         style="border-radius: 8px; transition: transform 0.3s ease;"
+                                         onmouseover="this.style.transform='scale(1.05)'"
+                                         onmouseout="this.style.transform='scale(1)'"
+                                         onerror="this.src='/static/imgs/default-offer.jpg'">
                                 </a>                             
                             </div>
                             @endif
                         @empty
-                            {{-- Fallback nếu không có data --}}
-                            <div class="col-6 col-md-3 mb-3">
-                                <a href="/uu-dai">
-                                    <img src="/static/imgs/DV-1.jpg" alt="..." class="img-fluid service-img">
-                                </a>                             
-                            </div>
-                            <div class="col-6 col-md-3 mb-3">
-                                <a href="/uu-dai">
-                                    <img src="/static/imgs/DV-2.png" alt="..." class="img-fluid service-img">
-                                </a>                              
-                            </div>
-                            <div class="col-6 col-md-3 mb-3">
-                                <a href="/uu-dai">
-                                    <img src="/static/imgs/DV-3.jpg" alt="..." class="img-fluid service-img">
-                                </a>                              
-                            </div>
-                            <div class="col-6 col-md-3 mb-3">
-                                <a href="/uu-dai">
-                                    <img src="/static/imgs/DV-4.jpg" alt="..." class="img-fluid service-img">
-                                </a>                               
+                            {{-- ✅ Fallback khi không có dữ liệu từ database --}}
+                            <div class="col-12 text-center">
+                                <div class="alert alert-info" style="background: rgba(13, 202, 240, 0.1); border: 1px solid rgba(13, 202, 240, 0.3); color: #0dcaf0;">
+                                    <i class="bi bi-info-circle me-2"></i>
+                                    <h5 class="mb-2">Hiện tại chưa có ưu đãi nào</h5>
+                                    <p class="mb-0">Vui lòng quay lại sau để xem các ưu đãi mới nhất!</p>
+                                </div>
                             </div>
                         @endforelse
+                        
+                        {{-- ✅ Hiển thị nút "Xem tất cả" nếu có nhiều hơn 4 ưu đãi --}}
+                        @if(count($uuDaiList ?? []) > 4)
+                        <div class="col-12 text-center mt-4">
+                            <a href="/uu-dai" class="btn btn-outline-light btn-lg px-4 py-2">
+                                <i class="bi bi-eye me-2"></i> Xem tất cả ưu đãi
+                            </a>
+                        </div>
+                        @endif
                     </div>
                 </div>
             </div><br>

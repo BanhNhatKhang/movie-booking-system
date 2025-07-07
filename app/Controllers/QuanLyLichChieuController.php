@@ -54,6 +54,7 @@ class QuanLyLichChieuController
             $phimList = $this->lichChieuModel->getAllPhim();
 
             echo $this->blade->render('admin-views.LichChieu.QuanLyLichChieu', [
+                'activePage' => 'schedule', 
                 'lichChieuList' => $lichChieuList,
                 'phimList' => $phimList,
                 'filters' => $filters

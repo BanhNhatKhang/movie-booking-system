@@ -62,7 +62,7 @@ class UuDaiController
             error_log("Expired: " . count($expiredOffers));
 
             echo $this->blade->render('users-views.UuDai.UuDai', [
-                'activePage' => 'offers',
+                'activePage' => 'uudai',
                 'allOffers' => $allOffers,
                 'ongoingOffers' => $ongoingOffers,
                 'upcomingOffers' => $upcomingOffers,
@@ -75,7 +75,7 @@ class UuDaiController
             
             // Fallback với dữ liệu trống
             echo $this->blade->render('users-views.UuDai.UuDai', [
-                'activePage' => 'offers',
+                'activePage' => 'uudai',
                 'allOffers' => [],
                 'ongoingOffers' => [],
                 'upcomingOffers' => [],

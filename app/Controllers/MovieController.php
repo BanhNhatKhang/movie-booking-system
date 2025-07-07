@@ -28,32 +28,16 @@ class MovieController
     public function phimDangChieu()
     {
         try {
-            // Debug: Log method call
             error_log("MovieController@phimDangChieu called");
             
-            // Lấy phim có trạng thái 'active' (đang chiếu)
-            $phimList = $this->phimModel->getActivePhim();
+            // ✅ Lấy danh sách phim đang chiếu (active)
+            $phimList = $this->phimModel->getPhimByStatus('active');
             
-            // Debug: Log số lượng phim
             error_log("Found " . count($phimList) . " active movies");
             
-            // Format dữ liệu cho view
+            // ✅ Format dữ liệu để hiển thị - sửa tên biến
             $phimDangChieu = [];
             foreach ($phimList as $phim) {
-                // Sửa cách format poster path
-                $posterPath = '';
-                if (!empty($phim['pt_anhposter'])) {
-                    // Nếu đã có đường dẫn đầy đủ
-                    if (strpos($phim['pt_anhposter'], '/static/') === 0) {
-                        $posterPath = $phim['pt_anhposter'];
-                    } else {
-                        // Nếu chỉ có tên file, thêm đường dẫn đầy đủ
-                        $posterPath = '/static/uploads/posters/' . $phim['pt_anhposter'];
-                    }
-                } else {
-                    $posterPath = '/static/imgs/no-poster.jpg';
-                }
-
                 $phimDangChieu[] = [
                     'id' => $phim['p_maphim'],
                     'name' => $phim['p_tenphim'],
@@ -62,27 +46,26 @@ class MovieController
                     'release' => $phim['p_phathanh'],
                     'desc' => $phim['p_mota'],
                     'trailer' => $phim['p_trailer'],
-                    'poster' => $posterPath, 
+                    'poster' => $phim['p_poster'] ?: '/static/imgs/default-poster.jpg',
                     'status' => $phim['p_trangthai'],
                     'director' => $phim['p_daodien'],
                     'actors' => $phim['p_dienvien']
                 ];
             }
-
-            // Debug: Log formatted data
+            
             error_log("Formatted movies: " . json_encode($phimDangChieu));
-
+            
+            // ✅ Render với đúng tên biến
             echo $this->blade->render('users-views.Phim.PhimDangChieu', [
-                'phimDangChieu' => $phimDangChieu,
-                'activePage' => 'phim-dang-chieu'
+                'activePage' => 'phim-dang-chieu',
+                'phimDangChieu' => $phimDangChieu // ✅ Đúng tên biến
             ]);
+            
         } catch (Exception $e) {
             error_log("Error in phimDangChieu: " . $e->getMessage());
-            echo $this->blade->render('users-views.Phim.PhimDangChieu', [
-                'phimDangChieu' => [],
-                'activePage' => 'phim-dang-chieu',
-                'error' => 'Không thể tải danh sách phim'
-            ]);
+            $_SESSION['error_message'] = 'Có lỗi xảy ra khi tải danh sách phim!';
+            header('Location: /');
+            exit;
         }
     }
 
@@ -92,10 +75,10 @@ class MovieController
     public function phimSapChieu()
     {
         try {
-            // Lấy phim có trạng thái 'coming_soon' (sắp chiếu)
-            $phimList = $this->phimModel->getComingSoonPhim();
+            // Lấy danh sách phim sắp chiếu
+            $phimList = $this->phimModel->getPhimByStatus('coming_soon');
             
-            // Format dữ liệu cho view
+            // Format dữ liệu
             $phimSapChieu = [];
             foreach ($phimList as $phim) {
                 $phimSapChieu[] = [
@@ -106,24 +89,23 @@ class MovieController
                     'release' => $phim['p_phathanh'],
                     'desc' => $phim['p_mota'],
                     'trailer' => $phim['p_trailer'],
-                    'poster' => $phim['pt_anhposter'] ?? '/static/imgs/no-poster.jpg',
+                    'poster' => $phim['p_poster'] ?: '/static/imgs/default-poster.jpg',
                     'status' => $phim['p_trangthai'],
                     'director' => $phim['p_daodien'],
                     'actors' => $phim['p_dienvien']
                 ];
             }
-
+            
             echo $this->blade->render('users-views.Phim.PhimSapChieu', [
-                'phimSapChieu' => $phimSapChieu,
-                'activePage' => 'phim-sap-chieu'
+                'activePage' => 'phim-sap-chieu',
+                'phimSapChieu' => $phimSapChieu
             ]);
+            
         } catch (Exception $e) {
             error_log("Error in phimSapChieu: " . $e->getMessage());
-            echo $this->blade->render('users-views.Phim.PhimSapChieu', [
-                'phimSapChieu' => [],
-                'activePage' => 'phim-sap-chieu',
-                'error' => 'Không thể tải danh sách phim'
-            ]);
+            $_SESSION['error_message'] = 'Có lỗi xảy ra khi tải danh sách phim!';
+            header('Location: /');
+            exit;
         }
     }
 
@@ -144,7 +126,7 @@ class MovieController
                 header('Location: /phim-dang-chieu');
                 exit;
             }
-
+    
             // Lấy thông tin phim
             $phim = $this->phimModel->getPhimById($phimId);
             error_log("Phim data: " . json_encode($phim));
@@ -155,12 +137,12 @@ class MovieController
                 header('Location: /phim-dang-chieu');
                 exit;
             }
-
-            // Format dữ liệu phim
+    
+            // ✅ Format dữ liệu phim - sửa poster
             $phimData = [
                 'id' => $phim['p_maphim'],
                 'name' => $phim['p_tenphim'],
-                'poster' => $phim['pt_anhposter'] ?? '/static/imgs/no-poster.jpg',
+                'poster' => $phim['p_poster'] ?: '/static/imgs/no-poster.jpg', // ✅ Sửa đây
                 'genre' => $phim['p_theloai'],
                 'director' => $phim['p_daodien'],
                 'actors' => $phim['p_dienvien'],
@@ -172,7 +154,7 @@ class MovieController
             ];
             
             error_log("Formatted phim data: " . json_encode($phimData));
-
+    
             // Lấy lịch chiếu của phim
             $lichChieuList = $this->lichChieuModel->getLichChieuByPhim($phimId);
             error_log("LichChieu list count: " . count($lichChieuList));
@@ -180,13 +162,13 @@ class MovieController
             // Tổ chức lịch chiếu theo ngày
             $lichChieuByDate = $this->organizeLichChieuByDate($lichChieuList);
             error_log("Organized lichChieu: " . json_encode($lichChieuByDate));
-
+    
             echo $this->blade->render('users-views.Phim.ChiTietPhim', [
-                'activePage' => 'chi-tiet-phim',  
+                'activePage' => 'chi-tiet-phim',
                 'phim' => $phimData,
                 'lichChieuByDate' => $lichChieuByDate
             ]);
-
+    
         } catch (Exception $e) {
             error_log("=== ERROR IN CHI TIET PHIM ===");
             error_log("Error message: " . $e->getMessage());

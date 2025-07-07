@@ -78,9 +78,6 @@
                         @endforeach
                     </select>
                 </div>
-                <div class="col-auto">
-                    <button class="btn btn-primary" type="submit" name="update_room_type">Cập nhật</button>
-                </div>
             </form>
             
             <!-- Sơ đồ ghế từ database -->
@@ -235,12 +232,13 @@
             <!-- Chú thích -->
             <div class="mt-4 text-center">
                 <h5>Chú thích:</h5>
-                <span class="seat-demo seat-normal seat-label">A01</span> Ghế thường
-                <span class="seat-demo seat-vip seat-label ms-3">D01</span> Ghế VIP
-                <span class="seat-demo seat-luxury seat-label ms-3">H01</span> LUXURY
-                <span class="seat-demo seat-booked seat-label ms-3">F06</span> Ghế đã bán
-                <span class="seat-demo seat-selected seat-label ms-3">G09</span> Ghế đang chọn
-                <span class="seat-demo seat-locked seat-label ms-3">A03</span> Ghế khóa (hư)
+                {{-- ✅ Thêm class seat-legend để phân biệt với ghế thật --}}
+                <span class="seat-demo seat-normal seat-label seat-legend">A01</span> Ghế thường
+                <span class="seat-demo seat-vip seat-label seat-legend ms-3">D01</span> Ghế VIP
+                <span class="seat-demo seat-luxury seat-label seat-legend ms-3">H01</span> LUXURY
+                <span class="seat-demo seat-booked seat-label seat-legend ms-3">F06</span> Ghế đã bán
+                <span class="seat-demo seat-selected1 seat-label seat-legend ms-3">G09</span> Ghế đang chọn
+                <span class="seat-demo seat-locked seat-label seat-legend ms-3">A03</span> Ghế khóa (hư)
             </div>
             
             <!-- Thống kê từ database -->
@@ -442,19 +440,19 @@
                     <td>
                         @if($ghe['g_trangthai'] == 'locked')
                             <!-- Ghế bị khóa -> Hiển thị nút Mở khóa -->
-                            <button class="btn btn-success btn-sm seat-action-btn" 
+                            <button class="btn btn-secondary btn-sm seat-action-btn" 
                                     data-action="unlock" 
                                     data-seat="{{ $ghe['g_maghe'] }}" 
                                     title="Mở khóa ghế">
-                                <i class="bi bi-unlock"></i>
+                                <i class="bi bi-lock-fill"></i>
                             </button>
                         @else
                             <!-- Ghế không bị khóa -> Hiển thị nút Khóa -->
-                            <button class="btn btn-secondary btn-sm seat-action-btn" 
+                            <button class="btn btn-success btn-sm seat-action-btn" 
                                     data-action="lock" 
                                     data-seat="{{ $ghe['g_maghe'] }}" 
                                     title="Khóa ghế">
-                                <i class="bi bi-lock"></i>
+                                <i class="bi bi-unlock-fill"></i>
                             </button>
                         @endif
                     </td>
@@ -587,7 +585,143 @@
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script>
 $(document).ready(function() {
-    // xử lý khóa/ mở khóa ghế
+    let selectedSeats = [];
+    
+    // ✅ Tạo element hiển thị số ghế đã chọn
+    function updateSelectionDisplay() {
+        // Remove existing counter
+        $('.seat-selection-count').remove();
+        
+        if (selectedSeats.length > 0) {
+            const counter = $(`
+                <div class="seat-selection-count">
+                    <i class="bi bi-check-circle"></i> 
+                    Đã chọn: ${selectedSeats.length} ghế
+                    <br><small>${selectedSeats.join(', ')}</small>
+                </div>
+            `);
+            $('body').append(counter);
+        }
+    }
+    
+    $('.seat-demo').click(function() {
+        const seatCode = $(this).data('seat');
+        
+        // ✅ Bỏ qua ghế chú thích
+        if ($(this).hasClass('seat-legend')) {
+            return false;
+        }
+        
+        // ✅ Bỏ qua ghế đã bán/booked
+        if ($(this).hasClass('seat-booked')) {
+            return false;
+        }
+        
+        // ✅ Bỏ qua ghế không có data-seat (ghế chú thích thường không có)
+        if (!seatCode) {
+            return false;
+        }
+        
+        if ($(this).hasClass('seat-selected')) {
+            // ✅ Bỏ chọn ghế
+            $(this).removeClass('seat-selected');
+            selectedSeats = selectedSeats.filter(s => s !== seatCode);
+            console.log('Deselected seat:', seatCode);
+        } else {
+            // ✅ Chọn ghế
+            $(this).addClass('seat-selected');
+            selectedSeats.push(seatCode);
+            console.log('Selected seat:', seatCode);
+        }
+        
+        // ✅ Cập nhật hiển thị
+        updateSelectionDisplay();
+        
+        console.log('Currently selected seats:', selectedSeats);
+    });
+    
+    // ✅ Clear selection khi reload thành công
+    function clearSelection() {
+        selectedSeats = [];
+        $('.seat-demo').removeClass('seat-selected');
+        $('.seat-selection-count').remove();
+    }
+    
+    // xử lý nút hành động
+    $('#btn-vip').click(() => updateSelectedSeatsType('vip'));
+    $('#btn-normal').click(() => updateSelectedSeatsType('normal'));
+    $('#btn-luxury').click(() => updateSelectedSeatsType('luxury'));
+    $('#btn-lock').click(() => updateSelectedSeatsStatus('locked'));
+    $('#btn-unlock').click(() => updateSelectedSeatsStatus('available'));
+    
+    // ✅ Sửa hàm updateSelectedSeatsType
+    function updateSelectedSeatsType(type) {
+        if (selectedSeats.length === 0) {
+            alert('Vui lòng chọn ghế trước!');
+            return;
+        }
+        
+        console.log('Updating seats to type:', type, 'Seats:', selectedSeats);
+        
+        // ✅ Gửi từng ghế một để tránh lỗi bulk update
+        let completed = 0;
+        let failed = 0;
+        
+        selectedSeats.forEach(seat => {
+            $.ajax({
+                url: '/update-seat-type',
+                method: 'POST',
+                data: {
+                    ma_ghe: seat,
+                    loai_ghe: type
+                },
+                dataType: 'json'
+            })
+            .done(function(response) {
+                console.log('Response for seat', seat, ':', response);
+                
+                if (response && response.success) {
+                    completed++;
+                    
+                    // ✅ Cập nhật giao diện ngay lập tức
+                    $(`.seat-demo[data-seat="${seat}"]`)
+                        .removeClass('seat-normal seat-vip seat-luxury seat-locked seat-selected')
+                        .addClass('seat-' + type);
+                } else {
+                    failed++;
+                    console.error('Failed to update seat:', seat, response);
+                }
+                
+                // ✅ Kiểm tra khi tất cả requests hoàn thành
+                if (completed + failed === selectedSeats.length) {
+                    if (failed > 0) {
+                        alert(`Cập nhật hoàn tất. ${completed} ghế thành công, ${failed} ghế thất bại.`);
+                    } else {
+                        alert(`Cập nhật thành công ${completed} ghế!`);
+                    }
+                    
+                    // ✅ Clear selection và reload sau 1 giây
+                    selectedSeats = [];
+                    setTimeout(() => {
+                        location.reload();
+                    }, 1000);
+                }
+            })
+            .fail(function(xhr, status, error) {
+                console.error('AJAX error for seat', seat, ':', status, error);
+                failed++;
+                
+                if (completed + failed === selectedSeats.length) {
+                    alert(`Có lỗi xảy ra! ${completed} ghế thành công, ${failed} ghế thất bại.`);
+                    setTimeout(() => {
+                        location.reload();
+                    }, 1000);
+                }
+            });
+        });
+    }
+    
+    // ✅ Sửa hàm xử lý khóa/mở khóa ghế
     $('.seat-action-btn').click(function() {
         const action = $(this).data('action');
         const seatCode = $(this).data('seat');
@@ -598,71 +732,29 @@ $(document).ready(function() {
         }
     });
     
-    // Xử lý tương tác sơ đồ chỗ ngồi
-    let selectedSeats = [];
-    
-    $('.seat-demo').click(function() {
-        const seatCode = $(this).data('seat');
-        
-        if ($(this).hasClass('seat-selected')) {
-            $(this).removeClass('seat-selected');
-            selectedSeats = selectedSeats.filter(s => s !== seatCode);
-        } else if (!$(this).hasClass('seat-booked')) {
-            $(this).addClass('seat-selected');
-            selectedSeats.push(seatCode);
-        }
-    });
-    
-    // xử lý nút hành động
-    $('#btn-vip').click(() => updateSelectedSeatsType('vip'));
-    $('#btn-normal').click(() => updateSelectedSeatsType('normal'));
-    $('#btn-luxury').click(() => updateSelectedSeatsType('luxury'));
-    $('#btn-lock').click(() => updateSelectedSeatsStatus('locked'));
-    $('#btn-unlock').click(() => updateSelectedSeatsStatus('available'));
-    
     function updateSeatStatus(seatCode, status) {
-        $.post('/update-seat-status', {
-            ma_ghe: seatCode,
-            trang_thai: status
-        })
-        .done(function(response) {
-            if (response.success) {
-                location.reload(); // Reload để cập nhật giao diện
-            } else {
-                alert('Lỗi: ' + response.message);
-            }
-        })
-        .fail(function() {
-            alert('Có lỗi xảy ra khi cập nhật trạng thái ghế!');
-        });
-    }
-    
-    function updateSelectedSeatsType(type) {
-        if (selectedSeats.length === 0) {
-            alert('Vui lòng chọn ghế trước!');
-            return;
-        }
-        
-        const updates = selectedSeats.map(seat => ({
-            ma_ghe: seat,
-            loai_ghe: type
-        }));
-        
         $.ajax({
-            url: '/bulk-update-seat-types',
+            url: '/update-seat-status',
             method: 'POST',
-            contentType: 'application/json',
-            data: JSON.stringify(updates)
+            data: {
+                ma_ghe: seatCode,
+                trang_thai: status
+            },
+            dataType: 'json'
         })
         .done(function(response) {
-            if (response.success) {
+            console.log('Status update response:', response);
+            
+            if (response && response.success) {
+                alert('Cập nhật thành công!');
                 location.reload();
             } else {
-                alert('Lỗi: ' + response.message);
+                alert('Lỗi: ' + (response ? response.message : 'Unknown error'));
             }
         })
-        .fail(function() {
-            alert('Có lỗi xảy ra khi cập nhật loại ghế!');
+        .fail(function(xhr, status, error) {
+            console.error('AJAX error:', status, error);
+            alert('Có lỗi xảy ra khi cập nhật trạng thái ghế!');
         });
     }
     
@@ -675,47 +767,6 @@ $(document).ready(function() {
         selectedSeats.forEach(seat => {
             updateSeatStatus(seat, status);
         });
-    }
-    
-    // hàm nhảy trang
-    window.jumpToPage = function() {
-        const page = parseInt($('#jumpToPage').val());
-        
-        // tính toán max page
-        let maxPage = 1;
-        $('.pagination .page-link').each(function() {
-            const pageNum = parseInt($(this).text());
-            if (!isNaN(pageNum) && pageNum > maxPage) {
-                maxPage = pageNum;
-            }
-        });
-        
-        if (page >= 1 && page <= maxPage) {
-            const currentUrl = new URL(window.location);
-            currentUrl.searchParams.set('page', page);
-            window.location.href = currentUrl.toString();
-        } else {
-            alert(`Vui lòng nhập số trang từ 1 đến ${maxPage}`);
-            $('#jumpToPage').focus();
-        }
-    };
-    
-    // Nhập khóa chuyển trang
-    $('#jumpToPage').keypress(function(e) {
-        if (e.which == 13) {
-            jumpToPage();
-        }
-    });
-    
-    // Cập nhật thông tin phân trang sau các hoạt động AJAX
-    function updatePagination() {
-        // Lấy trang hiện tại từ tham số URL
-        const urlParams = new URLSearchParams(window.location.search);
-        const currentPage = parseInt(urlParams.get('page')) || 1;
-        
-        const currentUrl = new URL(window.location);
-        currentUrl.searchParams.set('page', currentPage);
-        window.location.href = currentUrl.toString();
     }
 });
 </script>

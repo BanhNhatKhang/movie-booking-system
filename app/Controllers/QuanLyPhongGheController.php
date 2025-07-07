@@ -270,23 +270,40 @@ class QuanLyPhongGheController
     public function updateSeatStatus()
     {
         try {
+            // ✅ Set header JSON ngay từ đầu
+            header('Content-Type: application/json');
+            
             $maGhe = $_POST['ma_ghe'] ?? '';
             $trangThai = $_POST['trang_thai'] ?? '';
+            
+            error_log("Update seat status - Seat: $maGhe, Status: $trangThai");
             
             if (empty($maGhe) || empty($trangThai)) {
                 echo json_encode(['success' => false, 'message' => 'Thiếu thông tin']);
                 exit;
             }
             
+            // ✅ Validate trạng thái
+            $validStatuses = ['available', 'locked', 'booked'];
+            if (!in_array($trangThai, $validStatuses)) {
+                echo json_encode(['success' => false, 'message' => 'Trạng thái không hợp lệ']);
+                exit;
+            }
+            
             $result = $this->gheModel->updateSeatStatus($maGhe, $trangThai);
+            
+            error_log("Update result: " . ($result ? 'success' : 'failed'));
             
             echo json_encode([
                 'success' => $result,
-                'message' => $result ? 'Cập nhật thành công' : 'Cập nhật thất bại'
+                'message' => $result ? 'Cập nhật thành công' : 'Cập nhật thất bại',
+                'seat' => $maGhe,
+                'status' => $trangThai
             ]);
             
         } catch (Exception $e) {
-            echo json_encode(['success' => false, 'message' => 'Lỗi hệ thống']);
+            error_log("Error in updateSeatStatus: " . $e->getMessage());
+            echo json_encode(['success' => false, 'message' => 'Lỗi hệ thống: ' . $e->getMessage()]);
         }
         exit;
     }
@@ -295,23 +312,40 @@ class QuanLyPhongGheController
     public function updateSeatType()
     {
         try {
+            // ✅ Set header JSON ngay từ đầu
+            header('Content-Type: application/json');
+            
             $maGhe = $_POST['ma_ghe'] ?? '';
             $loaiGhe = $_POST['loai_ghe'] ?? '';
+            
+            error_log("Update seat type - Seat: $maGhe, Type: $loaiGhe");
             
             if (empty($maGhe) || empty($loaiGhe)) {
                 echo json_encode(['success' => false, 'message' => 'Thiếu thông tin']);
                 exit;
             }
             
+            // ✅ Validate loại ghế
+            $validTypes = ['normal', 'vip', 'luxury'];
+            if (!in_array($loaiGhe, $validTypes)) {
+                echo json_encode(['success' => false, 'message' => 'Loại ghế không hợp lệ']);
+                exit;
+            }
+            
             $result = $this->gheModel->updateSeatType($maGhe, $loaiGhe);
+            
+            error_log("Update result: " . ($result ? 'success' : 'failed'));
             
             echo json_encode([
                 'success' => $result,
-                'message' => $result ? 'Cập nhật thành công' : 'Cập nhật thất bại'
+                'message' => $result ? 'Cập nhật thành công' : 'Cập nhật thất bại',
+                'seat' => $maGhe,
+                'type' => $loaiGhe
             ]);
             
         } catch (Exception $e) {
-            echo json_encode(['success' => false, 'message' => 'Lỗi hệ thống']);
+            error_log("Error in updateSeatType: " . $e->getMessage());
+            echo json_encode(['success' => false, 'message' => 'Lỗi hệ thống: ' . $e->getMessage()]);
         }
         exit;
     }

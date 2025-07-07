@@ -1,4 +1,4 @@
-{{-- filepath: d:\Server\ct27501-project-BanhNhatKhang\app\Views\admin-views\TrangChu\QuanLyTrangChu.blade.php --}}
+{{-- filepath: d:\Server\project\app\Views\admin-views\TrangChu\QuanLyTrangChu.blade.php --}}
 @extends('layouts.admin.master')
 
 @section('title', 'Quản lý trang chủ')
@@ -117,27 +117,15 @@
                 <i class="bi bi-plus-circle"></i> Thêm ưu đãi mới
             </a>
         </button>
-        <form class="d-flex gap-2 w-75 justify-content-end flex-wrap">
-            <select class="form-select w-auto" style="min-width:140px;">
-                <option value="">Tất cả ưu đãi</option>
-                @forelse($uuDaiList ?? [] as $ud)
-                    <option value="{{ $ud['udtc_mauudai'] }}">{{ $ud['udtc_tenuudai'] }}</option>
-                @empty
-                    <option disabled>Chưa có ưu đãi</option>
-                @endforelse
-            </select>
-            <button class="btn btn-outline-primary" type="submit">
-                <i class="bi bi-search"></i>
-            </button>
-        </form>
+        {{-- ✅ Loại bỏ select box tìm kiếm theo tên ưu đãi --}}
     </div>
     <div class="table-responsive p-3">
         <table class="table align-middle table-hover">
             <thead class="table-dark">
                 <tr>
                     <th>STT</th>
+                    <th>Mã ưu đãi</th> {{-- ✅ Thêm cột mã ưu đãi --}}
                     <th>Ảnh ưu đãi</th>
-                    <th>Tên ưu đãi</th>
                     <th>Hành động</th>
                 </tr>
             </thead>
@@ -146,16 +134,14 @@
                 <tr>
                     <td>{{ $i+1 }}</td>
                     <td>
+                        <span class="badge bg-secondary">{{ $uuDai['udtc_mauudai'] }}</span> {{-- ✅ Hiển thị mã ưu đãi --}}
+                    </td>
+                    <td>
                         @if($uuDai['udtc_anhuudai'])
                             <img src="{{ $uuDai['udtc_anhuudai'] }}" alt="Ưu đãi" style="width:100px; height:60px; object-fit:cover; border-radius: 4px;">
                         @else
                             <span class="text-muted">Không có ảnh</span>
                         @endif
-                    </td>
-                    <td>
-                        <span class="fw-medium">{{ $uuDai['udtc_tenuudai'] }}</span>
-                        <br>
-                        <small class="text-muted">Mã: {{ $uuDai['udtc_mauudai'] }}</small>
                     </td>
                     <td>
                         <a href="/sua-uu-dai-home?id={{ $uuDai['udtc_mauudai'] }}" class="btn btn-sm btn-warning" title="Sửa">
@@ -164,7 +150,7 @@
                         <button 
                             class="btn btn-sm btn-danger btn-delete" 
                             title="Xóa"
-                            data-title="ưu đãi '{{ $uuDai['udtc_tenuudai'] }}'"
+                            data-title="ưu đãi {{ $uuDai['udtc_mauudai'] }}" {{-- ✅ Sửa data-title dùng mã ưu đãi --}}
                             data-url="/xoa-uu-dai-home?id={{ $uuDai['udtc_mauudai'] }}">
                             <i class="bi bi-trash"></i>
                         </button>
@@ -172,7 +158,7 @@
                 </tr>
                 @empty
                 <tr>
-                    <td colspan="4" class="text-center text-muted py-4">
+                    <td colspan="4" class="text-center text-muted py-4"> {{-- ✅ Sửa colspan từ 4 thành 4 --}}
                         <i class="bi bi-gift display-6 d-block mb-2 opacity-25"></i>
                         <strong>Chưa có ưu đãi nào</strong>
                         <br>

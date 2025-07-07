@@ -38,7 +38,7 @@ class QuanLyTrangChuController
             echo $this->blade->render('admin-views.TrangChu.QuanLyTrangChu', [
                 'posters' => $posters,
                 'uuDaiList' => $uuDaiList,
-                'activePage' => 'quan-ly-trang-chu'
+                'activePage' => 'home',
             ]);
         } catch (Exception $e) {
             error_log("Error in trangChu: " . $e->getMessage());
@@ -168,46 +168,34 @@ class QuanLyTrangChuController
                 header('Location: /them-uu-dai-home');
                 exit;
             }
-
-            // Validate dữ liệu
-            $tenUuDai = trim($_POST['tenUuDai'] ?? '');
-            
-            if (empty($tenUuDai)) {
-                header('Location: /them-uu-dai-home?error=empty_name');
+    
+            // ✅ Kiểm tra file ảnh được upload
+            if (!isset($_FILES['anhUuDai']) || $_FILES['anhUuDai']['error'] !== UPLOAD_ERR_OK) {
+                header('Location: /them-uu-dai-home?error=no_image');
                 exit;
             }
-
-            // Kiểm tra tên đã tồn tại
-            if ($this->uuDaiModel->checkNameExists($tenUuDai)) {
-                header('Location: /them-uu-dai-home?error=name_exists&name=' . urlencode($tenUuDai));
-                exit;
-            }
-
+    
             // Xử lý upload ảnh
-            $imagePath = '';
-            if (isset($_FILES['anhUuDai']) && $_FILES['anhUuDai']['error'] === UPLOAD_ERR_OK) {
-                $imagePath = $this->handleImageUpload($_FILES['anhUuDai']);
-                if (!$imagePath) {
-                    header('Location: /them-uu-dai-home?error=upload_failed&name=' . urlencode($tenUuDai));
-                    exit;
-                }
+            $imagePath = $this->handleImageUpload($_FILES['anhUuDai']);
+            if (!$imagePath) {
+                header('Location: /them-uu-dai-home?error=upload_failed');
+                exit;
             }
-
+    
             // Tạo mã ưu đãi mới
             $maUuDai = $this->uuDaiModel->generateNewId();
-
-            // Thêm vào database
+    
+            // ✅ Thêm vào database - chỉ cần 2 trường
             $data = [
                 'udtc_mauudai' => $maUuDai,
-                'udtc_anhuudai' => $imagePath,
-                'udtc_tenuudai' => $tenUuDai
+                'udtc_anhuudai' => $imagePath
             ];
-
+    
             if ($this->uuDaiModel->createUuDai($data)) {
                 header('Location: /quan-ly-trang-chu?success=add_uudai');
                 exit;
             } else {
-                header('Location: /them-uu-dai-home?error=create_failed&name=' . urlencode($tenUuDai));
+                header('Location: /them-uu-dai-home?error=create_failed');
                 exit;
             }
         } catch (Exception $e) {
@@ -256,28 +244,21 @@ class QuanLyTrangChuController
                 header('Location: /quan-ly-trang-chu');
                 exit;
             }
-
+    
             $id = $_POST['id'] ?? '';
-            $tenUuDai = trim($_POST['tenUuDai'] ?? '');
-
-            if (empty($id) || empty($tenUuDai)) {
-                header('Location: /sua-uu-dai-home?id=' . $id . '&error=empty_data');
+    
+            if (empty($id)) {
+                header('Location: /quan-ly-trang-chu?error=invalid_id');
                 exit;
             }
-
+    
             // Lấy thông tin hiện tại
             $currentUuDai = $this->uuDaiModel->getUuDaiById($id);
             if (!$currentUuDai) {
                 header('Location: /quan-ly-trang-chu?error=not_found');
                 exit;
             }
-
-            // Kiểm tra tên đã tồn tại (trừ chính nó)
-            if ($this->uuDaiModel->checkNameExists($tenUuDai, $id)) {
-                header('Location: /sua-uu-dai-home?id=' . $id . '&error=name_exists');
-                exit;
-            }
-
+    
             // Xử lý upload ảnh mới (nếu có)
             $imagePath = $currentUuDai['udtc_anhuudai']; // Giữ ảnh cũ
             if (isset($_FILES['anhUuDai']) && $_FILES['anhUuDai']['error'] === UPLOAD_ERR_OK) {
@@ -290,13 +271,12 @@ class QuanLyTrangChuController
                     $imagePath = $newImagePath;
                 }
             }
-
-            // Cập nhật database
+    
+            // ✅ Cập nhật database - chỉ cập nhật ảnh
             $data = [
-                'udtc_anhuudai' => $imagePath,
-                'udtc_tenuudai' => $tenUuDai
+                'udtc_anhuudai' => $imagePath
             ];
-
+    
             if ($this->uuDaiModel->updateUuDai($id, $data)) {
                 header('Location: /quan-ly-trang-chu?success=update_uudai');
                 exit;

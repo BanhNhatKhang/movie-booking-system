@@ -1,59 +1,59 @@
 <?php
-
 namespace App\Controllers;
 
-use App\Models\UuDaiTrangChu;
-use App\Models\Phim;
 use Jenssegers\Blade\Blade;
 use Exception;
 
 class HomeController
 {
-    private $uuDaiModel;
-    private $phimModel;
     private $blade;
-
+    
     public function __construct()
     {
-        $this->uuDaiModel = new UuDaiTrangChu();
-        $this->phimModel = new Phim();
-        $this->blade = new Blade(
-            realpath(__DIR__ . '/../Views'),
-            realpath(__DIR__ . '/../../cache')
-        );
+        $viewsPath = __DIR__ . '/../Views';
+        $cachePath = __DIR__ . '/../../cache';
+        
+        // Tạo thư mục cache nếu chưa tồn tại
+        if (!is_dir($cachePath)) {
+            mkdir($cachePath, 0755, true);
+        }
+        
+        $this->blade = new Blade($viewsPath, $cachePath);
     }
-
+    
     /**
      * Hiển thị trang chủ
      */
     public function index()
     {
         try {
-            // Lấy danh sách ưu đãi từ database
-            $uuDaiList = $this->uuDaiModel->getAllUuDai();
+            // ✅ Lấy dữ liệu ưu đãi từ bảng uu_dai_trang_chu
+            $uuDaiModel = new \App\Models\UuDaiTrangChu();
+            $uuDaiList = $uuDaiModel->getAllUuDai();
             
-            // DEBUG: Thêm dòng này để kiểm tra
-            error_log("UuDai count: " . count($uuDaiList));
-            error_log("UuDai data: " . print_r($uuDaiList, true));
+            // ✅ Lấy dữ liệu phim đang chiếu
+            $phimModel = new \App\Models\Phim();
+            $phimDangChieu = $phimModel->getPhimByStatus('active');
             
-            // Lấy phim đang chiếu và sắp chiếu từ database
-            $phimDangChieu = $this->phimModel->getActivePhim();
-            $phimSapChieu = $this->phimModel->getComingSoonPhim();
+            // ✅ Lấy dữ liệu phim sắp chiếu  
+            $phimSapChieu = $phimModel->getPhimByStatus('coming_soon');
             
             echo $this->blade->render('index', [
+                'activePage' => 'home',
                 'uuDaiList' => $uuDaiList,
                 'phimDangChieu' => $phimDangChieu,
                 'phimSapChieu' => $phimSapChieu
             ]);
-        } catch (Exception $e) {
-            error_log("Error in HomeController index: " . $e->getMessage());
             
-            // Fallback nếu có lỗi
+        } catch (Exception $e) {
+            error_log("Error in HomeController: " . $e->getMessage());
+            
+            // ✅ Fallback với mảng rỗng nếu lỗi
             echo $this->blade->render('index', [
+                'activePage' => 'home',
                 'uuDaiList' => [],
                 'phimDangChieu' => [],
-                'phimSapChieu' => [],
-                'error' => 'Không thể tải dữ liệu'
+                'phimSapChieu' => []
             ]);
         }
     }

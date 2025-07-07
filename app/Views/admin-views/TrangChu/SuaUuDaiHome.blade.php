@@ -108,12 +108,6 @@
             </div>
         </div>
         
-        <div class="mb-3">
-            <label for="tenUuDai" class="form-label">Tên ưu đãi <span class="text-danger">*</span></label>
-            <input type="text" class="form-control" id="tenUuDai" name="tenUuDai" 
-                   value="{{ $uuDai['udtc_tenuudai'] }}" placeholder="Nhập tên ưu đãi..." required />
-        </div>
-        
         <div class="text-end">
             <button type="submit" class="btn btn-success">
                 <i class="bi bi-save"></i> Cập nhật

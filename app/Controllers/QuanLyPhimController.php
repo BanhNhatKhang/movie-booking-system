@@ -32,7 +32,7 @@ class QuanLyPhimController
             $page = max(1, intval($_GET['page'] ?? 1));
             $limit = 12;
             $offset = ($page - 1) * $limit;
-
+    
             // Map status từ URL sang database
             $dbStatus = '';
             switch($status) {
@@ -48,12 +48,12 @@ class QuanLyPhimController
                 default:
                     $dbStatus = '';
             }
-
+    
             // Get data from database
             $phimList = $this->phimModel->getAllPhim($search, $limit, $offset, $dbStatus);
             $totalPhim = $this->phimModel->countPhim($search, $dbStatus);
             $totalPages = max(1, ceil($totalPhim / $limit));
-
+    
             // Format dữ liệu cho view
             $formattedPhimList = [];
             foreach($phimList as $phim) {
@@ -65,13 +65,13 @@ class QuanLyPhimController
                     'release' => $phim['p_phathanh'],
                     'desc' => $phim['p_mota'],
                     'trailer' => $phim['p_trailer'],
-                    'poster' => $phim['pt_anhposter'] ? $phim['pt_anhposter'] : '/static/imgs/no-poster.jpg',
+                    'poster' => $phim['p_poster'] ?: '/static/imgs/no-poster.jpg', // ✅ Sửa đây
                     'status' => $this->mapStatusToView($phim['p_trangthai']),
                     'director' => $phim['p_daodien'],
                     'actors' => $phim['p_dienvien']
                 ];
             }
-
+    
             // Render view
             echo $this->blade->render('admin-views.QuanLyPhim.QuanLyPhim', [
                 'activePage' => 'admin-movies',
@@ -112,7 +112,7 @@ class QuanLyPhimController
             header('Location: /them-phim?error=invalid_method');
             exit;
         }
-
+    
         try {
             // Validate input
             $movieId = strtoupper(trim($_POST['movie_id'] ?? ''));
@@ -125,31 +125,31 @@ class QuanLyPhimController
             $daoTien = trim($_POST['director'] ?? '');
             $dienVien = trim($_POST['actors'] ?? '');
             $trangThai = $_POST['status'] ?? '';
-
+    
             // Basic validation
             if (empty($movieId) || empty($tenPhim) || empty($theLoai) || $thoiLuong <= 0 || empty($ngayPhatHanh) || empty($trangThai)) {
                 header('Location: /them-phim?error=missing_fields');
                 exit;
             }
-
+    
             // Validate movie ID format
             if (!preg_match('/^[A-Z]\d{3,}$/', $movieId)) {
                 header('Location: /them-phim?error=invalid_movie_id');
                 exit;
             }
-
+    
             // Check if movie code exists
             if ($this->phimModel->checkPhimCodeExists($movieId)) {
                 header('Location: /them-phim?error=movie_code_exists');
                 exit;
             }
-
+    
             // Check if movie name exists
             if ($this->phimModel->checkPhimNameExists($tenPhim)) {
                 header('Location: /them-phim?error=movie_name_exists');
                 exit;
             }
-
+    
             // Handle poster upload
             $posterPath = '';
             if (isset($_FILES['poster']) && $_FILES['poster']['error'] === UPLOAD_ERR_OK) {
@@ -159,8 +159,8 @@ class QuanLyPhimController
                     exit;
                 }
             }
-
-            // Prepare data for database
+    
+            // ✅ Prepare data for database - đơn giản hóa
             $data = [
                 'p_maphim' => $movieId,
                 'p_tenphim' => $tenPhim,
@@ -172,9 +172,9 @@ class QuanLyPhimController
                 'p_trangthai' => $trangThai,
                 'p_dienvien' => $dienVien,
                 'p_daodien' => $daoTien,
-                'poster_path' => $posterPath
+                'p_poster' => $posterPath // ✅ Trực tiếp lưu đường dẫn
             ];
-
+    
             // Save to database
             if ($this->phimModel->createPhim($data)) {
                 header('Location: /quan-ly-phim?success=add_success');
@@ -215,7 +215,7 @@ class QuanLyPhimController
                 'release' => $phim['p_phathanh'],
                 'desc' => $phim['p_mota'],
                 'trailer' => $phim['p_trailer'],
-                'poster' => $phim['pt_anhposter'] ?? '',
+                'poster' => $phim['p_poster'] ?? '',
                 'status' => $phim['p_trangthai'],
                 'director' => $phim['p_daodien'],
                 'actors' => $phim['p_dienvien']
@@ -241,21 +241,21 @@ class QuanLyPhimController
             header('Location: /quan-ly-phim');
             exit;
         }
-
+    
         try {
             $id = $_POST['id'] ?? $_GET['id'] ?? '';
             if (empty($id)) {
                 header('Location: /quan-ly-phim?error=invalid_id');
                 exit;
             }
-
+    
             // Get existing movie
             $existingPhim = $this->phimModel->getPhimById($id);
             if (!$existingPhim) {
                 header('Location: /quan-ly-phim?error=phim_not_found');
                 exit;
             }
-
+    
             // Validate input
             $tenPhim = trim($_POST['name'] ?? '');
             $theLoai = trim($_POST['genre'] ?? '');
@@ -266,29 +266,28 @@ class QuanLyPhimController
             $daoTien = trim($_POST['director'] ?? '');
             $dienVien = trim($_POST['actors'] ?? '');
             $trangThai = $_POST['status'] ?? $existingPhim['p_trangthai'];
-
+    
             if (empty($tenPhim) || empty($theLoai) || $thoiLuong <= 0 || empty($ngayPhatHanh)) {
                 header('Location: /sua-phim?id=' . $id . '&error=missing_fields');
                 exit;
             }
-
+    
             // Check if name exists (exclude current movie)
             if ($this->phimModel->checkPhimNameExists($tenPhim, $id)) {
                 header('Location: /sua-phim?id=' . $id . '&error=movie_name_exists');
                 exit;
             }
-
+    
             // Handle poster upload
-            $posterPath = '';
+            $posterPath = $existingPhim['p_poster']; // ✅ Giữ poster cũ
             if (isset($_FILES['poster']) && $_FILES['poster']['error'] === UPLOAD_ERR_OK) {
-                $posterPath = $this->uploadPoster($_FILES['poster']);
-                if (!$posterPath) {
-                    header('Location: /sua-phim?id=' . $id . '&error=upload_failed');
-                    exit;
+                $newPosterPath = $this->uploadPoster($_FILES['poster']);
+                if ($newPosterPath) {
+                    $posterPath = $newPosterPath;
                 }
             }
-
-            // Prepare data
+    
+            // ✅ Prepare data - đơn giản hóa
             $data = [
                 'p_tenphim' => $tenPhim,
                 'p_theloai' => $theLoai,
@@ -298,13 +297,10 @@ class QuanLyPhimController
                 'p_trailer' => $trailer,
                 'p_trangthai' => $trangThai,
                 'p_dienvien' => $dienVien,
-                'p_daodien' => $daoTien
+                'p_daodien' => $daoTien,
+                'p_poster' => $posterPath // ✅ Poster path
             ];
-
-            if ($posterPath) {
-                $data['poster_path'] = $posterPath;
-            }
-
+    
             // Update database
             if ($this->phimModel->updatePhim($id, $data)) {
                 header('Location: /quan-ly-phim?success=update_success');
@@ -345,7 +341,7 @@ class QuanLyPhimController
                 'release' => $phim['p_phathanh'],
                 'desc' => $phim['p_mota'],
                 'trailer' => $phim['p_trailer'],
-                'poster' => $phim['pt_anhposter'] ?? '',
+                'poster' => $phim['p_poster'] ?? '',
                 'status' => $phim['p_trangthai'],
                 'director' => $phim['p_daodien'],
                 'actors' => $phim['p_dienvien']
@@ -413,7 +409,7 @@ class QuanLyPhimController
             }
 
             // Create upload directory
-            $uploadDir = $_SERVER['DOCUMENT_ROOT'] . '/static/upload/posters/';
+            $uploadDir = $_SERVER['DOCUMENT_ROOT'] . '/static/uploads/posters/';
             if (!is_dir($uploadDir)) {
                 mkdir($uploadDir, 0755, true);
             }

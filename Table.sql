@@ -55,7 +55,7 @@ CREATE TABLE phim (
     p_trangthai VARCHAR(20),
     p_dienvien VARCHAR(1024),
     p_daodien VARCHAR(255),
-    p_maposter VARCHAR(7) REFERENCES poster(pt_maposter)
+    p_poster VARCHAR(255)
 );
 
 -- Bảng UU_DAI
@@ -74,14 +74,13 @@ CREATE TABLE uu_dai (
 CREATE TABLE uu_dai_trang_chu (
     udtc_mauudai VARCHAR(10) PRIMARY KEY,
     udtc_anhuudai VARCHAR(255),
-    udtc_tenuudai VARCHAR(255)
 );
 
 -- Bảng LOAI_VE
 CREATE TABLE loai_ve (
     lv_maloaive VARCHAR(10) PRIMARY KEY,
     lv_tenloaive VARCHAR(255),
-    lv_giatien NUMERIC(10, 0),
+    lv_giatien NUMERIC(10, 0)
 );
 
 -- Bảng LICH_CHIEU

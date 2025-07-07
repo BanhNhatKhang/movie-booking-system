@@ -11,6 +11,25 @@ class UuDai extends BaseModel
     protected $table = 'uu_dai';
     protected $primaryKey = 'ud_mauudai';
 
+            /**
+     * Lấy ưu đãi hiển thị trên trang chủ
+     */
+    public function getUuDaiTrangChu()
+    {
+        try {
+            $sql = "SELECT * FROM {$this->table} ORDER BY udtc_mauudai ASC LIMIT 8";
+            
+            $stmt = $this->db->prepare($sql);
+            $stmt->execute();
+            $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
+            
+            return $result;
+        } catch (Exception $e) {
+            error_log("Error in getUuDaiTrangChu: " . $e->getMessage());
+            return [];
+        }
+    }
+
     /**
      * Lấy tất cả ưu đãi
      */

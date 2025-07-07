@@ -49,6 +49,7 @@ class UuDaiAdminController
             }
 
             echo $this->blade->render('admin-views.UuDai.QuanLyUuDai', [
+                'activePage' => 'uudai',
                 'uuDaiList' => $uuDaiList,
                 'filters' => $filters,
                 'success' => $_GET['success'] ?? null,

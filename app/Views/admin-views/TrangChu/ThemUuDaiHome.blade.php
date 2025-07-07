@@ -77,12 +77,9 @@
 
     <form method="POST" enctype="multipart/form-data" action="/luu-uu-dai-home">
         <div class="mb-3">
-            <label for="anhUuDai" class="form-label">Ảnh ưu đãi <span class="text-danger">*</span></label>
-            <input type="file" class="form-control" id="anhUuDai" name="anhUuDai" 
-                   accept="image/jpeg,image/jpg,image/png" required />
-            <div class="file-upload-info mt-1">
-                <small>Định dạng: JPG, PNG. Kích thước tối đa: 5MB</small>
-            </div>
+            <label class="form-label fw-bold">Ảnh ưu đãi <span class="text-danger">*</span></label>
+            <input type="file" class="form-control" name="anhUuDai" accept="image/*" required>
+            <small class="text-muted">Chỉ chấp nhận file ảnh (JPG, PNG). Tối đa 5MB.</small>
             
             <!-- preview ảnh -->
             <div class="image-preview-container">
@@ -95,18 +92,13 @@
             </div>
         </div>
         
-        <div class="mb-3">
-            <label for="tenUuDai" class="form-label">Tên ưu đãi <span class="text-danger">*</span></label>
-            <input type="text" class="form-control" id="tenUuDai" name="tenUuDai" 
-                   value="{{ $_GET['name'] ?? '' }}" placeholder="Nhập tên ưu đãi..." required />
-        </div>
         
-        <div class="text-end">
+        <div class="d-flex gap-2">
             <button type="submit" class="btn btn-success">
-                <i class="bi bi-plus-circle"></i> Thêm ưu đãi
+                <i class="bi bi-check-lg"></i> Thêm ưu đãi
             </button>
-            <a href="/quan-ly-trang-chu" class="btn btn-secondary ms-2">
-                <i class="bi bi-x-circle"></i> Hủy
+            <a href="/quan-ly-trang-chu" class="btn btn-secondary">
+                <i class="bi bi-arrow-left"></i> Quay lại
             </a>
         </div>
     </form>

@@ -16,10 +16,6 @@
             <input type="text" class="form-control" id="pt_maposter" name="pt_maposter" value="{{ $newId }}" readonly required />
         </div>
         <div class="mb-3">
-        <label for="ten_phim" class="form-label">Tên phim</label>
-            <input type="text" class="form-control" id="ten_phim" name="ten_phim" required />
-        </div>
-        <div class="mb-3">
             <label for="anhPoster" class="form-label">Ảnh poster</label>
             <input type="file" class="form-control" id="pt_anhposter" name="anhPoster" accept="image/*" required />
             <div class="mt-2">
