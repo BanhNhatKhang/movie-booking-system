@@ -1,6 +1,6 @@
 {{-- filepath: resources/views/users-views/ThanhVien/DiemThuong.blade.php --}}
 @extends('layouts.users.master')
-
+@section('title', 'Điểm thưởng tích lũy')
 @section('page-css')
     <link rel="stylesheet" href="/static/css/users/ThanhVien.css">
 @endsection

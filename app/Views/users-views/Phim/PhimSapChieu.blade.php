@@ -1,8 +1,10 @@
 {{-- filepath: d:\Server\ct27501-project-BanhNhatKhang\app\Views\users-views\Phim\PhimSapChieu.blade.php --}}
 @extends('layouts.users.master')
 
+@section('title', 'Phim sắp chiếu')
 @section('page-css')
     <link rel="stylesheet" href="/static/css/users/PhimDangChieu.css">
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 @endsection
 
 @section('content')

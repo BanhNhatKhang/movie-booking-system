@@ -1,7 +1,13 @@
+@php
+    header('Content-Type: text/html; charset=UTF-8');
+@endphp
+
 @extends('layouts.users.master')
 
+@section('title', 'Chi tiết phim')
 @section('page-css')
     <link rel="stylesheet" href="/static/css/users/ChiTietPhim.css">
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 @endsection
 
 @section('content')
@@ -17,10 +23,9 @@
                     <div class="row bg-light-subtle border rounded text-dark p-3 me-3 align-items-start">
                         <div class="col-lg-9 col-md-12">
                             <div>
-                                <p class="fs-3">{{ strtoupper($phim['name']) }}</p>
-                                <p class="fs-5">{{ strtoupper($phim['name']) }}</p>
+                                <p class="fs-1">{{ strtoupper($phim['name']) }}</p>
                                 <hr class="red-bold-hr">
-                                <div>
+                                <div class="fs-5">
                                     <p><span class="fw-semibold">Thể loại :</span> {{ $phim['genre'] ?? 'Chưa xác định' }}</p>
                                     <p><span class="fw-semibold">Đạo diễn :</span> {{ $phim['director'] ?? 'Chưa xác định' }}</p>
                                     <p><span class="fw-semibold">Ngày chiếu :</span> 

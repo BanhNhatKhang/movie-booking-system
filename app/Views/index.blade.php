@@ -1,4 +1,6 @@
-{{-- filepath: app/Views/index.blade.php --}}
+@php
+    header('Content-Type: text/html; charset=UTF-8');
+@endphp
 @extends('layouts.users.master')
 
 @section('content')
@@ -97,13 +99,13 @@
                                             <div class="col-6 col-md-4 col-lg-3">
                                                 <div class="movie-card">
                                                     <img src="{{ $phim['p_poster'] }}" class="img-fluid carousel-img-inner" alt="{{ $phim['p_tenphim'] }}" onerror="this.src='/static/imgs/placeholder-movie.jpg'">
-                                                    <a href="/dat-ve?phim={{ $phim['p_maphim'] }}" class="book-hover-btn">Đặt vé</a>
+                                                    <a href="/chi-tiet-phim?id={{ $phim['p_maphim'] }}" class="book-hover-btn">Đặt vé</a>
                                                 </div>  
                                                 <div class="movie-card-text">
                                                     <p>{{ $phim['p_tenphim'] }}</p>
                                                 </div>
                                                 <div class="book-bg">
-                                                    <a href="/dat-ve?phim={{ $phim['p_maphim'] }}" class="book-tk">Đặt vé</a>
+                                                    <a href="/chi-tiet-phim?id={{ $phim['p_maphim'] }}" class="book-tk">Đặt vé</a>
                                                 </div>                                                                    
                                             </div>
                                             @endforeach
@@ -112,18 +114,12 @@
                                     @endforeach
                                 @else
                                     <div class="carousel-item active">
-                                        <div class="row">
+                                        <div class="row justify-content-center">
                                             <div class="col-6 col-md-4 col-lg-3">
-                                                <div class="movie-card">
-                                                    <img src="/static/imgs/latmat1.jpg" class="img-fluid carousel-img-inner" alt="...">
-                                                    <a href="#" class="book-hover-btn">Đặt vé</a>
-                                                </div>  
                                                 <div class="movie-card-text">
                                                     <p>Chưa có phim đang chiếu</p>
                                                 </div>
-                                                <div class="book-bg">
-                                                    <a href="#" class="book-tk">Đặt vé</a>
-                                                </div>                                                                    
+                                                                                                                
                                             </div>
                                         </div>
                                     </div>
@@ -155,12 +151,15 @@
                                         <div class="row">
                                             @foreach($chunk as $phim)
                                             <div class="col-6 col-md-4 col-lg-3">
-                                                <img src="{{ $phim['p_poster']}}" class="img-fluid carousel-img-inner" alt="{{ $phim['p_tenphim'] }}" onerror="this.src='/static/imgs/C2-1.webp'">
+                                                <div class="movie-card">
+                                                    <a href="/chi-tiet-phim?id={{ $phim['p_maphim'] }}" class="text-decoration-none">
+                                                        <img src="{{ $phim['p_poster']}}" class="img-fluid carousel-img-inner" alt="{{ $phim['p_tenphim'] }}">                                                    </a>
+                                                </div>                                                
                                                 <div class="movie-card-text">
                                                     <p>{{ $phim['p_tenphim'] }}</p>
                                                 </div>
                                                 <div class="book-bg">
-                                                    <a href="#" class="book-tk">Sắp chiếu</a>
+                                                    <a href="/chi-tiet-phim?id={{ $phim['p_maphim'] }}" class="book-tk">Sắp chiếu</a>
                                                 </div>
                                             </div>
                                             @endforeach
@@ -169,15 +168,12 @@
                                     @endforeach
                                 @else
                                     <div class="carousel-item active">
-                                        <div class="row">
+                                        <div class="row justify-content-center">
                                             <div class="col-6 col-md-4 col-lg-3">
-                                                <img src="/static/imgs/C2-1.webp" class="img-fluid carousel-img-inner" alt="...">
                                                 <div class="movie-card-text">
                                                     <p>Chưa có phim sắp chiếu</p>
                                                 </div>
-                                                <div class="book-bg">
-                                                    <a href="#" class="book-tk">Đặt vé</a>
-                                                </div>
+                                                                                                                
                                             </div>
                                         </div>
                                     </div>

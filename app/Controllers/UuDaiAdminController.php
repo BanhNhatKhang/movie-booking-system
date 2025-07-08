@@ -5,6 +5,7 @@ namespace App\Controllers;
 use App\Models\UuDai;
 use App\Models\UuDaiTrangChu;
 use Jenssegers\Blade\Blade;
+use App\Helpers\AuthHelper;
 use Exception;
 
 class UuDaiAdminController
@@ -30,6 +31,7 @@ class UuDaiAdminController
      */
     public function uuDai()
     {
+        AuthHelper::checkAccess('admin_only');
         try {
             // Cập nhật trạng thái theo thời gian
             $this->uuDaiModel->updateStatusByDate();
@@ -71,6 +73,7 @@ class UuDaiAdminController
      */
     public function themUuDai()
     {
+        AuthHelper::checkAccess('admin_only');
         try {
             echo $this->blade->render('admin-views.UuDai.ThemUuDai', [
                 'error' => $_GET['error'] ?? null,
@@ -92,6 +95,7 @@ class UuDaiAdminController
      */
     public function storeUuDai()
     {
+        AuthHelper::checkAccess('admin_only');
         try {
             // ✅ Validate file size trước khi xử lý
             if (isset($_FILES['anhUuDai']) && $_FILES['anhUuDai']['error'] !== UPLOAD_ERR_NO_FILE) {
@@ -208,6 +212,7 @@ class UuDaiAdminController
      */
     public function suaUuDai()
     {
+        AuthHelper::checkAccess('admin_only');
         try {
             $id = $_GET['id'] ?? '';
             if (empty($id)) {
@@ -242,6 +247,7 @@ class UuDaiAdminController
      */
     public function updateUuDai()
     {
+        AuthHelper::checkAccess('admin_only');
         try {
             $id = $_GET['id'] ?? $_POST['id'] ?? '';
             if (empty($id)) {
@@ -315,6 +321,7 @@ class UuDaiAdminController
      */
     public function deleteUuDai()
     {
+        AuthHelper::checkAccess('admin_only');
         try {
             $id = $_GET['id'] ?? '';
             if (empty($id)) {
@@ -349,6 +356,7 @@ class UuDaiAdminController
      */
     private function uploadImage($file)
     {
+        AuthHelper::checkAccess('admin_only');
         try {
             // Validate file type
             $allowedTypes = ['image/jpeg', 'image/png', 'image/gif', 'image/webp'];
@@ -388,6 +396,7 @@ class UuDaiAdminController
      */
     private function getStatusByDate($startDate, $endDate)
     {
+        AuthHelper::checkAccess('admin_only');
         $today = date('Y-m-d');
         
         if ($today < $startDate) {

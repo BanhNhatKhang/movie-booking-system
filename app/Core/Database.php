@@ -29,6 +29,11 @@ class Database
                     PDO::ATTR_EMULATE_PREPARES => false
                 ], $config['options'])
             );
+
+            // Set UTF-8 encoding cho PostgreSQL
+            $this->connection->exec("SET NAMES 'UTF8'");
+            $this->connection->exec("SET client_encoding = 'UTF8'");
+
         } catch (PDOException $e) {
             die("Database connection failed: " . $e->getMessage());
         }

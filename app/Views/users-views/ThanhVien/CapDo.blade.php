@@ -1,6 +1,6 @@
 {{-- filepath: resources/views/users-views/ThanhVien/CapDo.blade.php --}}
 @extends('layouts.users.master')
-
+@section('title', 'Cấp độ thành viên')
 @section('page-css')
     <link rel="stylesheet" href="/static/css/users/ThanhVien.css">
 @endsection

@@ -28,6 +28,7 @@ class MovieController
     public function phimDangChieu()
     {
         try {
+            header('Content-Type: text/html; charset=UTF-8');
             error_log("MovieController@phimDangChieu called");
             
             // ✅ Lấy danh sách phim đang chiếu (active)
@@ -57,7 +58,7 @@ class MovieController
             
             // ✅ Render với đúng tên biến
             echo $this->blade->render('users-views.Phim.PhimDangChieu', [
-                'activePage' => 'phim-dang-chieu',
+                'activePage' => 'movies',
                 'phimDangChieu' => $phimDangChieu // ✅ Đúng tên biến
             ]);
             
@@ -75,6 +76,7 @@ class MovieController
     public function phimSapChieu()
     {
         try {
+            header('Content-Type: text/html; charset=UTF-8');
             // Lấy danh sách phim sắp chiếu
             $phimList = $this->phimModel->getPhimByStatus('coming_soon');
             
@@ -97,7 +99,7 @@ class MovieController
             }
             
             echo $this->blade->render('users-views.Phim.PhimSapChieu', [
-                'activePage' => 'phim-sap-chieu',
+                'activePage' => 'movies',
                 'phimSapChieu' => $phimSapChieu
             ]);
             
@@ -115,6 +117,7 @@ class MovieController
     public function chiTietPhim()
     {
         try {
+            header('Content-Type: text/html; charset=UTF-8');
             $phimId = $_GET['id'] ?? '';
             
             error_log("=== CHI TIET PHIM DEBUG ===");
@@ -164,7 +167,7 @@ class MovieController
             error_log("Organized lichChieu: " . json_encode($lichChieuByDate));
     
             echo $this->blade->render('users-views.Phim.ChiTietPhim', [
-                'activePage' => 'chi-tiet-phim',
+                'activePage' => 'movies',
                 'phim' => $phimData,
                 'lichChieuByDate' => $lichChieuByDate
             ]);
@@ -186,6 +189,7 @@ class MovieController
     public function chonGhe()
     {
         try {
+            header('Content-Type: text/html; charset=UTF-8');
             $lichChieuId = $_GET['lich_chieu'] ?? '';
             
             error_log("=== CHON GHE DEBUG ===");

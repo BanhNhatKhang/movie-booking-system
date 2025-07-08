@@ -6,7 +6,7 @@ use App\Core\BaseModel;
 use Exception;
 
 class Ghe extends BaseModel
-{
+{ 
     protected $table = 'ghe';
     protected $primaryKey = 'g_maghe';
     

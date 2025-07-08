@@ -5,6 +5,8 @@ namespace App\Controllers;
 use Jenssegers\Blade\Blade;
 use App\Models\Phim;
 use Exception;
+use App\Helpers\AuthHelper;
+
 
 class QuanLyPhimController
 {
@@ -25,6 +27,7 @@ class QuanLyPhimController
      */
     public function quanLyPhim()
     {
+        AuthHelper::checkAccess('admin_only');
         try {
             // Get parameters from URL
             $search = trim($_GET['q'] ?? '');
@@ -98,6 +101,7 @@ class QuanLyPhimController
      */
     public function themPhim()
     {
+        AuthHelper::checkAccess('admin_only');
         echo $this->blade->render('admin-views.QuanLyPhim.ThemPhim', [
             'activePage' => 'admin-movies'
         ]);
@@ -108,6 +112,7 @@ class QuanLyPhimController
      */
     public function luuPhim()
     {
+        AuthHelper::checkAccess('admin_only');
         if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
             header('Location: /them-phim?error=invalid_method');
             exit;
@@ -193,6 +198,7 @@ class QuanLyPhimController
      */
     public function suaPhim()
     {
+        AuthHelper::checkAccess('admin_only');
         $id = $_GET['id'] ?? '';
         if (empty($id)) {
             header('Location: /quan-ly-phim?error=invalid_id');
@@ -237,6 +243,7 @@ class QuanLyPhimController
      */
     public function capNhatPhim()
     {
+        AuthHelper::checkAccess('admin_only');
         if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
             header('Location: /quan-ly-phim');
             exit;
@@ -319,6 +326,7 @@ class QuanLyPhimController
      */
     public function doiTrangThaiPhim()
     {
+        AuthHelper::checkAccess('admin_only');
         $id = $_GET['id'] ?? '';
         if (empty($id)) {
             header('Location: /quan-ly-phim?error=invalid_id');
@@ -363,6 +371,7 @@ class QuanLyPhimController
      */
     public function capNhatTrangThai()
     {
+        AuthHelper::checkAccess('admin_only');
         if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
             header('Location: /quan-ly-phim');
             exit;
@@ -394,6 +403,7 @@ class QuanLyPhimController
      */
     private function uploadPoster($file)
     {
+        AuthHelper::checkAccess('admin_only');
         try {
             $allowedTypes = ['image/jpeg', 'image/png', 'image/jpg', 'image/webp'];
             $maxSize = 5 * 1024 * 1024; // 5MB
@@ -436,6 +446,7 @@ class QuanLyPhimController
      */
     private function mapStatusToView($dbStatus)
     {
+        AuthHelper::checkAccess('admin_only');
         switch($dbStatus) {
             case 'active':
                 return 'showing';
@@ -455,6 +466,7 @@ class QuanLyPhimController
      */
     private function getNextStatus($currentStatus)
     {
+        AuthHelper::checkAccess('admin_only');
         $statusCycle = [
             'active' => 'coming_soon',
             'coming_soon' => 'ended',
@@ -471,6 +483,7 @@ class QuanLyPhimController
      */
     private function getStatusDisplayName($status)
     {
+        AuthHelper::checkAccess('admin_only');
         $statusNames = [
             'active' => 'Đang chiếu',
             'coming_soon' => 'Sắp chiếu',

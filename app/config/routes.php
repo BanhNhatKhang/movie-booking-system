@@ -51,6 +51,7 @@ $router->add('POST', '/cap-nhat-poster', 'QuanLyTrangChuController@capNhatPoster
 $router->add('GET', '/xoa-poster', 'QuanLyTrangChuController@xoaPoster');
 $router->add('POST', '/luu-poster', 'QuanLyTrangChuController@luuPoster');
 
+//uudaitrangchu
 $router->add('GET', '/them-uu-dai-home', 'QuanLyTrangChuController@themUuDai');
 $router->add('POST', '/luu-uu-dai-home', 'QuanLyTrangChuController@luuUuDai');
 $router->add('GET', '/sua-uu-dai-home', 'QuanLyTrangChuController@suaUuDai');

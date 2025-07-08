@@ -1,5 +1,6 @@
 @extends('layouts.users.master')
 
+@section('title', 'Chọn ghế')
 @section('page-css')
     <link rel="stylesheet" href="/static/css/users/ChonGhe.css">
 @endsection

@@ -1,6 +1,6 @@
 {{-- filepath: resources/views/users-views/ThanhVien/QuaTang.blade.php --}}
 @extends('layouts.users.master')
-
+@section('title', 'Quà tặng sinh nhật')
 @section('page-css')
     <link rel="stylesheet" href="/static/css/users/HeaderFooter.css">
     <link rel="stylesheet" href="/static/css/users/ThanhVien.css">

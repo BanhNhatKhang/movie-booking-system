@@ -5,6 +5,7 @@ namespace App\Controllers;
 use Jenssegers\Blade\Blade;
 use App\Models\PhongChieu;
 use App\Models\Ghe;
+use App\Helpers\AuthHelper;
 use Exception;
 
 class QuanLyPhongGheController
@@ -20,7 +21,7 @@ class QuanLyPhongGheController
     
     public function quanLyPhongGhe()
     {
-        // $this->checkAdminAuth();
+        AuthHelper::checkAccess('admin_only');
 
         $blade = new Blade(
             realpath(__DIR__ . '/../Views'),
@@ -142,6 +143,7 @@ class QuanLyPhongGheController
     //hiển thị sơ đồ ghế
     public function showTaoSoDoGhe()
     {
+        AuthHelper::checkAccess('admin_only');
         $blade = new Blade(
             realpath(__DIR__ . '/../Views'),
             realpath(__DIR__ . '/../../cache')
@@ -156,6 +158,7 @@ class QuanLyPhongGheController
     // Quy trình tạo sơ đồ chỗ ngồi
     public function luuSoDoGhe()
     {
+        AuthHelper::checkAccess('admin_only');
         try {
             // Validate input
             $maPhong = trim($_POST['ma_phong'] ?? '');
@@ -236,6 +239,7 @@ class QuanLyPhongGheController
     //kiểm tra nếu mã phòng có sẵn (AJAX)
     public function checkRoomAvailable()
     {
+        AuthHelper::checkAccess('admin_only');
         header('Content-Type: application/json');
         
         $maPhong = trim($_GET['ma_phong'] ?? '');
@@ -269,6 +273,7 @@ class QuanLyPhongGheController
     // cập nhật trạng thái ghế
     public function updateSeatStatus()
     {
+        AuthHelper::checkAccess('admin_only');
         try {
             // ✅ Set header JSON ngay từ đầu
             header('Content-Type: application/json');
@@ -311,6 +316,7 @@ class QuanLyPhongGheController
     //cập nhật loại ghế
     public function updateSeatType()
     {
+        AuthHelper::checkAccess('admin_only');
         try {
             // ✅ Set header JSON ngay từ đầu
             header('Content-Type: application/json');
@@ -353,6 +359,7 @@ class QuanLyPhongGheController
     // nhận thống kê chỗ ngồi
     public function getSeatStatistics()
     {
+        AuthHelper::checkAccess('admin_only');
         try {
             $maPhong = $_GET['ma_phong'] ?? null;
             $stats = $this->gheModel->getSeatStatistics($maPhong);
@@ -368,6 +375,7 @@ class QuanLyPhongGheController
     // Cập nhật hàng loạt loại chỗ ngồi (để chỉnh sửa sơ đồ chỗ ngồi)
     public function bulkUpdateSeatTypes()
     {
+        AuthHelper::checkAccess('admin_only');
         try {
             $updates = json_decode(file_get_contents('php://input'), true);
             

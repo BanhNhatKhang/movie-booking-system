@@ -73,7 +73,7 @@ CREATE TABLE uu_dai (
 -- Bảng UU_DAI_TRANG_CHU
 CREATE TABLE uu_dai_trang_chu (
     udtc_mauudai VARCHAR(10) PRIMARY KEY,
-    udtc_anhuudai VARCHAR(255),
+    udtc_anhuudai VARCHAR(255)
 );
 
 -- Bảng LOAI_VE

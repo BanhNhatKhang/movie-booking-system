@@ -1,6 +1,6 @@
 {{-- filepath: d:\Server\ct27501-project-BanhNhatKhang\app\Views\users-views.ThanhVien.ThanhVien.blade.php --}}
 @extends('layouts.users.master')
-
+@section('title', 'Thành viên KHF Cinema')
 @section('page-css')
     <link rel="stylesheet" href="/static/css/users/ThanhVien.css">
 @endsection

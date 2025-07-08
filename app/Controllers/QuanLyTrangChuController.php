@@ -5,6 +5,7 @@ namespace App\Controllers;
 use App\Models\Poster;
 use App\Models\UuDaiTrangChu;
 use Jenssegers\Blade\Blade;
+use App\Helpers\AuthHelper;
 use Exception;
 
 class QuanLyTrangChuController
@@ -28,6 +29,7 @@ class QuanLyTrangChuController
      */
     public function trangChu()
     {
+        AuthHelper::checkAccess('admin_only');
         try {
             // Lấy danh sách poster
             $posters = $this->posterModel->getAll();
@@ -53,6 +55,7 @@ class QuanLyTrangChuController
     
     public function themPoster()
     {
+        AuthHelper::checkAccess('admin_only');
         $newId = $this->posterModel->generateNewId();
         echo $this->blade->render('admin-views.TrangChu.ThemPoster', [
             'activePage' => 'quan-ly-trang-chu',
@@ -62,6 +65,7 @@ class QuanLyTrangChuController
 
     public function luuPoster()
     {
+        AuthHelper::checkAccess('admin_only');
         // $this->checkAdminAuth(); // Kiểm tra quyền truy cập admin
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $file = $_FILES['anhPoster'];
@@ -88,7 +92,7 @@ class QuanLyTrangChuController
     }
     public function suaPoster()
     {
-        // $this->checkAdminAuth(); // Kiểm tra quyền truy cập admin
+        AuthHelper::checkAccess('admin_only');
         $id = $_GET['id'] ?? '';
         $poster = $this->posterModel->getById($id);
         echo $this->blade->render('admin-views.TrangChu.SuaPoster', [
@@ -99,6 +103,7 @@ class QuanLyTrangChuController
 
     public function capNhatPoster()
     {
+        AuthHelper::checkAccess('admin_only');
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $id = $_POST['pt_maposter'];
             $file = $_FILES['anhPoster'];
@@ -123,6 +128,7 @@ class QuanLyTrangChuController
 
     public function xoaPoster()
     {
+        AuthHelper::checkAccess('admin_only');
         $id = $_GET['id'] ?? '';
         $db = \App\Core\Database::getInstance()->getConnection();
         $stmt = $db->prepare("SELECT COUNT(*) FROM phim WHERE p_maposter = ?");
@@ -153,6 +159,7 @@ class QuanLyTrangChuController
      */
     public function themUuDai()
     {
+        AuthHelper::checkAccess('admin_only');
         echo $this->blade->render('admin-views.TrangChu.ThemUuDaiHome', [
             'activePage' => 'quan-ly-trang-chu'
         ]);
@@ -163,13 +170,12 @@ class QuanLyTrangChuController
      */
     public function luuUuDai()
     {
+        AuthHelper::checkAccess('admin_only');
         try {
             if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
                 header('Location: /them-uu-dai-home');
                 exit;
             }
-    
-            // ✅ Kiểm tra file ảnh được upload
             if (!isset($_FILES['anhUuDai']) || $_FILES['anhUuDai']['error'] !== UPLOAD_ERR_OK) {
                 header('Location: /them-uu-dai-home?error=no_image');
                 exit;
@@ -185,7 +191,7 @@ class QuanLyTrangChuController
             // Tạo mã ưu đãi mới
             $maUuDai = $this->uuDaiModel->generateNewId();
     
-            // ✅ Thêm vào database - chỉ cần 2 trường
+            // Thêm vào database - chỉ cần 2 trường
             $data = [
                 'udtc_mauudai' => $maUuDai,
                 'udtc_anhuudai' => $imagePath
@@ -210,6 +216,7 @@ class QuanLyTrangChuController
      */
     public function suaUuDai()
     {
+        AuthHelper::checkAccess('admin_only');
         try {
             $id = $_GET['id'] ?? '';
             if (empty($id)) {
@@ -239,6 +246,7 @@ class QuanLyTrangChuController
      */
     public function capNhatUuDai()
     {
+        AuthHelper::checkAccess('admin_only');
         try {
             if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
                 header('Location: /quan-ly-trang-chu');
@@ -296,6 +304,7 @@ class QuanLyTrangChuController
      */
     public function xoaUuDai()
     {
+        AuthHelper::checkAccess('admin_only');
         try {
             $id = $_GET['id'] ?? '';
             if (empty($id)) {
@@ -335,6 +344,7 @@ class QuanLyTrangChuController
      */
     private function handleImageUpload($file)
     {
+        AuthHelper::checkAccess('admin_only');
         try {
             $allowedTypes = ['image/jpeg', 'image/png', 'image/jpg'];
             $maxSize = 5 * 1024 * 1024; // 5MB

@@ -7,6 +7,7 @@ use App\Models\Phim;
 use App\Models\PhongChieu; 
 use App\Core\Csrf; 
 use Jenssegers\Blade\Blade;
+use App\Helpers\AuthHelper;
 use Exception;
 
 class QuanLyLichChieuController
@@ -32,6 +33,7 @@ class QuanLyLichChieuController
      */
     public function quanLyLichChieu()
     {
+        AuthHelper::checkAccess('admin_only');
         try {
             // Cập nhật trạng thái theo thời gian
             $this->lichChieuModel->updateStatusByTime();
@@ -76,6 +78,7 @@ class QuanLyLichChieuController
      */
     public function themLichChieu()
     {
+        AuthHelper::checkAccess('admin_only');
         try {
             if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 return $this->storeLichChieu();
@@ -105,6 +108,7 @@ class QuanLyLichChieuController
      */
     public function storeLichChieu()
     {
+        AuthHelper::checkAccess('admin_only');
         try {
             $compositeKey = trim($_POST['lc_malichchieu_composite'] ?? '');
             $ngayChieu = trim($_POST['lc_ngaychieu'] ?? '');
@@ -167,6 +171,7 @@ class QuanLyLichChieuController
      */
     public function suaLichChieu()
     {
+        AuthHelper::checkAccess('admin_only');
         try {
             $id = trim($_GET['id'] ?? '');
             
@@ -214,6 +219,7 @@ class QuanLyLichChieuController
      */
     public function updateLichChieu()
     {
+        AuthHelper::checkAccess('admin_only');
         try {
             // Check CSRF token
             $csrfToken = trim($_POST['csrf_token'] ?? '');
@@ -310,6 +316,7 @@ class QuanLyLichChieuController
      */
     public function deleteLichChieu()
     {
+        AuthHelper::checkAccess('admin_only');
         try {
             $id = $_GET['id'] ?? '';
             if (empty($id)) {

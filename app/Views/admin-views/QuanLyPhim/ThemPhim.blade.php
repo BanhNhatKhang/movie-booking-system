@@ -1,4 +1,7 @@
-{{-- filepath: d:\Server\ct27501-project-BanhNhatKhang\app\Views\admin-views\QuanLyPhim\ThemPhim.blade.php --}}
+@php
+    header('Content-Type: text/html; charset=UTF-8');
+@endphp
+
 @extends('layouts.admin.master')
 
 @section('title', 'Thêm phim mới')
@@ -8,6 +11,32 @@
     <link rel="stylesheet" href="/static/css/admin/LayoutAdmin.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
     <style>
+        .form-section {
+            background: #f8f9fa;
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+        .section-title {
+            color: #495057;
+            font-weight: 600;
+            margin-bottom: 15px;
+            border-bottom: 2px solid #dee2e6;
+            padding-bottom: 8px;
+        }
+        .required {
+            color: #dc3545;
+        }
+        /* UTF-8 Font Fix */
+        * {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif !important;
+        }
+        
+        /* Fix for form inputs */
+        input[type="text"], textarea, .form-control {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif !important;
+        }
+        
         .form-section {
             background: #f8f9fa;
             border-radius: 8px;
@@ -328,14 +357,6 @@ document.addEventListener('DOMContentLoaded', function() {
     document.querySelector('input[name="movie_id"]').addEventListener('input', function(e) {
         // Convert to uppercase
         e.target.value = e.target.value.toUpperCase();
-    });
-
-    // ✅ Auto-format genre (capitalize first letters)
-    document.querySelector('input[name="genre"]').addEventListener('blur', function(e) {
-        const genres = e.target.value.split(',').map(genre => {
-            return genre.trim().toLowerCase().replace(/\b\w/g, l => l.toUpperCase());
-        });
-        e.target.value = genres.join(', ');
     });
 });
 </script>
