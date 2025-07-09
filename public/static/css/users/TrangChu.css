@@ -44,6 +44,23 @@
         text-align: center;
         font-weight: bold;
         color:white;
+        height: 3.5rem; /* ✅ Cố định chiều cao */
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        overflow: hidden;
+    }
+
+    .movie-card-text p {
+        margin: 0;
+        padding: 0;
+        line-height: 1.3;
+        display: -webkit-box;
+        -webkit-line-clamp: 2;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+        word-wrap: break-word;
+        text-align: center;
     }
 
     .movie-card {
@@ -149,6 +166,14 @@
          .nav-tabs .nav-link {
             padding: 0px 0px; /* Giảm padding để tiết kiệm không gian */
         }
+        
+        .movie-card-text {
+        height: 3rem;
+    }
+    
+    .movie-card-text p {
+        font-size: 14px;
+    }
     }
     /*Tablet*/
     @media (min-width: 481px) and (max-width: 768px) {
@@ -174,4 +199,12 @@
          .nav-tabs .nav-link {
             padding: 0px 0px; /* Giảm padding để tiết kiệm không gian */
         }
+        
+        .movie-card-text {
+        height: 3.2rem;
+    }
+    
+    .movie-card-text p {
+        font-size: 15px;
+    }
     }

@@ -22,6 +22,9 @@
     <a class="nav-link {{ ($activePage ?? '') == 'PhongGhe' ? 'active' : '' }}" href="/quan-ly-phong-ghe">
         <i class="bi bi-door-closed"></i> Phòng & Ghế
     </a>
+    <a class="nav-link {{ ($activePage ?? '') == 'LoaiVe' ? 'active' : '' }}" href="/quan-ly-loai-ve">
+        <i class="bi bi-ticket-perforated"></i> Loại vé
+    </a>
     <a class="nav-link {{ ($activePage ?? '') == 'admin-orders' ? 'active' : '' }}" href="/quan-ly-don-dat-ve">
         <i class="bi bi-ticket-detailed"></i> Quản lý đơn đặt vé
     </a>

@@ -134,3 +134,11 @@ $router->add('GET', '/admin/thong-tin-ca-nhan', 'AdminController@thongTinCaNhan'
 // Đổi mật khẩu admin
 $router->add('GET', '/admin/doi-mat-khau', 'AdminController@doiMatKhau');
 $router->add('POST', '/admin/xu-ly-doi-mat-khau', 'AdminController@xuLyDoiMatKhau');
+
+//loaive
+$router->add('GET', '/quan-ly-loai-ve', 'QuanLyLoaiVeController@quanLyLoaiVe');
+$router->add('GET', '/them-loai-ve', 'QuanLyLoaiVeController@create');
+$router->add('POST', '/luu-loai-ve', 'QuanLyLoaiVeController@store');
+$router->add('GET', '/sua-loai-ve', 'QuanLyLoaiVeController@edit');
+$router->add('POST', '/cap-nhat-loai-ve', 'QuanLyLoaiVeController@update');
+$router->add('POST', '/xoa-loai-ve', 'QuanLyLoaiVeController@delete');
