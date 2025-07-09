@@ -142,3 +142,45 @@ function showCoupleSeatAlert() {
     alert.remove();
   };
 }
+
+// Bỏ hết logic giữ ghế, chỉ giữ logic chọn ghế cơ bản
+function selectSeat(seatElement) {
+  const seatCode = seatElement.dataset.seatCode;
+  const seatType = seatElement.dataset.seatType;
+
+  if (seatElement.classList.contains("selected")) {
+    // Bỏ chọn ghế
+    seatElement.classList.remove("selected");
+    selectedSeats = selectedSeats.filter((seat) => seat !== seatCode);
+  } else {
+    // Chọn ghế
+    seatElement.classList.add("selected");
+    selectedSeats.push(seatCode);
+  }
+
+  updateSelectedSeatsDisplay();
+  updateTotalPrice();
+}
+
+// Tiếp tục thanh toán - không cần kiểm tra giữ ghế
+function continueToPay() {
+  if (selectedSeats.length === 0) {
+    alert("Vui lòng chọn ít nhất một ghế!");
+    return;
+  }
+
+  // Tạo URL thanh toán
+  const seatDisplays = selectedSeats.map((seatCode) => {
+    const seatElement = document.querySelector(`[data-seat-code="${seatCode}"]`);
+    return seatElement ? seatElement.textContent.trim() : seatCode;
+  });
+
+  const params = new URLSearchParams({
+    lich_chieu: appData.lichChieuId,
+    seats: selectedSeats.join(","),
+    seat_displays: seatDisplays.join(","),
+    total: totalPrice,
+  });
+
+  window.location.href = "/thanh-toan?" + params.toString();
+}

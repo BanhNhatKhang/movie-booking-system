@@ -369,7 +369,7 @@ class MovieController
     /**
      * Lấy bảng giá vé theo phòng chiếu
      */
-    private function getGiaBanVeTheoPhong($lichChieu)
+    public function getGiaBanVeTheoPhong($lichChieu)
     {
         try {
             $maPhongChieu = $lichChieu['pc_maphongchieu'] ?? '';

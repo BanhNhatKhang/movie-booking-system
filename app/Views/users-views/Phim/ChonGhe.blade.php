@@ -127,7 +127,7 @@
     </div>
 </main>
 
-{{-- dữ liệu ẩn cho javascript --}}
+{{-- ✅ Data script JSON --}}
 <script type="application/json" id="app-data">
 {!! json_encode([
     'giaBanVe' => $giaBanVe ?? [],
@@ -138,30 +138,80 @@
 
 @section('page-js')
 <script>
+
 document.addEventListener('DOMContentLoaded', function() {
+    console.log('=== CHON GHE SCRIPT LOADED ===');
+    
     // Lấy dữ liệu từ hidden script tag
     const appDataElement = document.getElementById('app-data');
-    const appData = JSON.parse(appDataElement.textContent);
+    if (!appDataElement) {
+        console.error('Không tìm thấy app-data element');
+        return;
+    }
     
-    const giaBanVe = appData.giaBanVe;
-    const lichChieuId = appData.lichChieuId;
+    let appData;
+    try {
+        appData = JSON.parse(appDataElement.textContent);
+        console.log('App data parsed:', appData);
+    } catch (e) {
+        console.error('Error parsing app data:', e);
+        return;
+    }
+    
+    const giaBanVe = appData.giaBanVe || {};
+    const lichChieuId = appData.lichChieuId || '';
+    
+    console.log('GiaBanVe:', giaBanVe);
+    console.log('LichChieuId:', lichChieuId);
     
     // Biến lưu trữ ghế đã chọn
     let selectedSeats = [];
     
+    // Tìm tất cả ghế có thể chọn
+    const availableSeats = document.querySelectorAll('.seat:not([disabled])');
+    console.log('Found available seats:', availableSeats.length);
+    
+    // Debug: Kiểm tra ghế đầu tiên
+    if (availableSeats.length > 0) {
+        const firstSeat = availableSeats[0];
+        console.log('First seat element:', firstSeat);
+        console.log('First seat data:', {
+            seat: firstSeat.getAttribute('data-seat'),
+            display: firstSeat.getAttribute('data-display'),
+            type: firstSeat.getAttribute('data-type'),
+            price: firstSeat.getAttribute('data-price')
+        });
+    }
+    
     // Xử lý click chọn ghế
-    document.querySelectorAll('.seat:not([disabled])').forEach(btn => {
-        btn.addEventListener('click', function() {
+    availableSeats.forEach(function(btn, index) {
+        console.log(`Setting up seat ${index}:`, btn.getAttribute('data-seat'));
+        
+        btn.addEventListener('click', function(e) {
+            console.log('=== SEAT CLICKED ===');
+            console.log('Event:', e);
+            console.log('Target:', e.target);
+            console.log('Seat clicked:', this.getAttribute('data-seat'));
+            
             const seatCode = this.getAttribute('data-seat');
             const displayCode = this.getAttribute('data-display');
             const seatType = this.getAttribute('data-type');
-            const seatPrice = parseInt(this.getAttribute('data-price'));
+            const seatPrice = parseInt(this.getAttribute('data-price')) || 0;
+            
+            console.log('Seat data:', {
+                code: seatCode,
+                display: displayCode,
+                type: seatType,
+                price: seatPrice
+            });
             
             if (this.classList.contains('selected')) {
+                console.log('Deselecting seat:', seatCode);
                 // Bỏ chọn ghế
                 this.classList.remove('selected');
                 selectedSeats = selectedSeats.filter(seat => seat.code !== seatCode);
             } else {
+                console.log('Selecting seat:', seatCode);
                 // Chọn ghế (giới hạn tối đa 8 ghế)
                 if (selectedSeats.length >= 8) {
                     alert('Bạn chỉ có thể chọn tối đa 8 ghế trong một lần đặt!');
@@ -177,15 +227,23 @@ document.addEventListener('DOMContentLoaded', function() {
                 });
             }
             
+            console.log('Selected seats after update:', selectedSeats);
             updateSummary();
         });
     });
     
     // Cập nhật thông tin tóm tắt
     function updateSummary() {
+        console.log('Updating summary...');
+        
         const selectedSeatsDiv = document.getElementById('selectedSeats');
         const totalPriceDiv = document.getElementById('totalPrice');
         const nextBtn = document.getElementById('btn-next');
+        
+        if (!selectedSeatsDiv || !totalPriceDiv || !nextBtn) {
+            console.error('Missing summary elements');
+            return;
+        }
         
         if (selectedSeats.length === 0) {
             selectedSeatsDiv.innerHTML = '<em class="text-muted">Chưa chọn ghế nào</em>';
@@ -204,12 +262,25 @@ document.addEventListener('DOMContentLoaded', function() {
             
             nextBtn.disabled = false;
         }
+        
+        console.log('Summary updated');
     }
     
-    // Chuyển đến trang thanh toán
+    // ✅ Global function để thanh toán
     window.goToPayment = function() {
+        console.log('=== GO TO PAYMENT CALLED ===');
+        
         if (selectedSeats.length === 0) {
             alert('Vui lòng chọn ít nhất một ghế!');
+            return;
+        }
+        
+        console.log('Selected seats:', selectedSeats);
+        console.log('LichChieu ID:', lichChieuId);
+        
+        // Kiểm tra dữ liệu
+        if (!lichChieuId) {
+            alert('Lỗi: Không tìm thấy thông tin lịch chiếu!');
             return;
         }
         
@@ -218,6 +289,17 @@ document.addEventListener('DOMContentLoaded', function() {
         const seatDisplays = selectedSeats.map(seat => seat.display).join(',');
         const total = selectedSeats.reduce((sum, seat) => sum + seat.price, 0);
         
+        // Log để debug
+        console.log('Seat codes:', seatCodes);
+        console.log('Seat displays:', seatDisplays);
+        console.log('Total:', total);
+        
+        // Kiểm tra dữ liệu trước khi redirect
+        if (!seatCodes || !seatDisplays || total <= 0) {
+            alert('Lỗi: Dữ liệu ghế không hợp lệ!');
+            return;
+        }
+        
         const params = new URLSearchParams({
             lich_chieu: lichChieuId,
             seats: seatCodes,
@@ -225,11 +307,29 @@ document.addEventListener('DOMContentLoaded', function() {
             total: total
         });
         
-        window.location.href = '/thanh-toan?' + params.toString();
+        const redirectUrl = '/thanh-toan?' + params.toString();
+        console.log('Redirecting to:', redirectUrl);
+        
+        // Redirect
+        window.location.href = redirectUrl;
     };
+    
+    // Test click trực tiếp
+    console.log('=== TESTING CLICK EVENTS ===');
+    setTimeout(() => {
+        const testSeat = document.querySelector('.seat:not([disabled])');
+        if (testSeat) {
+            console.log('Test seat found:', testSeat);
+            console.log('Test seat clickable:', !testSeat.disabled);
+            console.log('Test seat classes:', testSeat.className);
+        } else {
+            console.log('No test seat found');
+        }
+    }, 1000);
     
     // Khởi tạo
     updateSummary();
+    console.log('=== CHON GHE SCRIPT SETUP COMPLETE ===');
 });
 </script>
 @endsection

@@ -244,5 +244,50 @@ class Ve extends BaseModel
         }
     }
     
+    /**
+     * Lấy danh sách ghế đã đặt theo lịch chiếu
+     */
+    public function getGheDaDatByLichChieu($lichChieuId)
+    {
+        try {
+            $sql = "SELECT g_maghe FROM ve WHERE lc_malichchieu = ? AND v_trangthai = 'da_thanh_toan'";
+            $stmt = $this->db->prepare($sql);
+            $stmt->execute([$lichChieuId]);
+            
+            return $stmt->fetchAll(PDO::FETCH_ASSOC);
+            
+        } catch (Exception $e) {
+            error_log("Error getting booked seats: " . $e->getMessage());
+            return [];
+        }
+    }
 
+    /**
+     * Tạo vé mới
+     */
+    public function create($data)
+    {
+        try {
+            $sql = "INSERT INTO ve (v_mave, v_ngaydat, v_tongtien, v_trangthai, nd_id, tt_mathanhtoan, g_maghe, lc_malichchieu) 
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+        
+            $stmt = $this->db->prepare($sql);
+            $result = $stmt->execute([
+                $data['v_mave'],
+                $data['v_ngaydat'],
+                $data['v_tongtien'],
+                $data['v_trangthai'],
+                $data['nd_id'],
+                $data['tt_mathanhtoan'],
+                $data['g_maghe'],
+                $data['lc_malichchieu']
+            ]);
+        
+            return $result;
+        
+        } catch (Exception $e) {
+            error_log("Error creating ve: " . $e->getMessage());
+            return false;
+        }
+    }
 }

@@ -153,4 +153,27 @@ class PhongChieu extends BaseModel
             return [];
         }
     }
+    
+    /**
+     * Lấy thông tin ghế theo mã ghế
+     */
+    public function getGheByMaGhe($maGhe)
+    {
+        try {
+            error_log("PhongChieu::getGheByMaGhe called with: " . $maGhe);
+            
+            $sql = "SELECT * FROM ghe WHERE g_maghe = :ma_ghe";
+            $stmt = $this->db->prepare($sql);
+            $stmt->execute(['ma_ghe' => $maGhe]);
+            
+            $result = $stmt->fetch(PDO::FETCH_ASSOC);
+            error_log("PhongChieu::getGheByMaGhe result: " . json_encode($result));
+            
+            return $result;
+            
+        } catch (Exception $e) {
+            error_log("Error in getGheByMaGhe: " . $e->getMessage());
+            return null;
+        }
+    }
 }

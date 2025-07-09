@@ -12,8 +12,10 @@ class ThanhToan extends BaseModel
     protected $table = 'thanh_toan';
     protected $primaryKey = 'tt_mathanhtoan';
     
-    // Tạo thanh toán mới
-    public function createThanhToan($data)
+    /**
+     * Tạo thanh toán mới
+     */
+    public function create($data)
     {
         try {
             $sql = "INSERT INTO thanh_toan (tt_mathanhtoan, tt_sotien, tt_phuongthuc, tt_thoigianthanhtoan, nd_id) 
@@ -25,16 +27,13 @@ class ThanhToan extends BaseModel
                 $data['tt_sotien'],
                 $data['tt_phuongthuc'],
                 $data['tt_thoigianthanhtoan'],
-                $data['nd_id'] ?? null
+                $data['nd_id']
             ]);
             
-            if ($result) {
-                return $data['tt_mathanhtoan'];
-            }
+            return $result;
             
-            return false;
-        } catch (PDOException $e) {
-            error_log("Error creating thanh toan: " . $e->getMessage());
+        } catch (Exception $e) {
+            error_log("Error creating thanh_toan: " . $e->getMessage());
             return false;
         }
     }
@@ -254,17 +253,5 @@ class ThanhToan extends BaseModel
             error_log("Error counting thanh toan: " . $e->getMessage());
             return 0;
         }
-    }
-    
-    // Override phương thức create của BaseModel
-    public function create($data)
-    {
-        return $this->createThanhToan($data);
-    }
-    
-    // Override phương thức getById của BaseModel
-    public function getById($id)
-    {
-        return $this->getThanhToanById($id);
     }
 }

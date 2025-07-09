@@ -494,24 +494,31 @@ class LichChieu extends BaseModel
     {
         try {
             $sql = "SELECT 
-                    lc.*,
+                    lc.lc_malichchieu,
+                    lc.lc_ngaychieu,
+                    lc.lc_giobatdau,
+                    lc.lc_trangthai,
+                    lc.p_maphim,
+                    lc.pc_maphongchieu,
                     p.p_tenphim,
+                    p.p_poster,
+                    p.p_theloai,
                     p.p_thoiluong,
+                    p.p_daodien,
+                    p.p_dienvien,
+                    p.p_mota,
                     pc.pc_tenphong,
                     pc.pc_loaiphong
-                FROM lich_chieu lc  
-                LEFT JOIN phim p ON lc.p_maphim = p.p_maphim
-                LEFT JOIN phong_chieu pc ON lc.pc_maphongchieu = pc.pc_maphongchieu  
-                WHERE lc.lc_malichchieu = :lich_chieu_id";
-    
+                FROM lich_chieu lc
+                INNER JOIN phim p ON lc.p_maphim = p.p_maphim
+                INNER JOIN phong_chieu pc ON lc.pc_maphongchieu = pc.pc_maphongchieu
+                WHERE lc.lc_malichchieu = ?";
+        
             $stmt = $this->db->prepare($sql);
-            $stmt->execute(['lich_chieu_id' => $lichChieuId]);
-            $result = $stmt->fetch(PDO::FETCH_ASSOC);
-            
-            error_log("getLichChieuWithPhongChieu result: " . json_encode($result));
-            
-            return $result;
-            
+            $stmt->execute([$lichChieuId]);
+        
+            return $stmt->fetch(PDO::FETCH_ASSOC);
+        
         } catch (Exception $e) {
             error_log("Error in getLichChieuWithPhongChieu: " . $e->getMessage());
             return null;
