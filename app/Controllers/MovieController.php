@@ -3,6 +3,7 @@
 namespace App\Controllers;
 use App\Models\Phim;
 use App\Models\LichChieu; 
+use App\Models\LoaiVe; // ✅ Thêm dòng này
 use Jenssegers\Blade\Blade;
 use Exception;
 
@@ -10,12 +11,14 @@ class MovieController
 {
     private $phimModel;
     private $lichChieuModel; 
+    private $loaiVeModel; // ✅ Thêm property này
     private $blade;
 
     public function __construct()
     {
         $this->phimModel = new Phim();
         $this->lichChieuModel = new LichChieu(); 
+        $this->loaiVeModel = new LoaiVe(); // ✅ Thêm dòng này
         $this->blade = new Blade(
             realpath(__DIR__ . '/../Views'),
             cachePath: realpath(__DIR__ . '/../../cache')
@@ -239,7 +242,7 @@ class MovieController
             error_log("Ghe by row: " . json_encode($gheByRow));
             
             // Tính giá vé theo loại ghế
-            $giaBanVe = $this->getGiaBanVe();
+            $giaBanVe = $this->getGiaBanVeTheoPhong($lichChieu);
 
             echo $this->blade->render('users-views.Phim.ChonGhe', [
                 'activePage' => 'movies',
@@ -364,9 +367,84 @@ class MovieController
     }
 
     /**
-     * Lấy bảng giá vé
+     * Lấy bảng giá vé theo phòng chiếu
      */
-    private function getGiaBanVe()
+    private function getGiaBanVeTheoPhong($lichChieu)
+    {
+        try {
+            $maPhongChieu = $lichChieu['pc_maphongchieu'] ?? '';
+            $tenPhongChieu = $lichChieu['pc_tenphong'] ?? '';
+            $loaiPhongChieu = $lichChieu['pc_loaiphong'] ?? '';
+            
+            error_log("=== GET PRICE FOR ROOM ===");
+            error_log("Ma phong: " . $maPhongChieu);
+            error_log("Ten phong: " . $tenPhongChieu);
+            error_log("Loai phong: " . $loaiPhongChieu);
+            
+            // ✅ Tìm loại vé theo thứ tự ưu tiên
+            $loaiVe = null;
+            
+            // 1. Tìm theo mã phòng chiếu
+            $loaiVe = $this->loaiVeModel->getLoaiVeById($maPhongChieu);
+            
+            // 2. Nếu không tìm thấy, tìm theo loại phòng
+            if (!$loaiVe) {
+                $allLoaiVe = $this->loaiVeModel->getAllLoaiVeSimple();
+                
+                foreach ($allLoaiVe as $lv) {
+                    $tenLoaiVe = strtolower($lv['lv_tenloaive']);
+                    $maLoaiVe = strtolower($lv['lv_maloaive']);
+                    
+                    // So sánh với loại phòng
+                    if (stripos($tenLoaiVe, $loaiPhongChieu) !== false ||
+                        stripos($maLoaiVe, $loaiPhongChieu) !== false ||
+                        stripos($tenLoaiVe, $tenPhongChieu) !== false) {
+                        $loaiVe = $lv;
+                        break;
+                    }
+                }
+            }
+            
+            // 3. Nếu vẫn không tìm thấy, lấy loại vé đầu tiên
+            if (!$loaiVe) {
+                $allLoaiVe = $this->loaiVeModel->getAllLoaiVeSimple();
+                if (!empty($allLoaiVe)) {
+                    $loaiVe = $allLoaiVe[0];
+                    error_log("Using first available loai_ve as fallback");
+                }
+            }
+            
+            if ($loaiVe) {
+                $giaCoban = (int)$loaiVe['lv_giatien'];
+                
+                error_log("Found loai_ve: " . $loaiVe['lv_tenloaive'] . " with base price: " . $giaCoban);
+                
+                // ✅ Tính giá theo loại ghế = giá cơ bản + phụ phí loại ghế
+                $giaBanVe = [
+                    'normal' => $giaCoban,                    // Giá cơ bản
+                    'vip' => $giaCoban + 20000,              // Cộng 20k cho VIP
+                    'luxury' => $giaCoban + 50000,           // Cộng 50k cho Luxury
+                    'couple' => $giaCoban + 80000            // Cộng 80k cho Couple
+                ];
+                
+                error_log("Calculated prices: " . json_encode($giaBanVe));
+                return $giaBanVe;
+            }
+            
+            // Fallback cuối cùng
+            error_log("No loai_ve found, using hardcoded default");
+            return $this->getGiaBanVeDefault();
+            
+        } catch (Exception $e) {
+            error_log("Error in getGiaBanVeTheoPhong: " . $e->getMessage());
+            return $this->getGiaBanVeDefault();
+        }
+    }
+
+    /**
+     * Giá vé mặc định khi không tìm thấy loại vé
+     */
+    private function getGiaBanVeDefault()
     {
         return [
             'normal' => 70000,
@@ -374,6 +452,18 @@ class MovieController
             'luxury' => 120000,
             'couple' => 150000
         ];
+    }
+
+    /**
+     * Lấy bảng giá vé (old method - giờ gọi method mới)
+     */
+    private function getGiaBanVe($lichChieu = null)
+    {
+        if ($lichChieu) {
+            return $this->getGiaBanVeTheoPhong($lichChieu);
+        }
+        
+        return $this->getGiaBanVeDefault();
     }
 
     /**

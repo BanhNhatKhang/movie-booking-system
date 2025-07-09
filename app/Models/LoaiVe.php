@@ -181,4 +181,5 @@ class LoaiVe extends BaseModel
         // Sử dụng method getAll của BaseModel
         return $this->getAll();
     }
+    
 }
