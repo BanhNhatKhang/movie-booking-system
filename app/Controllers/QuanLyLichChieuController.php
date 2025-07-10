@@ -45,12 +45,20 @@ class QuanLyLichChieuController
                 'ma_phim' => $_GET['ma_phim'] ?? ''
             ];
 
+            // Phân trang
+            $page = max(1, intval($_GET['page'] ?? 1));
+            $itemsPerPage =5;
+            $offset = ($page - 1) * $itemsPerPage;
+
             // Lấy danh sách lịch chiếu
             if (array_filter($filters)) {
                 $lichChieuList = $this->lichChieuModel->searchLichChieu($filters);
             } else {
-                $lichChieuList = $this->lichChieuModel->getAllLichChieu();
+                $lichChieuList = $this->lichChieuModel->getAllLichChieuFiltered($filters, $itemsPerPage, $offset);
             }
+
+            $totalLichChieu = $this->lichChieuModel->countLichChieu($filters);
+            $totalPages = ceil($totalLichChieu / $itemsPerPage);
 
             // Lấy danh sách phim để filter
             $phimList = $this->lichChieuModel->getAllPhim();
@@ -59,7 +67,11 @@ class QuanLyLichChieuController
                 'activePage' => 'schedule', 
                 'lichChieuList' => $lichChieuList,
                 'phimList' => $phimList,
-                'filters' => $filters
+                'filters' => $filters,
+                'currentPage' => $page,
+                'totalPages' => $totalPages,
+                'totalItems' => $totalLichChieu,
+                'itemsPerPage' => $itemsPerPage,
             ]);
 
         } catch (Exception $e) {

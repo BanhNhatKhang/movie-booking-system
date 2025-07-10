@@ -33,8 +33,8 @@ class QuanLyPhimController
             $search = trim($_GET['q'] ?? '');
             $status = $_GET['status'] ?? '';
             $page = max(1, intval($_GET['page'] ?? 1));
-            $limit = 12;
-            $offset = ($page - 1) * $limit;
+            $itemsPerPage = 5;
+            $offset = ($page - 1) * $itemsPerPage;
     
             // Map status từ URL sang database
             $dbStatus = '';
@@ -53,9 +53,9 @@ class QuanLyPhimController
             }
     
             // Get data from database
-            $phimList = $this->phimModel->getAllPhim($search, $limit, $offset, $dbStatus);
+            $phimList = $this->phimModel->getAllPhim($search, $itemsPerPage, $offset, $dbStatus);
             $totalPhim = $this->phimModel->countPhim($search, $dbStatus);
-            $totalPages = max(1, ceil($totalPhim / $limit));
+            $totalPages = max(1, ceil($totalPhim / $itemsPerPage));
     
             // Format dữ liệu cho view
             $formattedPhimList = [];
@@ -84,7 +84,7 @@ class QuanLyPhimController
                 'totalPhim' => $totalPhim,
                 'search' => $search,
                 'statusFilter' => $status,
-                'limit' => $limit
+                'itemsPerPage' => $itemsPerPage
             ]);
         } catch (Exception $e) {
             error_log("Error in quanLyPhim: " . $e->getMessage());

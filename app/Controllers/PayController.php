@@ -279,7 +279,7 @@ class PayController
                     'v_mave' => $maVe,
                     'v_ngaydat' => date('Y-m-d'),
                     'v_tongtien' => $seat['price'],
-                    'v_trangthai' => 'da_thanh_toan',
+                    'v_trangthai' => 'chua_in',
                     'nd_id' => $_SESSION['user_id'],
                     'tt_mathanhtoan' => $maThanhToan,
                     'g_maghe' => $seat['code'],

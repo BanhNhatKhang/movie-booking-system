@@ -139,11 +139,13 @@
         </table>
     </div>
     
-    @if(count($lichChieuList ?? []) > 0)
-        <div class="text-muted small">
-            Tổng số: {{ count($lichChieuList) }} lịch chiếu
-        </div>
-    @endif
+    @include('layouts.admin.Pagination', [
+    'currentPage' => $currentPage ?? 1,
+    'totalPages' => $totalPages ?? 1,
+    'totalItems' => $totalItems ?? 0,
+    'itemsPerPage' => $itemsPerPage ?? 10,
+    'itemName' => 'lịch chiếu'
+    ])
     
     <hr>
 </div>

@@ -1,4 +1,3 @@
-{{-- filepath: c:\Servers\test\app\Views\admin-views\ThanhToan\ChiTietThanhToan.blade.php --}}
 @extends('layouts.admin.master')
 
 @section('title', 'Chi tiết thanh toán')
@@ -7,6 +6,13 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" />
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
     <link href="/static/css/admin/LayoutAdmin.css" rel="stylesheet">
+    <style>
+        .bg-momo { background: #a50064 !important; color: #fff !important; }
+        .bg-vnpay { background: #0060af !important; color: #fff !important; }
+        .bg-zalopay { background: #00b4f3 !important; color: #fff !important; }
+        .bg-bank { background: #28a745 !important; color: #fff !important; }
+        .bg-cash { background: #6c757d !important; color: #fff !important; }
+    </style>
 @endsection
 
 @section('content')
@@ -19,14 +25,34 @@
         </div>
         <div class="card-body">
             <div class="row mb-2">
-                <div class="col-md-4"><span class="info-label">Mã giao dịch:</span> GD123456</div>
-                <div class="col-md-4"><span class="info-label">Thời gian:</span> 2025-06-15 09:30</div>
+                <div class="col-md-4"><span class="info-label">Mã giao dịch:</span> {{ $thanhToan['tt_mathanhtoan'] }}</div>
+                <div class="col-md-4"><span class="info-label">Thời gian:</span> {{ date('d/m/Y H:i', strtotime($thanhToan['tt_thoigianthanhtoan'])) }}</div>
                 <div class="col-md-4"><span class="info-label">Trạng thái:</span> <span class="badge bg-success">Thành công</span></div>
             </div>
             <div class="row mb-2">
-                <div class="col-md-4"><span class="info-label">Phương thức:</span> VNPay</div>
-                <div class="col-md-4"><span class="info-label">Số tiền:</span> <b>120.000đ</b></div>
-                <div class="col-md-4"><span class="info-label">Mã vé:</span> VE4567</div>
+                <div class="col-md-4"><span class="info-label">Phương thức:</span>
+                    @php
+                        $map = [
+                            'momo' => ['MoMo', 'bg-momo'],
+                            'cash' => ['Tiền mặt', 'bg-cash'],
+                            'vnpay' => ['VN Pay', 'bg-vnpay'],
+                            'zalopay' => ['Zalo Pay', 'bg-zalopay'],
+                            'bank' => ['Ngân hàng', 'bg-bank']
+                        ];
+                        $method = $thanhToan['tt_phuongthuc'];
+                        $methodName = $map[$method][0] ?? $method;
+                        $methodClass = $map[$method][1] ?? 'bg-secondary';
+                    @endphp
+                    <span class="badge {{ $methodClass }}">
+                        {{ $methodName }}
+                    </span>
+                </div>
+                <div class="col-md-4"><span class="info-label">Số tiền:</span> <b>{{ number_format($thanhToan['tt_sotien'], 0, ',', '.') }}đ</b></div>
+                <div class="col-md-4"><span class="info-label">Mã vé:</span>
+                    @foreach($veList as $ve)
+                        <span class="badge bg-info text-dark">{{ $ve['v_mave'] }}</span>
+                    @endforeach
+                </div>
             </div>
         </div>
     </div>
@@ -36,13 +62,9 @@
         </div>
         <div class="card-body">
             <div class="row mb-2">
-                <div class="col-md-4"><span class="info-label">Họ tên:</span> Nguyễn Văn A</div>
-                <div class="col-md-4"><span class="info-label">Email:</span> nguyenvana@email.com</div>
-                <div class="col-md-4"><span class="info-label">Số điện thoại:</span> 0901234567</div>
-            </div>
-            <div class="row mb-2">
-                <div class="col-md-4"><span class="info-label">Tài khoản:</span> nguyenvana</div>
-                <div class="col-md-4"><span class="info-label">Loại khách:</span> Thành viên</div>
+                <div class="col-md-4"><span class="info-label">Họ tên:</span> {{ $user['nd_hoten'] ?? '' }}</div>
+                <div class="col-md-4"><span class="info-label">Email:</span> {{ $user['nd_email'] ?? '' }}</div>
+                <div class="col-md-4"><span class="info-label">Số điện thoại:</span> {{ $user['nd_sdt'] ?? '' }}</div>
             </div>
         </div>
     </div>
@@ -62,20 +84,24 @@
                             <th>Ngày</th>
                             <th>Giờ</th>
                             <th>Giá vé</th>
-                            <th>Loại vé</th>
                         </tr>
                     </thead>
                     <tbody>
+                        @foreach($veList as $ve)
                         <tr>
-                            <td>SC7890</td>
-                            <td>Avengers: Endgame</td>
-                            <td>Phòng 1</td>
-                            <td>A5, A6</td>
-                            <td>2025-06-18</td>
-                            <td>18:30</td>
-                            <td>120.000đ</td>
-                            <td>Vé thường</td>
+                            <td>{{ $ve['lc_malichchieu'] }}</td>
+                            <td>{{ $ve['p_tenphim'] ?? '' }}</td>
+                            <td>{{ $ve['pc_tenphong'] ?? '' }}</td>
+                            <td>{{ $ve['g_maghe'] }}</td>
+                            <td>{{ $ve['lc_ngaychieu'] ?? '' }}</td>
+                            <td>
+                                @if(isset($ve['lc_giobatdau']))
+                                    {{ date('H:i', strtotime($ve['lc_giobatdau'])) }}
+                                @endif
+                            </td>
+                            <td>{{ number_format($ve['v_tongtien'], 0, ',', '.') }}đ</td>
                         </tr>
+                        @endforeach
                     </tbody>
                 </table>
             </div>

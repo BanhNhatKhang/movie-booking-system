@@ -3,43 +3,79 @@
 namespace App\Controllers;
 
 use Jenssegers\Blade\Blade;
-
+use App\Models\ThanhToan;
+use App\Models\NguoiDung;
+use App\Models\Ve;
+use App\Helpers\AuthHelper;
 class QuanLyThanhToanController
 {
-    private function checkAdminAuth()
-    {
-        // Kiểm tra đăng nhập
-        if (!isset($_SESSION['logged_in']) || $_SESSION['logged_in'] !== true) {
-            $_SESSION['error_message'] = 'Vui lòng đăng nhập để truy cập trang admin!';
-            header('Location: /dang-nhap');
-            exit;
-        }
-        
-        // Kiểm tra role admin
-        if (!isset($_SESSION['user_role']) || $_SESSION['user_role'] !== 'admin') {
-            $_SESSION['error_message'] = 'Bạn không có quyền truy cập trang admin!';
-            header('Location: /'); // Chuyển về trang chủ user
-            exit;
-        }
-    }
+
 
     public function quanLyThanhToan()
     {
-        $this->checkAdminAuth();
-        $blade = new Blade(
+        $search = $_GET['search'] ?? '';
+        $paymentMethod = $_GET['payment_method'] ?? '';
+        $today = date('Y-m-d');
+
+        $thanhToanModel = new \App\Models\ThanhToan();
+
+        // Lấy danh sách có lọc
+        $page = max(1, intval($_GET['page'] ?? 1));
+        $itemsPerPage = 10;
+        $offset = ($page - 1) * $itemsPerPage;
+        $list = $thanhToanModel->getAllThanhToanFiltered($search, $paymentMethod, $itemsPerPage, $offset);
+
+        // Thống kê tổng
+        $stats = [
+            'total' => $thanhToanModel->countThanhToan($search, $paymentMethod),
+            'total_amount' => $thanhToanModel->sumThanhToan($search, $paymentMethod),
+            // Thống kê trong ngày
+            'total_today' => $thanhToanModel->countThanhToan($search, $paymentMethod, $today),
+            'total_amount_today' => $thanhToanModel->sumThanhToan($search, $paymentMethod, $today),
+        ];
+        $month = date('Y-m');
+        $stats['total_amount_month'] = $thanhToanModel->sumThanhToanByMonth($month);
+        $stats['total_month'] = $thanhToanModel->countThanhToanByMonth($month);
+
+        $totalItems = $thanhToanModel->countThanhToan($search, $paymentMethod);
+        $totalPages = ceil($totalItems / $itemsPerPage);
+
+        $blade = new \Jenssegers\Blade\Blade(
             realpath(__DIR__ . '/../Views'),
             realpath(__DIR__ . '/../../cache')
         );
-        echo $blade->render('admin-views.ThanhToan.QuanLyThanhToan', ['activePage' => 'pay']);
+        echo $blade->render('admin-views.ThanhToan.QuanLyThanhToan', [
+            'list' => $list,
+            'stats' => $stats,
+            'currentPage' => $page,
+            'totalPages' => $totalPages,
+            'totalItems' => $totalItems,
+            'itemsPerPage' => $itemsPerPage,
+            'itemName' => 'giao dịch',
+            'activePage' => 'pay',
+        ]);
     }
 
     public function chiTietThanhToan()
     {
-        $this->checkAdminAuth();
-        $blade = new Blade(
+        $maGD = $_GET['id'] ?? '';
+        $thanhToanModel = new \App\Models\ThanhToan();
+        $veModel = new \App\Models\Ve();
+        $nguoiDungModel = new \App\Models\NguoiDung();
+
+        $thanhToan = $thanhToanModel->getThanhToanById($maGD);
+        $user = $nguoiDungModel->getById($thanhToan['nd_id']);
+        $veList = $veModel->findByMaThanhToan($maGD);
+
+        $blade = new \Jenssegers\Blade\Blade(
             realpath(__DIR__ . '/../Views'),
             realpath(__DIR__ . '/../../cache')
         );
-        echo $blade->render('admin-views.ThanhToan.ChiTietThanhToan', ['activePage' => 'pay']);
+        echo $blade->render('admin-views.ThanhToan.ChiTietThanhToan', [
+            'thanhToan' => $thanhToan,
+            'user' => $user,
+            'veList' => $veList,
+            'activePage' => 'pay',
+        ]);
     }
 }

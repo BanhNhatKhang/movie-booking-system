@@ -558,4 +558,60 @@ class LichChieu extends BaseModel
             return [];
         }
     }
+
+    // Lấy danh sách lịch chiếu có phân trang và filter
+    public function getAllLichChieuFiltered($filters = [], $limit = 10, $offset = 0)
+    {
+        $sql = "SELECT lc.*, p.p_tenphim, pc.pc_tenphong
+                FROM lich_chieu lc
+                LEFT JOIN phim p ON lc.p_maphim = p.p_maphim
+                LEFT JOIN phong_chieu pc ON lc.pc_maphongchieu = pc.pc_maphongchieu
+                WHERE 1=1";
+        $params = [];
+
+        if (!empty($filters['ngay_chieu'])) {
+            $sql .= " AND lc.lc_ngaychieu = ?";
+            $params[] = $filters['ngay_chieu'];
+        }
+        if (!empty($filters['trang_thai'])) {
+            $sql .= " AND lc.lc_trangthai = ?";
+            $params[] = $filters['trang_thai'];
+        }
+        if (!empty($filters['ma_phim'])) {
+            $sql .= " AND lc.p_maphim = ?";
+            $params[] = $filters['ma_phim'];
+        }
+
+        $sql .= " ORDER BY lc.lc_ngaychieu DESC, lc.lc_giobatdau DESC LIMIT ? OFFSET ?";
+        $params[] = (int)$limit;
+        $params[] = (int)$offset;
+
+        $stmt = $this->db->prepare($sql);
+        $stmt->execute($params);
+        return $stmt->fetchAll(\PDO::FETCH_ASSOC);
+    }
+
+    // Đếm tổng số lịch chiếu (có filter)
+    public function countLichChieu($filters = [])
+    {
+        $sql = "SELECT COUNT(*) FROM lich_chieu lc WHERE 1=1";
+        $params = [];
+
+        if (!empty($filters['ngay_chieu'])) {
+            $sql .= " AND lc.lc_ngaychieu = ?";
+            $params[] = $filters['ngay_chieu'];
+        }
+        if (!empty($filters['trang_thai'])) {
+            $sql .= " AND lc.lc_trangthai = ?";
+            $params[] = $filters['trang_thai'];
+        }
+        if (!empty($filters['ma_phim'])) {
+            $sql .= " AND lc.p_maphim = ?";
+            $params[] = $filters['ma_phim'];
+        }
+
+        $stmt = $this->db->prepare($sql);
+        $stmt->execute($params);
+        return $stmt->fetchColumn();
+    }
 }

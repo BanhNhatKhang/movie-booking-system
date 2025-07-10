@@ -290,4 +290,20 @@ class Ve extends BaseModel
             return false;
         }
     }
+
+    public function findByMaThanhToan($maThanhToan)
+    {
+        $sql = "SELECT v.*, 
+                   lc.lc_malichchieu, lc.lc_ngaychieu, lc.lc_giobatdau, 
+                   p.p_tenphim, pc.pc_tenphong, lv.lv_tenloaive
+            FROM ve v
+            LEFT JOIN lich_chieu lc ON v.lc_malichchieu = lc.lc_malichchieu
+            LEFT JOIN phong_chieu pc ON lc.pc_maphongchieu = pc.pc_maphongchieu
+            LEFT JOIN phim p ON lc.p_maphim = p.p_maphim
+            LEFT JOIN loai_ve lv ON v.lv_maloaive = lv.lv_maloaive
+            WHERE v.tt_mathanhtoan = ?";
+        $stmt = $this->db->prepare($sql);
+        $stmt->execute([$maThanhToan]);
+        return $stmt->fetchAll(\PDO::FETCH_ASSOC);
+    }
 }

@@ -209,49 +209,94 @@ class ThanhToan extends BaseModel
         }
     }
     
-    // Đếm tổng số thanh toán
-    public function countThanhToan($filters = [])
+    // Lấy danh sách có lọc
+    public function getAllThanhToanFiltered($search = '', $paymentMethod = '', $limit = 15, $offset = 0)
     {
-        try {
-            $sql = "SELECT COUNT(*) FROM thanh_toan tt
-                    LEFT JOIN nguoi_dung nd ON tt.nd_id = nd.nd_id";
-            
-            $conditions = [];
-            $params = [];
-            
-            if (!empty($filters['search'])) {
-                $conditions[] = "(nd.nd_hoten ILIKE ? OR tt.tt_mathanhtoan ILIKE ?)";
-                $searchParam = '%' . $filters['search'] . '%';
-                $params[] = $searchParam;
-                $params[] = $searchParam;
-            }
-            
-            if (!empty($filters['method'])) {
-                $conditions[] = "tt.tt_phuongthuc = ?";
-                $params[] = $filters['method'];
-            }
-            
-            if (!empty($filters['date_from'])) {
-                $conditions[] = "tt.tt_thoigianthanhtoan >= ?";
-                $params[] = $filters['date_from'];
-            }
-            
-            if (!empty($filters['date_to'])) {
-                $conditions[] = "tt.tt_thoigianthanhtoan <= ?";
-                $params[] = $filters['date_to'];
-            }
-            
-            if (!empty($conditions)) {
-                $sql .= " WHERE " . implode(" AND ", $conditions);
-            }
-            
-            $stmt = $this->db->prepare($sql);
-            $stmt->execute($params);
-            
-            return $stmt->fetchColumn();
-        } catch (PDOException $e) {
-            error_log("Error counting thanh toan: " . $e->getMessage());
-            return 0;
+        $sql = "SELECT tt.*, nd.nd_hoten, nd.nd_email FROM thanh_toan tt
+                LEFT JOIN nguoi_dung nd ON tt.nd_id = nd.nd_id
+                WHERE 1=1";
+        $params = [];
+
+        if ($search) {
+            $sql .= " AND nd.nd_hoten LIKE ?";
+            $params[] = '%' . $search . '%';
         }
+        if ($paymentMethod) {
+            $sql .= " AND tt.tt_phuongthuc = ?";
+            $params[] = $paymentMethod;
+        }
+        $sql .= " ORDER BY tt.tt_thoigianthanhtoan DESC LIMIT ? OFFSET ?";
+        $params[] = (int)$limit;
+        $params[] = (int)$offset;
+
+        $stmt = $this->db->prepare($sql);
+        $stmt->execute($params);
+        return $stmt->fetchAll(\PDO::FETCH_ASSOC);
+    }
+
+    // Đếm tổng giao dịch (có thể lọc theo ngày)
+    public function countThanhToan($search = '', $paymentMethod = '', $date = '')
+    {
+        $sql = "SELECT COUNT(*) FROM thanh_toan tt
+                LEFT JOIN nguoi_dung nd ON tt.nd_id = nd.nd_id
+                WHERE 1=1";
+        $params = [];
+        if ($search) {
+            $sql .= " AND nd.nd_hoten LIKE ?";
+            $params[] = '%' . $search . '%';
+        }
+        if ($paymentMethod) {
+            $sql .= " AND tt.tt_phuongthuc = ?";
+            $params[] = $paymentMethod;
+        }
+        if ($date) {
+            $sql .= " AND DATE(tt.tt_thoigianthanhtoan) = ?";
+            $params[] = $date;
+        }
+        $stmt = $this->db->prepare($sql);
+        $stmt->execute($params);
+        return $stmt->fetchColumn();
+    }
+
+    // Tổng số tiền (có thể lọc theo ngày)
+    public function sumThanhToan($search = '', $paymentMethod = '', $date = '')
+    {
+        $sql = "SELECT SUM(tt.tt_sotien) FROM thanh_toan tt
+                LEFT JOIN nguoi_dung nd ON tt.nd_id = nd.nd_id
+                WHERE 1=1";
+        $params = [];
+        if ($search) {
+            $sql .= " AND nd.nd_hoten LIKE ?";
+            $params[] = '%' . $search . '%';
+        }
+        if ($paymentMethod) {
+            $sql .= " AND tt.tt_phuongthuc = ?";
+            $params[] = $paymentMethod;
+        }
+        if ($date) {
+            $sql .= " AND DATE(tt.tt_thoigianthanhtoan) = ?";
+            $params[] = $date;
+        }
+        $stmt = $this->db->prepare($sql);
+        $stmt->execute($params);
+        return $stmt->fetchColumn() ?: 0;
+    }
+    
+    // Tổng số tiền theo tháng
+    public function sumThanhToanByMonth($month)
+    {
+        // $month dạng '2025-07'
+        $sql = "SELECT SUM(tt_sotien) FROM thanh_toan WHERE TO_CHAR(tt_thoigianthanhtoan, 'YYYY-MM') = ?";
+        $stmt = $this->db->prepare($sql);
+        $stmt->execute([$month]);
+        return $stmt->fetchColumn() ?: 0;
+    }
+    
+    public function countThanhToanByMonth($month)
+    {
+        $sql = "SELECT COUNT(*) FROM thanh_toan WHERE TO_CHAR(tt_thoigianthanhtoan, 'YYYY-MM') = ?";
+        $stmt = $this->db->prepare($sql);
+        $stmt->execute([$month]);
+        return $stmt->fetchColumn() ?: 0;
     }
 }

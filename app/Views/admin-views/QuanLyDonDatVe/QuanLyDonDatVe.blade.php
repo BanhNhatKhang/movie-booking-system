@@ -173,14 +173,16 @@
                                 @endif
                             </td>
                             <td>
-                                <a href="/chi-tiet-don-dat-ve?id={{ $order['v_mave'] }}" 
-                                   class="btn btn-info btn-sm" title="Xem chi tiết">
-                                    <i class="bi bi-eye"></i>
-                                </a>
-                                <a href="/xuat-ve-word?id={{ $order['v_mave'] }}" 
-                                   class="btn btn-success btn-sm" title="In vé">
-                                    <i class="bi bi-printer"></i>
-                                </a>
+                                <div class="d-flex gap-2">
+                                    <a href="/chi-tiet-don-dat-ve?id={{ $order['v_mave'] }}" 
+                                       class="btn btn-info btn-sm" title="Xem chi tiết">
+                                        <i class="bi bi-eye"></i>
+                                    </a>
+                                    <a href="/xuat-ve-word?id={{ $order['v_mave'] }}" 
+                                       class="btn btn-success btn-sm" title="In vé">
+                                        <i class="bi bi-printer"></i>
+                                    </a>
+                                </div>
                             </td>
                         </tr>
                     @empty

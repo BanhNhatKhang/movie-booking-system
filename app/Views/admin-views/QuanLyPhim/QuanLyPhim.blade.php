@@ -285,55 +285,15 @@
     </div>
 
     <!-- Pagination -->
-    @if(($totalPages ?? 1) > 1)
-        <div class="row mt-4">
-            <div class="col-12">
-                <nav aria-label="Phân trang phim">
-                    <ul class="pagination justify-content-center">
-                        <!-- Previous Page -->
-                        @if(($currentPage ?? 1) > 1)
-                            <li class="page-item">
-                                <a class="page-link" href="?page={{ ($currentPage ?? 1) - 1 }}{{ !empty($search) ? '&q=' . urlencode($search) : '' }}{{ !empty($statusFilter) ? '&status=' . $statusFilter : '' }}">
-                                    <i class="bi bi-chevron-left"></i> Trước
-                                </a>
-                            </li>
-                        @endif
-
-                        <!-- Page Numbers -->
-                        @php
-                            $currentPage = $currentPage ?? 1;
-                            $totalPages = $totalPages ?? 1;
-                            $startPage = max(1, $currentPage - 2);
-                            $endPage = min($totalPages, $currentPage + 2);
-                        @endphp
-
-                        @for($i = $startPage; $i <= $endPage; $i++)
-                            <li class="page-item {{ $i == $currentPage ? 'active' : '' }}">
-                                <a class="page-link" href="?page={{ $i }}{{ !empty($search) ? '&q=' . urlencode($search) : '' }}{{ !empty($statusFilter) ? '&status=' . $statusFilter : '' }}">
-                                    {{ $i }}
-                                </a>
-                            </li>
-                        @endfor
-
-                        <!-- Next Page -->
-                        @if($currentPage < $totalPages)
-                            <li class="page-item">
-                                <a class="page-link" href="?page={{ $currentPage + 1 }}{{ !empty($search) ? '&q=' . urlencode($search) : '' }}{{ !empty($statusFilter) ? '&status=' . $statusFilter : '' }}">
-                                    Sau <i class="bi bi-chevron-right"></i>
-                                </a>
-                            </li>
-                        @endif
-                    </ul>
-                </nav>
-
-                <!-- Page Info -->
-                <div class="text-center text-muted">
-                    Trang {{ $currentPage }} / {{ $totalPages }} 
-                    (Tổng: {{ $totalPhim ?? 0 }} phim)
-                </div>
-            </div>
-        </div>
-    @endif
+    @include('layouts.admin.Pagination', [
+    'currentPage' => $currentPage ?? 1,
+    'totalPages' => $totalPages ?? 1,
+    'totalItems' => $totalPhim ?? 0,
+    'itemsPerPage' => $itemsPerPage ?? 5,
+    'itemName' => 'phim',
+    'search' => $search ?? '',
+    'status' => $statusFilter ?? ''
+    ])
 </div>
 @endsection
 
