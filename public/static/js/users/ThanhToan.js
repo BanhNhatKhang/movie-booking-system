@@ -81,29 +81,27 @@ function processPayment() {
     console.log('=== PROCESS PAYMENT STARTED ===');
     
     const paymentMethod = document.querySelector('input[name="payment_method"]:checked');
-    
     if (!paymentMethod) {
         alert('Vui lòng chọn phương thức thanh toán!');
         return;
     }
-    
-    // Disable nút thanh toán
     const paymentBtn = document.querySelector('[onclick="processPayment()"]');
     if (paymentBtn) {
         paymentBtn.disabled = true;
         paymentBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Đang xử lý...';
     }
-    
-    // Gửi request thanh toán
+
+    // Hiện modal loading
+    const loadingModal = new bootstrap.Modal(document.getElementById('loadingModal'));
+    loadingModal.show();
+
     const bookingData = {
         lichChieuId: paymentData.lichChieuId,
         seatDetails: paymentData.seatDetails,
         total: paymentData.total,
         paymentMethod: paymentMethod.value
     };
-    
-    console.log('Sending booking data:', bookingData);
-    
+
     fetch('/xu-ly-thanh-toan', {
         method: 'POST',
         headers: {
@@ -114,27 +112,34 @@ function processPayment() {
     })
     .then(response => response.json())
     .then(data => {
-        console.log('Payment response:', data);
-        
-        if (data.success) {
-            alert('Thanh toán thành công! Mã thanh toán: ' + data.payment_code);
-            // Chuyển về trang chủ hoặc vé của tôi
-            window.location.href = '/ve-cua-toi';
-        } else {
-            alert('Lỗi thanh toán: ' + data.message);
-        }
-        
-        // Enable lại nút
-        if (paymentBtn) {
-            paymentBtn.disabled = false;
-            paymentBtn.innerHTML = '<i class="fas fa-credit-card"></i> Thanh toán';
-        }
+        setTimeout(() => { // Giả lập loading 1.5s
+            loadingModal.hide();
+
+            if (data.success) {
+                // Hiện modal cảm ơn
+                document.querySelector('.success-message').innerHTML = "Cảm ơn bạn đã đặt vé, chúc bạn xem phim vui vẻ!<br>Vé đã được lưu trong lịch sử đặt vé của bạn.";
+                document.getElementById('paymentCode').textContent = data.payment_code || '-';
+                const successModal = new bootstrap.Modal(document.getElementById('successModal'));
+                successModal.show();
+
+                // Tự động chuyển sau 3s, hoặc khi bấm nút
+                setTimeout(() => {
+                    window.location.href = '/lich-su-dat-ve';
+                }, 5000);
+            } else {
+                alert('Lỗi thanh toán: ' + data.message);
+            }
+
+            if (paymentBtn) {
+                paymentBtn.disabled = false;
+                paymentBtn.innerHTML = '<i class="fas fa-credit-card"></i> Thanh toán';
+            }
+        }, 1500); // 1.5s loading
     })
     .catch(error => {
+        loadingModal.hide();
         console.error('Payment error:', error);
         alert('Có lỗi xảy ra khi xử lý thanh toán!');
-        
-        // Enable lại nút
         if (paymentBtn) {
             paymentBtn.disabled = false;
             paymentBtn.innerHTML = '<i class="fas fa-credit-card"></i> Thanh toán';
@@ -148,7 +153,7 @@ function goBack() {
 }
 
 function goToMyTickets() {
-    window.location.href = '/ve-cua-toi';
+    window.location.href = '/lich-su-dat-ve';
 }
 
 function goToHome() {

@@ -380,46 +380,31 @@
     </div>
 </div>
 
-<!-- Loading Modal -->
-<div class="modal fade" id="loadingModal" tabindex="-1" data-bs-backdrop="static" data-bs-keyboard="false">
-    <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content" style="background: #2d2d2d; color: #ffffff;">
-            <div class="modal-body text-center">
-                <div class="spinner-border text-primary mb-3" role="status" style="color: #ff4444 !important;">
-                    <span class="visually-hidden">Đang xử lý...</span>
-                </div>
-                <p>Đang xử lý thanh toán, vui lòng đợi...</p>
-            </div>
-        </div>
+<!-- Modal loading -->
+<div class="modal fade" id="loadingModal" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content text-center p-4">
+      <div class="spinner-border text-primary mb-3" style="width: 3rem; height: 3rem;" role="status"></div>
+      <div class="fw-bold fs-5">Đang xử lý thanh toán...</div>
     </div>
+  </div>
 </div>
 
-<!-- Success Modal -->
-<div class="modal fade" id="successModal" tabindex="-1">
-    <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content" style="background: #2d2d2d; color: #ffffff;">
-            <div class="modal-header" style="border-bottom: 1px solid #444;">
-                <h5 class="modal-title" style="color: #ff4444;">Thanh toán thành công!</h5>
-            </div>
-            <div class="modal-body text-center">
-                <div class="success-icon">
-                    <i class="fas fa-check-circle" style="font-size: 60px; color: #28a745;"></i>
-                </div>
-                <p class="success-message" style="font-size: 18px; margin: 20px 0;">Bạn đã đặt vé thành công!</p>
-                <p class="booking-code" style="background: rgba(255,68,68,0.1); padding: 10px; border-radius: 5px; border: 1px solid #ff4444;">
-                    Mã thanh toán: <strong id="paymentCode" style="color: #ffd700;">-</strong>
-                </p>
-            </div>
-            <div class="modal-footer" style="border-top: 1px solid #444;">
-                <button type="button" class="btn btn-primary" onclick="goToMyTickets()">
-                    Xem vé của tôi
-                </button>
-                <button type="button" class="btn btn-secondary" onclick="goToHome()">
-                    Về trang chủ
-                </button>
-            </div>
-        </div>
+<!-- Modal cảm ơn -->
+<div class="modal fade" id="successModal" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content text-center p-4">
+      <div class="mb-3">
+        <i class="fa fa-check-circle text-success" style="font-size: 3rem;"></i>
+      </div>
+      <div class="fw-bold fs-4 mb-2">Cảm ơn bạn đã đặt vé!</div>
+      <div class="success-message mb-2">Chúc bạn xem phim vui vẻ!<br>Vé đã được lưu trong lịch sử đặt vé của bạn.</div>
+      <div class="mb-3">
+        <span class="badge bg-info text-dark">Mã thanh toán: <span id="paymentCode">-</span></span>
+      </div>
+      <button class="btn btn-success px-4" onclick="goToMyTickets()">Xem lịch sử đặt vé</button>
     </div>
+  </div>
 </div>
 
 <!-- Data for JavaScript -->

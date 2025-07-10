@@ -198,10 +198,10 @@ class PayController
             header('Content-Type: application/json; charset=UTF-8');
             
             // Kiểm tra đăng nhập
-            if (!isset($_SESSION['logged_in']) || $_SESSION['logged_in'] !== true) {
+            if (!isset($_SESSION['logged_in']) || $_SESSION['logged_in'] !== true || empty($_SESSION['user_id'])) {
                 echo json_encode([
                     'success' => false,
-                    'message' => 'Vui lòng đăng nhập để thực hiện thanh toán!'
+                    'message' => 'Bạn cần đăng nhập để thanh toán!'
                 ]);
                 exit;
             }
@@ -252,8 +252,14 @@ class PayController
                 'tt_sotien' => $total,
                 'tt_phuongthuc' => $paymentMethod,
                 'tt_thoigianthanhtoan' => date('Y-m-d H:i:s'),
-                'nd_id' => $_SESSION['user_id'] ?? 'ND001'
+                'nd_id' => $_SESSION['user_id']
             ];
+            
+            error_log("nd_id: " . $thanhToanData['nd_id']);
+            error_log("tt_mathanhtoan: " . $thanhToanData['tt_mathanhtoan']);
+            error_log("tt_sotien: " . $thanhToanData['tt_sotien']);
+            error_log("tt_phuongthuc: " . $thanhToanData['tt_phuongthuc']);
+            error_log("tt_thoigianthanhtoan: " . $thanhToanData['tt_thoigianthanhtoan']);
             
             $thanhToanCreated = $this->createThanhToan($thanhToanData);
             
@@ -274,7 +280,7 @@ class PayController
                     'v_ngaydat' => date('Y-m-d'),
                     'v_tongtien' => $seat['price'],
                     'v_trangthai' => 'da_thanh_toan',
-                    'nd_id' => $_SESSION['user_id'] ?? 'ND001',
+                    'nd_id' => $_SESSION['user_id'],
                     'tt_mathanhtoan' => $maThanhToan,
                     'g_maghe' => $seat['code'],
                     'lc_malichchieu' => $lichChieuId
@@ -323,7 +329,8 @@ class PayController
      */
     private function generateTicketCode()
     {
-        return 'V' . date('YmdHis') . rand(1000, 9999);
+        return 'V' . strtoupper(substr(bin2hex(random_bytes(5)), 0, 9));
+        // 'V' + 9 ký tự = 10 ký tự
     }
     
     /**
@@ -348,20 +355,19 @@ class PayController
     {
         try {
             error_log("Creating thanh_toan with data: " . json_encode($data));
-            
-            // ✅ Sử dụng ThanhToan Model thay vì SQL trực tiếp
             $result = $this->thanhToanModel->create($data);
-            
+
             if ($result) {
                 error_log("Thanh_toan created successfully");
             } else {
                 error_log("Failed to create thanh_toan");
             }
-            
+
             return $result;
-            
+
         } catch (Exception $e) {
             error_log("Error creating thanh_toan: " . $e->getMessage());
+            error_log("Data: " . json_encode($data));
             return false;
         }
     }
@@ -390,10 +396,7 @@ class PayController
             return false;
         }
     }
-    
-    /**
-     * Kiểm tra ghế đã được đặt chưa - Sử dụng Ve Model
-     */
+
     private function isGheDaDat($lichChieuId, $seatCode)
     {
         try {

@@ -95,7 +95,7 @@ CREATE TABLE lich_chieu (
 
 -- Bảng THANH_TOAN
 CREATE TABLE thanh_toan (
-    tt_mathanhtoan VARCHAR(10) PRIMARY KEY,
+    tt_mathanhtoan VARCHAR(30) PRIMARY KEY,
     tt_sotien NUMERIC(10, 0),
     tt_phuongthuc VARCHAR(255),
     tt_thoigianthanhtoan TIMESTAMP,
@@ -109,7 +109,7 @@ CREATE TABLE ve (
     v_tongtien NUMERIC(10, 0),
     v_trangthai VARCHAR(20) DEFAULT 'chua_in', 
     nd_id VARCHAR(10) REFERENCES nguoi_dung(nd_id),
-    tt_mathanhtoan VARCHAR(10) REFERENCES thanh_toan(tt_mathanhtoan),
+    tt_mathanhtoan VARCHAR(30) REFERENCES thanh_toan(tt_mathanhtoan),
     g_maghe VARCHAR(10) REFERENCES ghe(g_maghe),
     lv_maloaive VARCHAR(10) REFERENCES loai_ve(lv_maloaive),
     lc_malichchieu VARCHAR(25) REFERENCES lich_chieu(lc_malichchieu)

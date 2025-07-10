@@ -87,8 +87,12 @@
                 <label class="form-label">Phương thức TT</label>
                 <select class="form-select" name="payment_method">
                     <option value="">Tất cả</option>
-                    <option value="MoMo" {{ ($filters['payment_method'] ?? '') == 'MoMo' ? 'selected' : '' }}>MoMo</option>
-                    <option value="Tiền mặt" {{ ($filters['payment_method'] ?? '') == 'Tiền mặt' ? 'selected' : '' }}>Tiền mặt</option>                </select>
+                    <option value="momo" {{ ($filters['payment_method'] ?? '') == 'momo' ? 'selected' : '' }}>MoMo</option>
+                    <option value="cash" {{ ($filters['payment_method'] ?? '') == 'cash' ? 'selected' : '' }}>Tiền mặt</option>
+                    <option value="vnpay" {{ ($filters['payment_method'] ?? '') == 'vnpay' ? 'selected' : '' }}>VN Pay</option>
+                    <option value="zalopay" {{ ($filters['payment_method'] ?? '') == 'zalopay' ? 'selected' : '' }}>Zalo Pay</option>
+                    <option value="bank" {{ ($filters['payment_method'] ?? '') == 'bank' ? 'selected' : '' }}>Ngân hàng</option>
+                </select>
             </div>
             <div class="col-md-2">
                 <label class="form-label">Trạng thái in</label>
