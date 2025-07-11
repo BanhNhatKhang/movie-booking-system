@@ -322,6 +322,27 @@ class Ve extends BaseModel
         return $stmt->fetchAll(\PDO::FETCH_ASSOC);
     }
 
+    public function getTicketsByUserAtAdmin($userId, $limit = 10, $offset = 0)
+    {
+                $sql = "SELECT 
+                p.p_tenphim AS movie_name,
+                lc.lc_giobatdau AS showtime,
+                v.g_maghe AS seats,
+                v.v_tongtien AS total_price,
+                v.v_ngaydat AS booking_date,
+                pc.pc_tenphong
+            FROM ve v
+            JOIN lich_chieu lc ON v.lc_malichchieu = lc.lc_malichchieu
+            JOIN phim p ON lc.p_maphim = p.p_maphim
+            JOIN phong_chieu pc ON lc.pc_maphongchieu = pc.pc_maphongchieu
+            WHERE v.nd_id = ?
+            ORDER BY v.v_ngaydat DESC, v.v_mave DESC
+            LIMIT ? OFFSET ?";
+        $stmt = $this->db->prepare($sql);
+        $stmt->execute([$userId, $limit, $offset]);
+        return $stmt->fetchAll(\PDO::FETCH_ASSOC);
+    }
+
     public function countTicketsByUser($userId)
     {
         $sql = "SELECT COUNT(*) FROM ve WHERE nd_id = ?";

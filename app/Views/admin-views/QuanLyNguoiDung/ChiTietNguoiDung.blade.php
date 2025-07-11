@@ -121,9 +121,9 @@
                                         <th>Phim</th>
                                         <th>Suất chiếu</th>
                                         <th>Ghế</th>
+                                        <th>Phòng chiếu</th>
                                         <th>Tổng tiền</th>
                                         <th>Ngày đặt</th>
-                                        <th>Trạng thái</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -131,23 +131,36 @@
                                     <tr>
                                         <td>{{ $booking['movie_name'] }}</td>
                                         <td>{{ date('d/m/Y H:i', strtotime($booking['showtime'])) }}</td>
-                                        <td><span class="badge bg-info">{{ $booking['seats'] }}</span></td>
+                                        <td>
+                                            <span class="badge bg-info">
+                                                {{ isset($booking['seats']) ? preg_replace('/^.*_/', '', $booking['seats']) : '' }}
+                                            </span>
+                                        </td>
+                                        <td>{{ $booking['pc_tenphong'] ?? '' }}</td>
                                         <td><strong>{{ number_format($booking['total_price']) }} VNĐ</strong></td>
                                         <td>{{ date('d/m/Y H:i', strtotime($booking['booking_date'])) }}</td>
-                                        <td>
-                                            @if($booking['status'] === 'completed')
-                                                <span class="badge bg-success">Hoàn thành</span>
-                                            @elseif($booking['status'] === 'pending')
-                                                <span class="badge bg-warning">Chờ xử lý</span>
-                                            @else
-                                                <span class="badge bg-danger">Đã hủy</span>
-                                            @endif
-                                        </td>
                                     </tr>
                                     @endforeach
                                 </tbody>
                             </table>
                         </div>
+                        @if($totalPages > 1)
+                            <nav>
+                                <ul class="pagination justify-content-center mt-3">
+                                    <li class="page-item {{ $page == 1 ? 'disabled' : '' }}">
+                                        <a class="page-link" href="?id={{ $user['nd_id'] }}&page={{ $page - 1 }}" tabindex="-1">Trước</a>
+                                    </li>
+                                    @for($i = 1; $i <= $totalPages; $i++)
+                                        <li class="page-item {{ $i == $page ? 'active' : '' }}">
+                                            <a class="page-link" href="?id={{ $user['nd_id'] }}&page={{ $i }}">{{ $i }}</a>
+                                        </li>
+                                    @endfor
+                                    <li class="page-item {{ $page == $totalPages ? 'disabled' : '' }}">
+                                        <a class="page-link" href="?id={{ $user['nd_id'] }}&page={{ $page + 1 }}">Sau</a>
+                                    </li>
+                                </ul>
+                            </nav>
+                            @endif
                     @else
                         <div class="text-center py-4">
                             <i class="bi bi-ticket text-muted" style="font-size: 3rem;"></i>
@@ -168,64 +181,69 @@
                 </div>
                 <div class="card-body">
                     <div class="text-center mb-3">
-                        @if(!empty($memberInfo['tv_loaithanhvien']))
-                            {{-- Có thông tin thành viên --}}
-                            <div class="mb-2">
-                                <i class="bi bi-award text-warning" style="font-size: 2rem;"></i>
-                            </div>
-                            <h5 class="mb-1">
-                                <span class="badge bg-warning fs-6">
-                                    <i class="bi bi-star me-1"></i>
-                                    @if($memberInfo['tv_loaithanhvien'] == 'bronze')
-                                        Thành viên Đồng
-                                    @elseif($memberInfo['tv_loaithanhvien'] == 'silver')
-                                        Thành viên Bạc
-                                    @elseif($memberInfo['tv_loaithanhvien'] == 'gold')
-                                        Thành viên Vàng
-                                    @elseif($memberInfo['tv_loaithanhvien'] == 'platinum')
-                                        Thành viên Bạch Kim
-                                    @elseif($memberInfo['tv_loaithanhvien'] == 'diamond')
-                                        Thành viên Kim Cương
-                                    @else
-                                        {{ ucfirst($memberInfo['tv_loaithanhvien']) }}
-                                    @endif
-                                </span>
-                            </h5>
-                            <p class="text-muted small">ID: {{ $memberInfo['tv_mathanhvien'] }}</p>
-                        @else
-                            {{-- Chưa có thông tin thành viên --}}
-                            <div class="mb-2">
-                                <i class="bi bi-person-circle text-muted" style="font-size: 2rem;"></i>
-                            </div>
-                            <h6 class="text-muted">Chưa có bậc thành viên</h6>
-                        @endif
+                        <div class="mb-2">
+                            <i class="bi bi-award 
+                                @if($user['nd_loaithanhvien'] == 'bac') text-secondary
+                                @elseif($user['nd_loaithanhvien'] == 'vang') text-danger
+                                @elseif($user['nd_loaithanhvien'] == 'kimcuong') text-info
+                                @else text-dark @endif" style="font-size: 2rem;"></i>
+                        </div>
+                        <h5 class="mb-1">
+                            <span class="badge 
+                                @if($user['nd_loaithanhvien'] == 'bac') bg-secondary
+                                @elseif($user['nd_loaithanhvien'] == 'vang') bg-danger
+                                @elseif($user['nd_loaithanhvien'] == 'kimcuong') bg-info
+                                @else bg-light text-dark @endif fs-6">
+                                <i class="bi bi-star me-1"></i>
+                                @if($user['nd_loaithanhvien'] == 'bac')
+                                    Thành viên Bạc
+                                @elseif($user['nd_loaithanhvien'] == 'vang')
+                                    Thành viên Vàng
+                                @elseif($user['nd_loaithanhvien'] == 'kimcuong')
+                                    Thành viên Kim Cương
+                                @else
+                                    {{ ucfirst($user['nd_loaithanhvien']) }}
+                                @endif
+                            </span>
+                        </h5>
                     </div>
-                    
                     <hr>
-                    
                     <div class="row text-center">
                         <div class="col-12">
                             <h4 class="text-primary mb-0">
-                                <i class="bi bi-gem me-1"></i>{{ number_format($memberInfo['tv_diemtichluy'] ?? 0) }}
+                                <i class="bi bi-gem me-1"></i>{{ number_format($user['nd_diemtichluy'] ?? 0) }}
                             </h4>
                             <small class="text-muted">Điểm tích lũy</small>
                         </div>
                     </div>
-                    
-                    @if(($memberInfo['tv_diemtichluy'] ?? 0) > 0)
-                        <div class="mt-3">
-                            <small class="text-muted">Tiến trình lên hạng:</small>
-                            <div class="progress mt-1" style="height: 8px;">
-                                @php
-                                    $points = $memberInfo['tv_diemtichluy'] ?? 0;
-                                    $nextLevel = 1000;
-                                    $progress = min(($points % $nextLevel) / $nextLevel * 100, 100);
-                                @endphp
-                                <div class="progress-bar bg-warning progress-dynamic" data-progress="{{ $progress }}"></div>
-                            </div>
-                            <small class="text-muted">{{ $points % $nextLevel }}/{{ $nextLevel }} điểm</small>
+                    @php
+                        $points = $user['nd_diemtichluy'] ?? 0;
+                        if($user['nd_loaithanhvien'] == 'bac') {
+                            $nextLevel = 2000;
+                            $progress = min($points / $nextLevel * 100, 100);
+                            $label = $points . '/' . $nextLevel . ' điểm để lên Vàng';
+                        } elseif($user['nd_loaithanhvien'] == 'vang') {
+                            $nextLevel = 4000;
+                            $progress = min(($points - 2000) / 2000 * 100, 100);
+                            $label = ($points - 2000) . '/2000 điểm để lên Kim Cương';
+                        } else { // kim cương
+                            $nextLevel = 4000;
+                            $progress = 100;
+                            $label = 'Đã đạt hạng cao nhất';
+                        }
+                    @endphp
+                    <div class="mt-3">
+                        <small class="text-muted">Tiến trình lên hạng:</small>
+                        <div class="progress mt-1" style="height: 8px;">
+                            <div class="progress-bar 
+                                @if($user['nd_loaithanhvien'] == 'bac') bg-secondary
+                                @elseif($user['nd_loaithanhvien'] == 'vang') bg-danger
+                                @elseif($user['nd_loaithanhvien'] == 'kimcuong') bg-info
+                                @else bg-light text-dark @endif progress-dynamic" 
+                                data-progress="{{ $progress }}"></div>
                         </div>
-                    @endif
+                        <small class="text-muted">{{ $label }}</small>
+                    </div>
                 </div>
             </div>
 
@@ -293,32 +311,16 @@
                 </div>
                 <div class="card-body">
                     <div class="row text-center mb-3">
-                        <div class="col-4">
+                        <div class="col-6">
                             <div class="border-end">
                                 <h5 class="text-primary mb-0">{{ $userStats['total_bookings'] ?? 0 }}</h5>
                                 <small class="text-muted">Lượt đặt</small>
                             </div>
                         </div>
-                        <div class="col-4">
-                            <div class="border-end">
-                                <h5 class="text-success mb-0">{{ number_format($userStats['total_spent'] ?? 0) }}</h5>
-                                <small class="text-muted">VNĐ chi</small>
-                            </div>
+                        <div class="col-6">
+                            <h5 class="text-success mb-0">{{ number_format($userStats['total_spent'] ?? 0) }}</h5>
+                            <small class="text-muted">VNĐ chi</small>
                         </div>
-                        <div class="col-4">
-                            <h5 class="text-warning mb-0">{{ number_format($memberInfo['tv_diemtichluy'] ?? 0) }}</h5>
-                            <small class="text-muted">Điểm</small>
-                        </div>
-                    </div>
-                    
-                    <div class="mb-2">
-                        <small class="text-muted">Thể loại ưa thích:</small><br>
-                        <span class="badge bg-light text-dark">{{ $userStats['favorite_genre'] ?? 'Chưa có' }}</span>
-                    </div>
-                    
-                    <div>
-                        <small class="text-muted">Tham gia từ:</small><br>
-                        <strong>{{ date('d/m/Y', strtotime($user['nd_ngaydangky'])) }}</strong>
                     </div>
                 </div>
             </div>

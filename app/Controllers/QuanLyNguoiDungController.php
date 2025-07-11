@@ -46,38 +46,54 @@ class QuanLyNguoiDungController
     public function chiTietNguoiDung()
     {
         AuthHelper::checkAccess('admin_only');
-        
         $id = $_GET['id'] ?? '';
         if (empty($id)) {
             $_SESSION['error_message'] = 'ID người dùng không hợp lệ!';
             header('Location: /quan-ly-nguoi-dung');
             exit;
         }
-        
+
         $nguoiDungModel = new \App\Models\NguoiDung();
+        $veModel = new \App\Models\Ve();
+
+        // Thông tin cá nhân
         $user = $nguoiDungModel->getById($id);
-        
-        if (!$user) {
-            $_SESSION['error_message'] = 'Không tìm thấy người dùng!';
-            header('Location: /quan-ly-nguoi-dung');
-            exit;
-        }
-        
+
+        // Thông tin thành viên (hạng, điểm)
         $memberInfo = $nguoiDungModel->getMemberInfo($id);
-        $bookingHistory = $this->getUserBookingHistory($id);
-        $userStats = $this->getUserStats($id);
-        
-        $blade = new Blade(
+
+        // Thống kê hoạt động
+        $userStats = [
+            'total_bookings' => $veModel->countTicketsByUser($id),
+            'total_spent' => $nguoiDungModel->tongChiTieu($id),
+            'favorite_genre' => '', // Có thể bổ sung nếu cần
+        ];
+
+        // Lịch sử đặt vé
+        $userId = $_GET['id'] ?? '';
+        $page = isset($_GET['page']) ? max(1, intval($_GET['page'])) : 1;
+        $perPage = 5;
+        $offset = ($page - 1) * $perPage;
+
+        $bookingHistory = $veModel->getTicketsByUserAtAdmin($userId, $perPage, $offset);
+
+        // Đếm tổng số vé để tính tổng số trang
+        $totalTickets = $veModel->countTicketsByUser($userId);
+        $totalPages = ceil($totalTickets / $perPage);
+
+        $blade = new \Jenssegers\Blade\Blade(
             realpath(__DIR__ . '/../Views'),
             realpath(__DIR__ . '/../../cache')
         );
-        
+
         echo $blade->render('admin-views.QuanLyNguoiDung.ChiTietNguoiDung', [
             'activePage' => 'user',
             'user' => $user,
             'memberInfo' => $memberInfo,
+            'userStats' => $userStats,
             'bookingHistory' => $bookingHistory,
-            'userStats' => $userStats
+            'page' => $page,
+            'totalPages' => $totalPages,
         ]);
     }
 

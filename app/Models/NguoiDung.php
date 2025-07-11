@@ -332,33 +332,14 @@ class NguoiDung extends BaseModel
 
     public function getMemberInfo($userId)
     {
-        $sql = "SELECT tv_mathanhvien, tv_loaithanhvien, tv_diemtichluy 
-                FROM thanh_vien 
-                WHERE nd_id = ?";
-        
-        try {
-            $stmt = $this->db->prepare($sql);
-            $stmt->execute([$userId]);
-            $result = $stmt->fetch(\PDO::FETCH_ASSOC);
-
-            if (!$result) {
-                return [
-                    'tv_mathanhvien' => null,
-                    'tv_loaithanhvien' => null,
-                    'tv_diemtichluy' => 0
-                ];
-            }
-            
-            return $result;
-            
-        } catch (Exception $e) {
-            error_log("Get member info error: " . $e->getMessage());
-            return [
-                'tv_mathanhvien' => null,
-                'tv_loaithanhvien' => null,
-                'tv_diemtichluy' => 0
-            ];
-        }
+        $sql = "SELECT nd_loaithanhvien, nd_diemtichluy FROM nguoi_dung WHERE nd_id = ?";
+        $stmt = $this->db->prepare($sql);
+        $stmt->execute([$userId]);
+        $row = $stmt->fetch(\PDO::FETCH_ASSOC);
+        return [
+            'tv_loaithanhvien' => $row['nd_loaithanhvien'] ?? null,
+            'tv_diemtichluy' => $row['nd_diemtichluy'] ?? 0,
+        ];
     }
     public function getAllWithFilterPaginatedByRole($search = '', $role = '', $status = '', $page = 1, $limit = 15, $sort = 'newest') // ✅ THÊM sort
     {
