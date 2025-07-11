@@ -69,7 +69,7 @@
             <select class="form-select" name="payment_method">
                 <option value="">Tất cả</option>
                 <option value="momo" {{ ($_GET['payment_method'] ?? '')=='momo' ? 'selected' : '' }}>MoMo</option>
-                <option value="cash" {{ ($_GET['payment_method'] ?? '')=='cash' ? 'selected' : '' }}>Tiền mặt</option>
+                <option value="Tiền mặt" {{ ($_GET['payment_method'] ?? '')=='Tiền mặt' ? 'selected' : '' }}>Tiền mặt</option>
                 <option value="vnpay" {{ ($_GET['payment_method'] ?? '')=='vnpay' ? 'selected' : '' }}>VN Pay</option>
                 <option value="zalopay" {{ ($_GET['payment_method'] ?? '')=='zalopay' ? 'selected' : '' }}>Zalo Pay</option>
                 <option value="bank" {{ ($_GET['payment_method'] ?? '')=='bank' ? 'selected' : '' }}>Ngân hàng</option>
@@ -110,7 +110,7 @@
                         @php
                             $methodMap = [
                                 'momo' => ['MoMo', 'bg-momo'],
-                                'cash' => ['Tiền mặt', 'bg-cash'],
+                                'Tiền mặt' => ['Tiền mặt', 'bg-cash'],
                                 'vnpay' => ['VN Pay', 'bg-vnpay'],
                                 'zalopay' => ['Zalo Pay', 'bg-zalopay'],
                                 'bank' => ['Ngân hàng', 'bg-bank'],

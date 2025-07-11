@@ -97,6 +97,7 @@ $router->add('POST', '/process-ve-print', 'QuanLyDonDatVeController@processVePri
 //datvetaiquay
 $router->add('GET', '/dat-ve-tai-quay', 'DatVeTaiQuayController@datVeTaiQuay');
 $router->add('POST', '/dat-ve-tai-quay', 'DatVeTaiQuayController@storeDatVe');
+$router->add('POST', '/dat-ve-tai-quay/store', 'DatVeTaiQuayController@storeDatVe');
 $router->add('GET','/get-ghe-by-lich-chieu', 'DatVeTaiQuayController@getGheByLichChieu');
 
 // UuDai Admin Routes

@@ -123,6 +123,67 @@
             border-left: 4px solid #198754; 
             font-family: 'Arial', sans-serif !important;
         }
+
+        .payment-option {
+            border: 2px solid #e9ecef;
+            border-radius: 8px;
+            padding: 15px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            background: #fff;
+        }
+
+        .payment-option:hover {
+            border-color: #007bff;
+            box-shadow: 0 2px 8px rgba(0,123,255,0.15);
+        }
+
+        .payment-option.active {
+            border-color: #007bff;
+            background: #f8f9ff;
+            box-shadow: 0 2px 8px rgba(0,123,255,0.2);
+        }
+
+        .payment-label {
+            cursor: pointer;
+            margin: 0;
+            width: 100%;
+            display: block;
+        }
+
+        .payment-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+        }
+
+        .form-check-input:checked {
+            background-color: #007bff;
+            border-color: #007bff;
+        }
+
+        @media print {
+            .modal-header, .modal-footer, .btn {
+                display: none !important;
+            }
+            
+            .ticket-print {
+                font-family: 'Courier New', monospace;
+                font-size: 14px;
+                line-height: 1.4;
+            }
+        }
+
+        .ticket-print {
+            border: 2px dashed #666;
+            padding: 20px;
+            background: #f8f9fa;
+            font-family: 'Courier New', monospace;
+        }
     </style>
 @endsection
 
@@ -251,18 +312,19 @@ var lichChieuData = <?= json_encode($lichChieuList ?? []) ?>;
 var gheData = <?= json_encode($gheList ?? []) ?>;
 var soldSeatsData = <?= json_encode($soldSeats ?? []) ?>;
 
+// ✅ DEBUG DỮ LIỆU NGAY TẠI ĐÂY
+console.log("=== DEBUGGING DATA ===");
+console.log("📊 Lich chieu raw data:", lichChieuData);
+if (lichChieuData.length > 0) {
+    console.log("🔍 First showtime structure:", lichChieuData[0]);
+    console.log("🔍 Available properties:", Object.keys(lichChieuData[0]));
+}
+
 let selectedSeats = [];
 let currentShowtime = null;
 let currentMovie = null;
 
-// ✅ BIẾN TOÀN CỤC LƯU GIÁ TỪ SERVER
-let seatPrices = {
-    'normal': 70000,
-    'vip': 90000,
-    'luxury': 120000,
-    'couple': 150000
-};
-
+// ✅ SỬA PHẦN XỬ LÝ KHI CHỌN PHIM
 document.addEventListener('DOMContentLoaded', function() {
     const movieSelect = document.getElementById('movieSelect');
     const showtimeSelect = document.getElementById('showtimeSelect');
@@ -275,16 +337,60 @@ document.addEventListener('DOMContentLoaded', function() {
         const movieId = this.value;
         currentMovie = movieId;
         
+        console.log('🎬 Selected movie:', movieId);
+        console.log('📋 All available showtimes:', lichChieuData);
+        
         if (movieId) {
             const showtimes = lichChieuData.filter(lc => lc.p_maphim === movieId);
+            console.log('🎯 Filtered showtimes for movie', movieId, ':', showtimes);
             
             showtimeSelect.innerHTML = '<option value="">-- Chọn suất chiếu --</option>';
-            showtimes.forEach(showtime => {
-                const option = document.createElement('option');
-                option.value = showtime.lc_malichchieu;
-                option.textContent = `${showtime.lc_giobatdau} - ${showtime.pc_tenphong}`;
-                showtimeSelect.appendChild(option);
-            });
+            
+            if (showtimes.length === 0) {
+                showtimeSelect.innerHTML += '<option value="" disabled>Không có suất chiếu cho phim này</option>';
+                console.log('❌ No showtimes found for movie:', movieId);
+            } else {
+                // ✅ SỬA PHẦN TẠO OPTION
+                showtimes.forEach((showtime, index) => {
+                    console.log(`🎪 Processing showtime ${index}:`, showtime);
+                    
+                    const option = document.createElement('option');
+                    option.value = showtime.lc_malichchieu;
+                    
+                    // ✅ XỬ LÝ CÁC FIELD CÓ THỂ NULL/UNDEFINED
+                    const ngayChieu = showtime.lc_ngaychieu || 'N/A';
+                    
+                    // ✅ XỬ LÝ THỜI GIAN
+                    let gioChieu = 'N/A';
+                    if (showtime.gio_chieu) {
+                        gioChieu = showtime.gio_chieu;
+                    } else if (showtime.lc_giobatdau) {
+                        // Trích xuất giờ từ timestamp
+                        const timestamp = showtime.lc_giobatdau.toString();
+                        if (timestamp.includes(' ')) {
+                            gioChieu = timestamp.split(' ')[1].substring(0, 5);
+                        } else if (timestamp.includes(':')) {
+                            gioChieu = timestamp.substring(0, 5);
+                        }
+                    }
+                    
+                    let tenPhong = showtime.pc_tenphong;
+                    if (!tenPhong || tenPhong === 'Phòng không xác định') {
+                        // Nếu không có tên phòng, tạo tên từ mã phòng
+                        if (showtime.pc_maphongchieu) {
+                            const roomNumber = showtime.pc_maphongchieu.replace('PC', '').replace(/^0+/, '');
+                            tenPhong = `Phòng ${roomNumber}`;
+                        } else {
+                            tenPhong = 'Phòng N/A';
+                        }
+                    }
+                    option.textContent = `${ngayChieu} ${gioChieu} - ${tenPhong}`;
+                    
+                    console.log(`✅ Final option text: "${option.textContent}"`);
+                    
+                    showtimeSelect.appendChild(option);
+                });
+            }
             
             showtimeSelect.disabled = false;
         } else {
@@ -301,20 +407,28 @@ document.addEventListener('DOMContentLoaded', function() {
         const showtimeId = this.value;
         currentShowtime = showtimeId;
         
+        console.log('🎫 Selected showtime:', showtimeId);
+        
         if (showtimeId) {
+            console.log('📞 Fetching seats for showtime:', showtimeId);
+            
             fetch(`/get-ghe-by-lich-chieu?lichchieu_id=${showtimeId}`)
-                .then(response => response.json())
+                .then(response => {
+                    console.log('📡 Response status:', response.status);
+                    return response.json();
+                })
                 .then(data => {
+                    console.log('🪑 Received seat data:', data);
+                    
                     // ✅ CẬP NHẬT GIÁ GHẾ TỪ SERVER
                     if (data.giaBanVe) {
-                        seatPrices = data.giaBanVe; // Giá theo loại
+                        seatPrices = data.giaBanVe;
+                        console.log('💰 Updated seat prices:', seatPrices);
                     }
                     
                     // ✅ LƯU GIÁ CHI TIẾT TỪNG GHẾ
                     window.seatPricesDetail = data.giaBanVeChiTiet || {};
-                    
-                    console.log('Updated seat prices:', seatPrices);
-                    console.log('Detailed seat prices:', window.seatPricesDetail);
+                    console.log('💸 Detailed seat prices:', window.seatPricesDetail);
                     
                     renderSeats(data.ghe, data.soldSeats);
                     updateLegend();
@@ -322,8 +436,9 @@ document.addEventListener('DOMContentLoaded', function() {
                     noSeatMessage.style.display = 'none';
                 })
                 .catch(error => {
-                    console.error('Error loading seats:', error);
+                    console.error('💥 Error loading seats:', error);
                     hideSeats();
+                    alert('Lỗi tải dữ liệu ghế: ' + error.message);
                 });
         } else {
             hideSeats();
@@ -331,7 +446,7 @@ document.addEventListener('DOMContentLoaded', function() {
         
         resetSelection();
     });
-
+    
     // Xác nhận đặt vé
     document.getElementById('confirmBooking').addEventListener('click', function() {
         if (selectedSeats.length === 0) {
@@ -339,29 +454,314 @@ document.addEventListener('DOMContentLoaded', function() {
             return;
         }
 
-        const formData = new FormData();
-        formData.append('lichchieu', currentShowtime);
-        formData.append('ghe', selectedSeats.map(seat => seat.id).join(','));
-        formData.append('tongtien', calculateTotal());
+        // ✅ HIỂN THỊ MODAL CHỌN PHƯƠNG THỨC THANH TOÁN
+        showPaymentModal();
+    });
 
-        fetch('/dat-ve-tai-quay', {
+    // ✅ SỬA FUNCTION showPaymentModal()
+    function showPaymentModal() {
+        const movieName = document.getElementById('movieSelect').options[document.getElementById('movieSelect').selectedIndex].text;
+        const showtimeText = document.getElementById('showtimeSelect').options[document.getElementById('showtimeSelect').selectedIndex].text;
+        const customerName = document.getElementById('customerName').value || 'Khách vãng lai';
+        const customerPhone = document.getElementById('customerPhone').value || '';
+        const total = calculateTotal();
+
+        // ✅ TẠO MODAL THANH TOÁN
+        const modalHtml = `
+            <div class="modal fade" id="paymentModal" tabindex="-1">
+                <div class="modal-dialog modal-lg">
+                    <div class="modal-content">
+                        <div class="modal-header bg-primary text-white">
+                            <h5 class="modal-title">
+                                <i class="bi bi-credit-card me-2"></i>Xác nhận thanh toán
+                            </h5>
+                            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                        </div>
+                        <div class="modal-body">
+                            <!-- Thông tin đặt vé -->
+                            <div class="card mb-3">
+                                <div class="card-header bg-light">
+                                    <h6 class="mb-0">📋 Thông tin đặt vé</h6>
+                                </div>
+                                <div class="card-body">
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <p><strong>🎬 Phim:</strong> ${movieName}</p>
+                                            <p><strong>🎫 Suất chiếu:</strong> ${showtimeText}</p>
+                                            <p><strong>🪑 Ghế:</strong> ${selectedSeats.map(s => s.display).join(', ')}</p>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <p><strong>👤 Khách hàng:</strong> ${customerName}</p>
+                                            <p><strong>📞 Điện thoại:</strong> ${customerPhone || 'Không có'}</p>
+                                            <p><strong>💰 Tổng tiền:</strong> <span class="text-success fs-5">${total.toLocaleString()} VNĐ</span></p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Chọn phương thức thanh toán -->
+                            <div class="card">
+                                <div class="card-header bg-light">
+                                    <h6 class="mb-0">💳 Phương thức thanh toán</h6>
+                                </div>
+                                <div class="card-body">
+                                    <div class="row">
+                                        <!-- Tiền mặt -->
+                                        <div class="col-md-6 mb-3">
+                                            <div class="payment-option">
+                                                <input class="form-check-input" type="radio" name="paymentMethod" id="cash" value="Tiền mặt" checked>
+                                                <label class="form-check-label payment-label" for="cash">
+                                                    <div class="d-flex align-items-center">
+                                                        <div class="payment-icon bg-success text-white me-3">
+                                                            <i class="bi bi-cash-stack"></i>
+                                                        </div>
+                                                        <div>
+                                                            <strong>Tiền mặt</strong><br>
+                                                            <small class="text-muted">Thanh toán tại quầy</small>
+                                                        </div>
+                                                    </div>
+                                                </label>
+                                            </div>
+                                        </div>
+
+                                        <!-- Ngân hàng -->
+                                        <div class="col-md-6 mb-3">
+                                            <div class="payment-option">
+                                                <input class="form-check-input" type="radio" name="paymentMethod" id="bank" value="Ngân hàng">
+                                                <label class="form-check-label payment-label" for="bank">
+                                                    <div class="d-flex align-items-center">
+                                                        <div class="payment-icon bg-primary text-white me-3">
+                                                            <i class="bi bi-credit-card"></i>
+                                                        </div>
+                                                        <div>
+                                                            <strong>Thẻ ngân hàng</strong><br>
+                                                            <small class="text-muted">Visa/MasterCard</small>
+                                                        </div>
+                                                    </div>
+                                                </label>
+                                            </div>
+                                        </div>
+
+                                        <!-- MoMo -->
+                                        <div class="col-md-6 mb-3">
+                                            <div class="payment-option">
+                                                <input class="form-check-input" type="radio" name="paymentMethod" id="momo" value="MoMo">
+                                                <label class="form-check-label payment-label" for="momo">
+                                                    <div class="d-flex align-items-center">
+                                                        <div class="payment-icon bg-danger text-white me-3">
+                                                            <i class="bi bi-wallet2"></i>
+                                                        </div>
+                                                        <div>
+                                                            <strong>MoMo</strong><br>
+                                                            <small class="text-muted">Ví điện tử</small>
+                                                        </div>
+                                                    </div>
+                                                </label>
+                                            </div>
+                                        </div>
+
+                                        <!-- VNPay -->
+                                        <div class="col-md-6 mb-3">
+                                            <div class="payment-option">
+                                                <input class="form-check-input" type="radio" name="paymentMethod" id="vnpay" value="VNPay">
+                                                <label class="form-check-label payment-label" for="vnpay">
+                                                    <div class="d-flex align-items-center">
+                                                        <div class="payment-icon bg-info text-white me-3">
+                                                            <i class="bi bi-qr-code"></i>
+                                                        </div>
+                                                        <div>
+                                                            <strong>VNPay</strong><br>
+                                                            <small class="text-muted">QR Code</small>
+                                                        </div>
+                                                    </div>
+                                                </label>
+                                            </div>
+                                        </div>
+
+                                        <!-- ZaloPay -->
+                                        <div class="col-md-6 mb-3">
+                                            <div class="payment-option">
+                                                <input class="form-check-input" type="radio" name="paymentMethod" id="zalopay" value="ZaloPay">
+                                                <label class="form-check-label payment-label" for="zalopay">
+                                                    <div class="d-flex align-items-center">
+                                                        <div class="payment-icon bg-warning text-white me-3">
+                                                            <i class="bi bi-phone"></i>
+                                                        </div>
+                                                        <div>
+                                                            <strong>ZaloPay</strong><br>
+                                                            <small class="text-muted">Ví Zalo</small>
+                                                        </div>
+                                                    </div>
+                                                </label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                                <i class="bi bi-x-circle me-2"></i>Hủy
+                            </button>
+                            <button type="button" class="btn btn-success" id="processPayment">
+                                <i class="bi bi-printer me-2"></i>Thanh toán & In vé
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        `;
+
+        // ✅ THÊM MODAL VÀO BODY
+        document.body.insertAdjacentHTML('beforeend', modalHtml);
+        
+        // ✅ HIỂN THỊ MODAL
+        const modal = new bootstrap.Modal(document.getElementById('paymentModal'));
+        modal.show();
+
+        // ✅ XỬ LÝ KHI BẤMM THANH TOÁN
+        document.getElementById('processPayment').addEventListener('click', function() {
+            processPaymentAndPrint();
+        });
+
+        // ✅ XỬ LÝ CLICK VÀO PAYMENT OPTION
+        document.querySelectorAll('.payment-label').forEach(label => {
+            label.addEventListener('click', function() {
+                // Remove active class from all options
+                document.querySelectorAll('.payment-option').forEach(opt => opt.classList.remove('active'));
+                // Add active class to selected option
+                this.closest('.payment-option').classList.add('active');
+            });
+        });
+
+        // ✅ XÓA MODAL KHI ĐÓNG
+        document.getElementById('paymentModal').addEventListener('hidden.bs.modal', function() {
+            this.remove();
+        });
+    }
+
+    // ✅ SỬA XỬ LÝ THANH TOÁN - BỎ GHI CHÚ
+    function processPaymentAndPrint() {
+        const paymentMethod = document.querySelector('input[name="paymentMethod"]:checked').value;
+        const customerName = document.getElementById('customerName').value || 'Khách vãng lai';
+        const customerPhone = document.getElementById('customerPhone').value || '';
+
+        const bookingData = {
+            showtime_id: currentShowtime,
+            selected_seats: selectedSeats,
+            customer_info: {
+                name: customerName,
+                phone: customerPhone
+            },
+            payment_method: paymentMethod,
+            total_amount: calculateTotal()
+        };
+
+        console.log('💳 Processing payment:', bookingData);
+
+        // ✅ HIỂN THỊ LOADING
+        document.getElementById('processPayment').innerHTML = '<i class="bi bi-hourglass-split me-2"></i>Đang xử lý...';
+        document.getElementById('processPayment').disabled = true;
+
+        fetch('/dat-ve-tai-quay/store', {
             method: 'POST',
-            body: formData
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(bookingData)
         })
         .then(response => response.json())
         .then(data => {
+            console.log('📨 Payment response:', data);
+            
             if (data.success) {
-                alert('Đặt vé thành công! Mã vé: ' + data.ticket_id);
-                location.reload();
+                // ✅ ĐÓNG MODAL THANH TOÁN
+                bootstrap.Modal.getInstance(document.getElementById('paymentModal')).hide();
+                
+                // ✅ HIỂN THỊ VÉ ĐỂ IN
+                showPrintTicket(data);
             } else {
-                alert('Có lỗi: ' + data.message);
+                alert('Lỗi thanh toán: ' + data.message);
+                document.getElementById('processPayment').disabled = false;
+                document.getElementById('processPayment').innerHTML = '<i class="bi bi-printer me-2"></i>Thanh toán & In vé';
             }
         })
         .catch(error => {
-            console.error('Error:', error);
-            alert('Có lỗi xảy ra!');
+            console.error('💥 Payment error:', error);
+            alert('Lỗi kết nối: ' + error.message);
+            document.getElementById('processPayment').disabled = false;
+            document.getElementById('processPayment').innerHTML = '<i class="bi bi-printer me-2"></i>Thanh toán & In vé';
         });
-    });
+    }
+
+    // ✅ HIỂN THỊ VÉ ĐỂ IN
+    function showPrintTicket(data) {
+        const printHtml = `
+            <div class="modal fade" id="printModal" tabindex="-1">
+                <div class="modal-dialog modal-lg">
+                    <div class="modal-content">
+                        <div class="modal-header bg-success text-white">
+                            <h5 class="modal-title">
+                                <i class="bi bi-check-circle me-2"></i>Đặt vé thành công
+                            </h5>
+                        </div>
+                        <div class="modal-body" id="ticketContent">
+                            ${generateTicketHTML(data)}
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-primary" onclick="window.print()">
+                                <i class="bi bi-printer me-2"></i>In vé
+                            </button>
+                            <button type="button" class="btn btn-success" onclick="location.reload()">
+                                <i class="bi bi-arrow-clockwise me-2"></i>Đặt vé mới
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        `;
+
+        document.body.insertAdjacentHTML('beforeend', printHtml);
+        const modal = new bootstrap.Modal(document.getElementById('printModal'));
+        modal.show();
+    }
+
+    // ✅ TẠO HTML VÉ ĐỂ IN
+    function generateTicketHTML(data) {
+        const movieName = document.getElementById('movieSelect').options[document.getElementById('movieSelect').selectedIndex].text;
+        const showtimeText = document.getElementById('showtimeSelect').options[document.getElementById('showtimeSelect').selectedIndex].text;
+        const customerName = document.getElementById('customerName').value || 'Khách vãng lai';
+
+        return `
+            <div class="ticket-print">
+                <div class="text-center mb-4">
+                    <h3>🎬 CINEMA BOOKING SYSTEM</h3>
+                    <h5>VÉ XEM PHIM</h5>
+                    <hr>
+                </div>
+                
+                <div class="row">
+                    <div class="col-md-6">
+                        <p><strong>Mã thanh toán:</strong> ${data.payment_id}</p>
+                        <p><strong>Khách hàng:</strong> ${customerName}</p>
+                        <p><strong>Phim:</strong> ${movieName}</p>
+                        <p><strong>Suất chiếu:</strong> ${showtimeText}</p>
+                    </div>
+                    <div class="col-md-6">
+                        <p><strong>Ghế:</strong> ${selectedSeats.map(s => s.display).join(', ')}</p>
+                        <p><strong>Số lượng:</strong> ${selectedSeats.length} vé</p>
+                        <p><strong>Tổng tiền:</strong> ${data.total_amount?.toLocaleString()} VNĐ</p>
+                        <p><strong>Thời gian:</strong> ${new Date().toLocaleString()}</p>
+                    </div>
+                </div>
+                
+                <hr>
+                <div class="text-center">
+                    <small>Cảm ơn quý khách! Chúc quý khách xem phim vui vẻ!</small>
+                </div>
+            </div>
+        `;
+    }
 });
 
 // ✅ LOGIC RENDER GHẾ KHÔNG ĐỔI

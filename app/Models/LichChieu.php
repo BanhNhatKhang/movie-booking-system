@@ -614,4 +614,91 @@ class LichChieu extends BaseModel
         $stmt->execute($params);
         return $stmt->fetchColumn();
     }
+
+    /**
+     * Lấy lịch chiếu với thông tin đầy đủ (JOIN)
+     */
+    public function getLichChieuWithDetails()
+    {
+        try {
+            $sql = "SELECT 
+                    lc.*,
+                    p.p_tenphim,
+                    p.p_thoiluong,
+                    pc.pc_tenphong,
+                    pc.pc_soluongghe
+                FROM {$this->table} lc
+                INNER JOIN phim p ON lc.p_maphim = p.p_maphim  
+                INNER JOIN phong_chieu pc ON lc.pc_maphongchieu = pc.pc_maphongchieu
+                WHERE lc.lc_ngaychieu >= CURDATE()
+                ORDER BY lc.lc_ngaychieu ASC, lc.lc_giobatdau ASC";
+    
+            $stmt = $this->db->prepare($sql);
+            $stmt->execute();
+            $results = $stmt->fetchAll(\PDO::FETCH_ASSOC);
+            
+            error_log("🎬 Loaded " . count($results) . " showtimes with details");
+            if (!empty($results)) {
+                error_log("🔍 Sample data: " . json_encode($results[0]));
+            }
+            
+            return $results;
+            
+        } catch (Exception $e) {
+            error_log("💥 Error in getLichChieuWithDetails: " . $e->getMessage());
+            return [];
+        }
+    }
+
+    /**
+     * Lấy lịch chiếu với thông tin đầy đủ - XỬ LÝ TIMESTAMP
+     */
+    public function getLichChieuWithFullDetails()
+    {
+        try {
+            // ✅ SỬA TÊN BẢNG: phongchieu → phong_chieu
+            $sql = "SELECT 
+                    lc.lc_malichchieu,
+                    lc.p_maphim,
+                    lc.pc_maphongchieu,
+                    lc.lc_ngaychieu,
+                    lc.lc_giobatdau,
+                    TIME_FORMAT(lc.lc_giobatdau, '%H:%i') as gio_chieu,
+                    lc.lc_trangthai,
+                    p.p_tenphim,
+                    p.p_thoiluong,
+                    COALESCE(pc.pc_tenphong, CONCAT('Phòng ', lc.pc_maphongchieu)) as pc_tenphong,
+                    COALESCE(pc.pc_loaiphong, 'Không xác định') as pc_loaiphong
+                FROM {$this->table} lc
+                LEFT JOIN phim p ON lc.p_maphim = p.p_maphim  
+                LEFT JOIN phong_chieu pc ON lc.pc_maphongchieu = pc.pc_maphongchieu
+                WHERE lc.lc_ngaychieu >= CURDATE()
+                ORDER BY lc.lc_ngaychieu ASC, lc.lc_giobatdau ASC";
+    
+            $stmt = $this->db->prepare($sql);
+            $stmt->execute();
+            $results = $stmt->fetchAll(\PDO::FETCH_ASSOC);
+            
+            error_log("🎬 Query result count: " . count($results));
+            
+            // ✅ DEBUG TỪNG RECORD
+            foreach ($results as $index => $result) {
+                error_log("=== RECORD {$index} ===");
+                error_log("ID: " . ($result['lc_malichchieu'] ?? 'NULL'));
+                error_log("Movie ID: " . ($result['p_maphim'] ?? 'NULL'));
+                error_log("Room ID: " . ($result['pc_maphongchieu'] ?? 'NULL'));
+                error_log("Room Name: " . ($result['pc_tenphong'] ?? 'NULL'));
+                error_log("Date: " . ($result['lc_ngaychieu'] ?? 'NULL'));
+                error_log("Time: " . ($result['gio_chieu'] ?? 'NULL'));
+                error_log("Raw timestamp: " . ($result['lc_giobatdau'] ?? 'NULL'));
+                error_log("Movie name: " . ($result['p_tenphim'] ?? 'NULL'));
+            }
+            
+            return $results;
+            
+        } catch (Exception $e) {
+            error_log("💥 SQL Error: " . $e->getMessage());
+            return [];
+        }
+    }
 }
