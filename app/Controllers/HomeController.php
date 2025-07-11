@@ -27,22 +27,24 @@ class HomeController
     public function index()
     {
         try {
-            // ✅ Lấy dữ liệu ưu đãi từ bảng uu_dai_trang_chu
+
             $uuDaiModel = new \App\Models\UuDaiTrangChu();
             $uuDaiList = $uuDaiModel->getAllUuDai();
             
-            // ✅ Lấy dữ liệu phim đang chiếu
             $phimModel = new \App\Models\Phim();
             $phimDangChieu = $phimModel->getPhimByStatus('active');
-            
-            // ✅ Lấy dữ liệu phim sắp chiếu  
+
             $phimSapChieu = $phimModel->getPhimByStatus('coming_soon');
+            
+            $posterModel = new \App\Models\Poster();
+            $posterList = $posterModel->getAll(); // Lấy tất cả poster
             
             echo $this->blade->render('index', [
                 'activePage' => 'home',
                 'uuDaiList' => $uuDaiList,
                 'phimDangChieu' => $phimDangChieu,
-                'phimSapChieu' => $phimSapChieu
+                'phimSapChieu' => $phimSapChieu,
+                'posterList' => $posterList,
             ]);
             
         } catch (Exception $e) {

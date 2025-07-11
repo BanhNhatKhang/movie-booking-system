@@ -31,15 +31,26 @@ class QuanLyTrangChuController
     {
         AuthHelper::checkAccess('admin_only');
         try {
-            // Lấy danh sách poster
-            $posters = $this->posterModel->getAll();
-            
+            // Phân trang poster
+            $page = isset($_GET['page']) ? max(1, intval($_GET['page'])) : 1;
+            $perPage = 5;
+            $offset = ($page - 1) * $perPage;
+
+            // Lấy danh sách poster phân trang
+            $posters = $this->posterModel->getAllLimit($perPage, $offset);
+            $totalItems = $this->posterModel->countAll();
+            $totalPages = ceil($totalItems / $perPage);
+
             // Lấy danh sách ưu đãi
             $uuDaiList = $this->uuDaiModel->getAllUuDai();
-            
+
             echo $this->blade->render('admin-views.TrangChu.QuanLyTrangChu', [
                 'posters' => $posters,
                 'uuDaiList' => $uuDaiList,
+                'currentPage' => $page,
+                'totalPages' => $totalPages,
+                'totalItems' => $totalItems,
+                'itemsPerPage' => $perPage,
                 'activePage' => 'home',
             ]);
         } catch (Exception $e) {
@@ -47,6 +58,10 @@ class QuanLyTrangChuController
             echo $this->blade->render('admin-views.TrangChu.QuanLyTrangChu', [
                 'posters' => [],
                 'uuDaiList' => [],
+                'currentPage' => 1,
+                'totalPages' => 1,
+                'totalItems' => 0,
+                'itemsPerPage' => 5,
                 'activePage' => 'quan-ly-trang-chu',
                 'error' => 'Không thể tải dữ liệu'
             ]);
@@ -130,16 +145,9 @@ class QuanLyTrangChuController
     {
         AuthHelper::checkAccess('admin_only');
         $id = $_GET['id'] ?? '';
-        $db = \App\Core\Database::getInstance()->getConnection();
-        $stmt = $db->prepare("SELECT COUNT(*) FROM phim WHERE p_maposter = ?");
-        $stmt->execute([$id]);
-        $count = $stmt->fetchColumn();
-        
-        if ($count > 0) {
-            header('Location: /quan-ly-trang-chu?error=poster_in_use');
-            exit;
-        }
-        
+
+        // Không cần kiểm tra poster có dùng ở phim nữa
+
         // Lấy đường dẫn ảnh poster để xóa file
         $poster = $this->posterModel->getById($id);
         if ($poster && !empty($poster['pt_anhposter'])) {
@@ -148,7 +156,7 @@ class QuanLyTrangChuController
                 unlink($filePath);
             }
         }
-        
+
         $this->posterModel->delete($id);
         header('Location: /quan-ly-trang-chu?success=delete_poster');
     }

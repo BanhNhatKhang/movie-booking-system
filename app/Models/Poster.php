@@ -56,4 +56,17 @@ class Poster extends BaseModel
         }
         return 'PT01';
     }
+    public function getAllLimit($limit, $offset)
+    {
+        $sql = "SELECT * FROM poster ORDER BY pt_maposter DESC LIMIT ? OFFSET ?";
+        $stmt = $this->db->prepare($sql);
+        $stmt->execute([$limit, $offset]);
+        return $stmt->fetchAll(\PDO::FETCH_ASSOC);
+    }
+
+    public function countAll()
+    {
+        $sql = "SELECT COUNT(*) FROM poster";
+        return $this->db->query($sql)->fetchColumn();
+    }
 }

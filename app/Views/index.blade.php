@@ -21,18 +21,15 @@
                 <!--Poster quảng cáo phim-->
                 <div id="carouselExample" class="carousel slide " data-bs-ride="carousel" data-bs-interval="3000">
                     <div class="carousel-inner">
-                        <div class="carousel-item active">
-                            <img src="/static/imgs/tham-tu-kien-3-1744984172402.jpg" class="d-block w-100 carousel-img img-fluid" alt="...">
-                        </div>
-                        <div class="carousel-item">
-                            <img src="/static/imgs/doreamon_900x448.jpg" class="d-block w-100 carousel-img img-fluid" alt="...">
-                        </div>
-                        <div class="carousel-item">
-                            <img src="/static/imgs/anime-spirited-away-5986-1901.jpg" class="d-block w-100 carousel-img img-fluid" alt="...">
-                        </div>
-                        <div class="carousel-item">
-                            <img src="/static/imgs/conan.jpg" class="d-block w-100 carousel-img img-fluid" alt="...">
-                        </div>
+                        @forelse($posterList ?? [] as $index => $poster)
+                            <div class="carousel-item {{ $index === 0 ? 'active' : '' }}">
+                                <img src="{{ $poster['pt_anhposter'] }}" class="d-block w-100 carousel-img img-fluid" alt="Poster {{ $index+1 }}">
+                            </div>
+                        @empty
+                            <div class="carousel-item active">
+                                <img src="/static/imgs/default-poster.jpg" class="d-block w-100 carousel-img img-fluid" alt="No poster">
+                            </div>
+                        @endforelse
                     </div>
                     <button class="carousel-control-prev" type="button" data-bs-target="#carouselExample" data-bs-slide="prev">
                         <span class="carousel-control-prev-icon" aria-hidden="true"></span>

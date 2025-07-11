@@ -77,7 +77,7 @@
                     <td>{{ $i+1 }}</td>
                     <td>
                         @if($p['pt_anhposter'])
-                            <img src="{{ $p['pt_anhposter'] }}" alt="Poster" style="width:100px; height:140px; object-fit:cover;">
+                            <img src="{{ $p['pt_anhposter'] }}" alt="Poster" style="width:100px; height:60px; object-fit:cover; border-radius: 4px;">
                         @else
                             <span class="text-muted">Không có ảnh</span>
                         @endif
@@ -107,6 +107,13 @@
             </tbody>
         </table>
     </div>
+    @include('layouts.admin.Pagination', [
+        'currentPage' => $currentPage ?? 1,
+        'totalPages' => $totalPages ?? 1,
+        'totalItems' => $totalItems ?? 0,
+        'itemsPerPage' => $itemsPerPage ?? 5,
+        'itemName' => 'poster'
+    ])
     <hr><br>
 
     <!-- Quản lý ưu đãi -->
