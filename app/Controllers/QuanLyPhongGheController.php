@@ -182,20 +182,35 @@ class QuanLyPhongGheController
             
             // Chuyển đổi dữ liệu chỗ ngồi bao gồm tiền tố phòng
             $transformedSeats = [];
+            $processedDisplays = []; // ✅ THÊM BIẾN ĐỂ TRACK GHẾ ĐÃ XỬ LÝ
+
             foreach ($seatData as $seatCode => $seat) {
-                // đẩm bảo mã ghế bao gồm tiền tố phòng
-                if (!str_contains($seatCode, $maPhong . '_')) {
-                    $newSeatCode = $maPhong . '_' . $seat['display'];
-                    $transformedSeats[$newSeatCode] = [
-                        'code' => $newSeatCode,
-                        'type' => $seat['type'],
-                        'room' => $maPhong,
-                        'display' => $seat['display']
-                    ];
-                } else {
-                    $transformedSeats[$seatCode] = $seat;
+                // ✅ LẤY DISPLAY NAME (VD: J01)
+                $displayName = $seat['display'] ?? '';
+                
+                // ✅ BỎ QUA NẾU ĐÃ XỬ LÝ DISPLAY NAME NÀY
+                if (in_array($displayName, $processedDisplays)) {
+                    error_log("Bỏ qua ghế trùng: {$displayName}");
+                    continue;
                 }
+                
+                // ✅ TẠO MÃ GHẾ CHUẨN
+                $standardSeatCode = $maPhong . '_' . $displayName;
+                
+                $transformedSeats[$standardSeatCode] = [
+                    'code' => $standardSeatCode,
+                    'type' => $seat['type'],
+                    'room' => $maPhong,
+                    'display' => $displayName
+                ];
+                
+                // ✅ ĐÁNH DẤU ĐÃ XỬ LÝ
+                $processedDisplays[] = $displayName;
+                
+                error_log("Tạo ghế: {$standardSeatCode} (display: {$displayName})");
             }
+            
+            error_log("✅ Tổng ghế unique: " . count($transformedSeats));
             
             // kiểm tra nếu phòng đã tồn tại
             if ($this->phongChieuModel->checkPhongExists($maPhong)) {
@@ -394,6 +409,103 @@ class QuanLyPhongGheController
         } catch (Exception $e) {
             echo json_encode(['success' => false, 'message' => 'Lỗi hệ thống']);
         }
+        exit;
+    }
+    
+    /**
+     * Cập nhật giá theo loại ghế - TOÀN HỆ THỐNG
+     */
+    public function updatePriceByType()
+    {
+        AuthHelper::checkAccess('admin_only');
+        
+        try {
+            header('Content-Type: application/json');
+            
+            $loaiGhe = $_POST['loai_ghe'] ?? '';
+            $giaGhe = $_POST['gia_ghe'] ?? 0;
+            // ✅ BỎ HOÀN TOÀN PHÒNG CHIẾU - CẬP NHẬT TẤT CẢ
+            
+            error_log("=== UPDATE PRICE BY TYPE - GLOBAL SYSTEM ===");
+            error_log("Loai ghe: " . $loaiGhe);
+            error_log("Gia ghe: " . $giaGhe);
+            
+            // Validate loại ghế
+            $validTypes = ['normal', 'vip', 'luxury', 'couple'];
+            if (empty($loaiGhe) || !in_array($loaiGhe, $validTypes)) {
+                echo json_encode([
+                    'success' => false,
+                    'message' => 'Loại ghế không hợp lệ. Chỉ chấp nhận: ' . implode(', ', $validTypes)
+                ]);
+                exit;
+            }
+            
+            // Validate giá
+            if (!is_numeric($giaGhe) || $giaGhe < 0) {
+                echo json_encode([
+                    'success' => false,
+                    'message' => 'Giá ghế phải là số không âm'
+                ]);
+                exit;
+            }
+            
+            $gheModel = new Ghe();
+            
+            // ✅ KHÔNG TRUYỀN PHÒNG CHIẾU = CẬP NHẬT TẤT CẢ HỆ THỐNG
+            $result = $gheModel->bulkUpdateAllSeatPrices($loaiGhe, intval($giaGhe));
+            
+            if ($result !== false) {
+                error_log("✅ Successfully updated price GLOBALLY for seat type: " . $loaiGhe . ", affected rows: " . $result);
+                echo json_encode([
+                    'success' => true,
+                    'message' => "Cập nhật thành công giá cho {$result} ghế loại {$loaiGhe} trên toàn hệ thống",
+                    'affected_rows' => $result,
+                    'seat_type' => $loaiGhe,
+                    'new_price' => intval($giaGhe)
+                ]);
+            } else {
+                error_log("❌ Failed to update global price for seat type: " . $loaiGhe);
+                echo json_encode([
+                    'success' => false,
+                    'message' => 'Không thể cập nhật giá ghế. Vui lòng thử lại.'
+                ]);
+            }
+            
+        } catch (Exception $e) {
+            error_log("💥 Error in updatePriceByType: " . $e->getMessage());
+            echo json_encode([
+                'success' => false,
+                'message' => 'Lỗi hệ thống: ' . $e->getMessage()
+            ]);
+        }
+        
+        exit;
+    }
+    
+    /**
+     * Lấy thống kê giá ghế
+     */
+    public function getPriceStats()
+    {
+        AuthHelper::checkAccess('admin_only');
+        
+        try {
+            $gheModel = new Ghe();
+            $stats = $gheModel->getPriceStatsByType();
+            
+            echo json_encode([
+                'success' => true,
+                'data' => $stats
+            ]);
+            
+        } catch (Exception $e) {
+            error_log("Error in getPriceStats: " . $e->getMessage());
+            echo json_encode([
+                'success' => false,
+                'message' => 'Lỗi hệ thống: ' . $e->getMessage()
+            ]);
+        }
+        
         exit;
     }
 }

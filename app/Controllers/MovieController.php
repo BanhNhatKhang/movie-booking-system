@@ -3,7 +3,8 @@
 namespace App\Controllers;
 use App\Models\Phim;
 use App\Models\LichChieu; 
-use App\Models\LoaiVe; // ✅ Thêm dòng này
+use App\Models\LoaiVe;
+use App\Models\Ghe; // ✅ THÊM DÒNG NÀY
 use Jenssegers\Blade\Blade;
 use Exception;
 
@@ -11,14 +12,16 @@ class MovieController
 {
     private $phimModel;
     private $lichChieuModel; 
-    private $loaiVeModel; // ✅ Thêm property này
+    private $loaiVeModel;
+    private $gheModel; // ✅ THÊM PROPERTY NÀY
     private $blade;
 
     public function __construct()
     {
         $this->phimModel = new Phim();
         $this->lichChieuModel = new LichChieu(); 
-        $this->loaiVeModel = new LoaiVe(); // ✅ Thêm dòng này
+        $this->loaiVeModel = new LoaiVe();
+        $this->gheModel = new Ghe(); // ✅ THÊM DÒNG NÀY
         $this->blade = new Blade(
             realpath(__DIR__ . '/../Views'),
             cachePath: realpath(__DIR__ . '/../../cache')
@@ -214,18 +217,15 @@ class MovieController
                 exit;
             }
 
-            
             if (!in_array($lichChieu['lc_trangthai'], ['Sắp chiếu', 'Đang chiếu'])) {
                 $_SESSION['error_message'] = 'Suất chiếu này không thể đặt vé! Trạng thái: ' . $lichChieu['lc_trangthai'];
                 header('Location: /chi-tiet-phim?id=' . $lichChieu['p_maphim']);
                 exit;
             }
 
-            // Lấy danh sách ghế của phòng
-            $phongChieuModel = new \App\Models\PhongChieu();
-            $gheList = $phongChieuModel->getGheByPhongChieu($lichChieu['pc_maphongchieu']);
+            // ✅ LẤY GHẾ TỪ MODEL GHE (CÓ g_giaghe)
+            $gheList = $this->gheModel->getByPhongChieu($lichChieu['pc_maphongchieu']);
             error_log("Ghe list count: " . count($gheList));
-            
             
             if (empty($gheList)) {
                 $_SESSION['error_message'] = 'Phòng chiếu chưa được thiết lập sơ đồ ghế!';
@@ -234,6 +234,7 @@ class MovieController
             }
             
             // Lấy danh sách ghế đã đặt cho lịch chiếu này
+            $phongChieuModel = new \App\Models\PhongChieu();
             $gheDaDat = $phongChieuModel->getGheDaDatByLichChieu($lichChieuId);
             error_log("Ghe da dat: " . json_encode($gheDaDat));
             
@@ -241,7 +242,7 @@ class MovieController
             $gheByRow = $this->organizeGheByRow($gheList, $gheDaDat);
             error_log("Ghe by row: " . json_encode($gheByRow));
             
-            // Tính giá vé theo loại ghế
+            // ✅ TÍNH GIÁ VÉ THEO LOẠI GHẾ (SỬ DỤNG g_giaghe)
             $giaBanVe = $this->getGiaBanVeTheoPhong($lichChieu);
 
             echo $this->blade->render('users-views.Phim.ChonGhe', [
@@ -305,7 +306,6 @@ class MovieController
         
         foreach ($gheList as $ghe) {
             try {
-               
                 $maGhe = $ghe['g_maghe'];
                 
                 // Format 1: PC001_A01
@@ -324,7 +324,6 @@ class MovieController
                 }
                 // Format 3: Fallback
                 else {
-                    // Thử extract từ 2 ký tự đầu
                     $row = substr($maGhe, 0, 1);
                     $seatNumber = substr($maGhe, 1);
                 }
@@ -346,12 +345,13 @@ class MovieController
                     'loai_ghe' => $ghe['g_loaighe'] ?? 'normal',
                     'trang_thai' => $trangThai,
                     'seat_number' => $seatNumber,
-                    'display_code' => $row . str_pad($seatNumber, 2, '0', STR_PAD_LEFT)
+                    'display_code' => $row . str_pad($seatNumber, 2, '0', STR_PAD_LEFT),
+                    'gia_ghe' => (int)($ghe['g_giaghe'] ?? 0) // ✅ THÊM GIÁ GHẾ
                 ];
                 
             } catch (Exception $seatError) {
                 error_log("Error processing seat: " . $ghe['g_maghe'] . " - " . $seatError->getMessage());
-                continue; // Skip seat này
+                continue;
             }
         }
         
@@ -367,7 +367,7 @@ class MovieController
     }
 
     /**
-     * Lấy bảng giá vé theo phòng chiếu
+     * Lấy bảng giá vé theo phòng chiếu - SỬ DỤNG g_giaghe TỪ DATABASE
      */
     public function getGiaBanVeTheoPhong($lichChieu)
     {
@@ -376,7 +376,7 @@ class MovieController
             $tenPhongChieu = $lichChieu['pc_tenphong'] ?? '';
             $loaiPhongChieu = $lichChieu['pc_loaiphong'] ?? '';
             
-            error_log("=== GET PRICE FOR ROOM ===");
+            error_log("=== GET PRICE FOR ROOM (MOVIECONTROLLER) ===");
             error_log("Ma phong: " . $maPhongChieu);
             error_log("Ten phong: " . $tenPhongChieu);
             error_log("Loai phong: " . $loaiPhongChieu);
@@ -395,7 +395,6 @@ class MovieController
                     $tenLoaiVe = strtolower($lv['lv_tenloaive']);
                     $maLoaiVe = strtolower($lv['lv_maloaive']);
                     
-                    // So sánh với loại phòng
                     if (stripos($tenLoaiVe, $loaiPhongChieu) !== false ||
                         stripos($maLoaiVe, $loaiPhongChieu) !== false ||
                         stripos($tenLoaiVe, $tenPhongChieu) !== false) {
@@ -416,18 +415,39 @@ class MovieController
             
             if ($loaiVe) {
                 $giaCoban = (int)$loaiVe['lv_giatien'];
-                
                 error_log("Found loai_ve: " . $loaiVe['lv_tenloaive'] . " with base price: " . $giaCoban);
                 
-                // ✅ Tính giá theo loại ghế = giá cơ bản + phụ phí loại ghế
-                $giaBanVe = [
-                    'normal' => $giaCoban,                    // Giá cơ bản
-                    'vip' => $giaCoban + 20000,              // Cộng 20k cho VIP
-                    'luxury' => $giaCoban + 50000,           // Cộng 50k cho Luxury
-                    'couple' => $giaCoban + 80000            // Cộng 80k cho Couple
-                ];
+                // ✅ LẤY GHẾ CỦA PHÒNG CHIẾU ĐỂ TÍNH GIÁ TỪ g_giaghe
+                $gheList = $this->gheModel->getByPhongChieu($maPhongChieu);
+                error_log("Found " . count($gheList) . " seats in room");
                 
-                error_log("Calculated prices: " . json_encode($giaBanVe));
+                // ✅ TÍNH GIÁ THEO LOẠI GHẾ = GIÁ CƠ BẢN + g_giaghe
+                $giaBanVe = [];
+                foreach ($gheList as $ghe) {
+                    $loaiGhe = $ghe['g_loaighe'];
+                    $giaGhe = (int)($ghe['g_giaghe'] ?? 0);
+                    $tongGia = $giaCoban + $giaGhe;
+                    
+                    // Lưu giá theo loại ghế (lấy giá đại diện)
+                    if (!isset($giaBanVe[$loaiGhe]) || $tongGia > $giaBanVe[$loaiGhe]) {
+                        $giaBanVe[$loaiGhe] = $tongGia;
+                    }
+                    
+                    error_log("Ghe {$ghe['g_maghe']} ({$loaiGhe}): {$giaCoban} + {$giaGhe} = {$tongGia}");
+                }
+                
+                // ✅ NẾU KHÔNG CÓ GHẾ TRONG PHÒNG, DÙNG GIÁ MẶC ĐỊNH
+                if (empty($giaBanVe)) {
+                    error_log("No seats found, using default prices");
+                    $giaBanVe = [
+                        'normal' => $giaCoban,
+                        'vip' => $giaCoban + 20000,
+                        'luxury' => $giaCoban + 50000,
+                        'couple' => $giaCoban + 80000
+                    ];
+                }
+                
+                error_log("Calculated prices (from database): " . json_encode($giaBanVe));
                 return $giaBanVe;
             }
             

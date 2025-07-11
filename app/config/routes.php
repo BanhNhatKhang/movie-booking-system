@@ -86,7 +86,7 @@ $router->add('POST', '/update-seat-status', 'QuanLyPhongGheController@updateSeat
 $router->add('POST', '/update-seat-type', 'QuanLyPhongGheController@updateSeatType');
 $router->add('GET', '/get-seat-statistics', 'QuanLyPhongGheController@getSeatStatistics');
 $router->add('POST', '/bulk-update-seat-types', 'QuanLyPhongGheController@bulkUpdateSeatTypes');
-
+$router->add('POST', '/update-price-by-type', 'QuanLyPhongGheController@updatePriceByType');
 //quanlydondatve
 $router->add('GET', '/quan-ly-don-dat-ve', 'QuanLyDonDatVeController@quanLyDonDatVe');
 $router->add('GET', '/chi-tiet-don-dat-ve', 'QuanLyDonDatVeController@chiTietDonDatVe');
@@ -97,6 +97,7 @@ $router->add('POST', '/process-ve-print', 'QuanLyDonDatVeController@processVePri
 //datvetaiquay
 $router->add('GET', '/dat-ve-tai-quay', 'DatVeTaiQuayController@datVeTaiQuay');
 $router->add('POST', '/dat-ve-tai-quay', 'DatVeTaiQuayController@storeDatVe');
+$router->add('GET','/get-ghe-by-lich-chieu', 'DatVeTaiQuayController@getGheByLichChieu');
 
 // UuDai Admin Routes
 $router->add('GET', '/quan-ly-uu-dai', 'UuDaiAdminController@uuDai');
@@ -142,3 +143,6 @@ $router->add('POST', '/luu-loai-ve', 'QuanLyLoaiVeController@store');
 $router->add('GET', '/sua-loai-ve', 'QuanLyLoaiVeController@edit');
 $router->add('POST', '/cap-nhat-loai-ve', 'QuanLyLoaiVeController@update');
 $router->add('POST', '/xoa-loai-ve', 'QuanLyLoaiVeController@delete');
+
+$router->add('POST', '/update-global-seat-prices', 'QuanLyPhongGheController@updatePriceByType');
+$router->add('GET', '/get-global-price-stats', 'QuanLyPhongGheController@getPriceStats');

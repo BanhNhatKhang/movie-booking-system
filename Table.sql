@@ -32,6 +32,7 @@ CREATE TABLE ghe (
     g_maghe VARCHAR(10) PRIMARY KEY,
     g_loaighe VARCHAR(20),
     g_trangthai VARCHAR(20),
+    g_giaghe NUMERIC(10, 0),
     pc_maphongchieu VARCHAR(10) REFERENCES phong_chieu(pc_maphongchieu)
 );
 

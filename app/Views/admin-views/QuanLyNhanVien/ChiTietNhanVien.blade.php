@@ -128,70 +128,75 @@
         <div class="col-md-4">
             <div class="card mb-4">
                 <div class="card-header bg-gradient-gold">
-                    <h6 class="card-title mb-0 text-white">
+                    <h6 class="card-title mb-0">
                         <i class="bi bi-star-fill me-2"></i>Thông tin thành viên
                     </h6>
                 </div>
                 <div class="card-body">
                     <div class="text-center mb-3">
-                        @if(!empty($memberInfo['tv_loaithanhvien']))
-                            {{-- Có thông tin thành viên --}}
-                            <div class="mb-2">
-                                <i class="bi bi-award text-warning" style="font-size: 2rem;"></i>
-                            </div>
-                            <h5 class="mb-1">
-                                <span class="badge bg-warning fs-6">
-                                    <i class="bi bi-star me-1"></i>
-                                    @if($memberInfo['tv_loaithanhvien'] == 'bronze')
-                                        Thành viên Đồng
-                                    @elseif($memberInfo['tv_loaithanhvien'] == 'silver')
-                                        Thành viên Bạc
-                                    @elseif($memberInfo['tv_loaithanhvien'] == 'gold')
-                                        Thành viên Vàng
-                                    @elseif($memberInfo['tv_loaithanhvien'] == 'platinum')
-                                        Thành viên Bạch Kim
-                                    @elseif($memberInfo['tv_loaithanhvien'] == 'diamond')
-                                        Thành viên Kim Cương
-                                    @else
-                                        {{ ucfirst($memberInfo['tv_loaithanhvien']) }}
-                                    @endif
-                                </span>
-                            </h5>
-                            <p class="text-muted small">ID: {{ $memberInfo['tv_mathanhvien'] }}</p>
-                        @else
-                            {{-- Chưa có thông tin thành viên --}}
-                            <div class="mb-2">
-                                <i class="bi bi-person-circle text-muted" style="font-size: 2rem;"></i>
-                            </div>
-                            <h6 class="text-muted">Chưa có bậc thành viên</h6>
-                        @endif
+                        <div class="mb-2">
+                            <i class="bi bi-award 
+                                @if($nhanVien['nd_loaithanhvien'] == 'bac') text-secondary
+                                @elseif($nhanVien['nd_loaithanhvien'] == 'vang') text-danger
+                                @elseif($nhanVien['nd_loaithanhvien'] == 'kimcuong') text-info
+                                @else text-dark @endif" style="font-size: 2rem;"></i>
+                        </div>
+                        <h5 class="mb-1">
+                            <span class="badge 
+                                @if($nhanVien['nd_loaithanhvien'] == 'bac') bg-secondary
+                                @elseif($nhanVien['nd_loaithanhvien'] == 'vang') bg-danger
+                                @elseif($nhanVien['nd_loaithanhvien'] == 'kimcuong') bg-info
+                                @else bg-light text-dark @endif fs-6">
+                                <i class="bi bi-star me-1"></i>
+                                @if($nhanVien['nd_loaithanhvien'] == 'bac')
+                                    Thành viên Bạc
+                                @elseif($nhanVien['nd_loaithanhvien'] == 'vang')
+                                    Thành viên Vàng
+                                @elseif($nhanVien['nd_loaithanhvien'] == 'kimcuong')
+                                    Thành viên Kim Cương
+                                @else
+                                    {{ ucfirst($nhanVien['nd_loaithanhvien']) }}
+                                @endif
+                            </span>
+                        </h5>
                     </div>
-                    
                     <hr>
-                    
                     <div class="row text-center">
                         <div class="col-12">
                             <h4 class="text-primary mb-0">
-                                <i class="bi bi-gem me-1"></i>{{ number_format($memberInfo['tv_diemtichluy'] ?? 0) }}
+                                <i class="bi bi-gem me-1"></i>{{ number_format($nhanVien['nd_diemtichluy'] ?? 0) }}
                             </h4>
                             <small class="text-muted">Điểm tích lũy</small>
                         </div>
                     </div>
-                    
-                    @if(($memberInfo['tv_diemtichluy'] ?? 0) > 0)
-                        <div class="mt-3">
-                            <small class="text-muted">Tiến trình lên hạng:</small>
-                            <div class="progress mt-1" style="height: 8px;">
-                                @php
-                                    $points = $memberInfo['tv_diemtichluy'] ?? 0;
-                                    $nextLevel = 1000;
-                                    $progress = min(($points % $nextLevel) / $nextLevel * 100, 100);
-                                @endphp
-                                <div class="progress-bar bg-warning progress-dynamic" data-progress="{{ $progress }}"></div>
-                            </div>
-                            <small class="text-muted">{{ $points % $nextLevel }}/{{ $nextLevel }} điểm</small>
+                    @php
+                        $points = $nhanVien['nd_diemtichluy'] ?? 0;
+                        if($nhanVien['nd_loaithanhvien'] == 'bac') {
+                            $nextLevel = 2000;
+                            $progress = min($points / $nextLevel * 100, 100);
+                            $label = $points . '/' . $nextLevel . ' điểm để lên Vàng';
+                        } elseif($nhanVien['nd_loaithanhvien'] == 'vang') {
+                            $nextLevel = 4000;
+                            $progress = min(($points - 2000) / 2000 * 100, 100);
+                            $label = ($points - 2000) . '/2000 điểm để lên Kim Cương';
+                        } else { // kim cương
+                            $nextLevel = 4000;
+                            $progress = 100;
+                            $label = 'Đã đạt hạng cao nhất';
+                        }
+                    @endphp
+                    <div class="mt-3">
+                        <small class="text-muted">Tiến trình lên hạng:</small>
+                        <div class="progress mt-1" style="height: 8px;">
+                            <div class="progress-bar 
+                                @if($nhanVien['nd_loaithanhvien'] == 'bac') bg-secondary
+                                @elseif($nhanVien['nd_loaithanhvien'] == 'vang') bg-danger
+                                @elseif($nhanVien['nd_loaithanhvien'] == 'kimcuong') bg-info
+                                @else bg-light text-dark @endif progress-dynamic" 
+                                data-progress="{{ $progress }}"></div>
                         </div>
-                    @endif
+                        <small class="text-muted">{{ $label }}</small>
+                    </div>
                 </div>
             </div>
 

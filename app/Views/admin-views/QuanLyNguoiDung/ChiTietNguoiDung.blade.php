@@ -138,7 +138,7 @@
                                         </td>
                                         <td>{{ $booking['pc_tenphong'] ?? '' }}</td>
                                         <td><strong>{{ number_format($booking['total_price']) }} VNĐ</strong></td>
-                                        <td>{{ date('d/m/Y H:i', strtotime($booking['booking_date'])) }}</td>
+                                        <td>{{ date('d/m/Y', strtotime($booking['booking_date'])) }}</td>
                                     </tr>
                                     @endforeach
                                 </tbody>

@@ -395,18 +395,18 @@ $(document).ready(function() {
                 const fullSeatCode = `${maPhong}_${seatCode}`; 
                 const seatType = getSeatTypeByPosition(i, j, soDong, soGheMoiDong);
                 
-                // tạo dữ liệu ghế 
-                seatData[seatCode] = {
-                    code: fullSeatCode,       
+                // ✅ CHỈ LƯU MỘT MÃ DUY NHẤT:
+                seatData[fullSeatCode] = {  // Key: "PC001_J01"
+                    code: fullSeatCode,     // Code: "PC001_J01" 
                     type: seatType,
                     row: rowLetter,
                     column: j,
                     room: maPhong,
-                    display: seatCode          
+                    display: seatCode       // Display: "J01"
                 };
                 
-                html += `<span class="seat-preview seat-${seatType}" data-seat="${seatCode}" 
-                           onclick="changeSeatType('${seatCode}')" 
+                html += `<span class="seat-preview seat-${seatType}" data-seat="${fullSeatCode}" 
+                           onclick="changeSeatType('${fullSeatCode}')" 
                            title="Click để thay đổi: ${seatCode}">
                            ${seatCode}
                      </span>`;

@@ -7,8 +7,9 @@ use App\Models\PhongChieu;
 use App\Models\LoaiVe;
 use App\Models\Ve;
 use App\Models\ThanhToan;
+use App\Models\Ghe; // ✅ THÊM DÒNG NÀY
 use App\Controllers\MovieController;
-use App\Core\Database; //
+use App\Core\Database;
 use Jenssegers\Blade\Blade;
 use Exception;
 use App\Models\NguoiDung; // Thêm dòng này
@@ -21,6 +22,7 @@ class PayController
     private $veModel;
     private $thanhToanModel;
     private $movieController;
+    private $gheModel; // ✅ THÊM PROPERTY NÀY
     private $db; // ✅ Thêm db property
     private $blade;
 
@@ -32,6 +34,7 @@ class PayController
         $this->veModel = new Ve();
         $this->thanhToanModel = new ThanhToan();
         $this->movieController = new MovieController();
+        $this->gheModel = new Ghe(); // ✅ THÊM DÒNG NÀY
         
         // ✅ Sử dụng Database class có sẵn
         $this->db = Database::getInstance()->getConnection();
@@ -130,8 +133,8 @@ class PayController
             foreach ($seatList as $index => $seatCode) {
                 error_log("Processing seat: " . $seatCode);
                 
-                // ✅ Sử dụng method đúng
-                $seatInfo = $this->phongChieuModel->getGheByMaGhe($seatCode);
+                // ✅ SỬA: Dùng Ghe Model thay vì PhongChieu Model
+                $seatInfo = $this->gheModel->getGheByMaGhe($seatCode);
                 error_log("Seat info: " . json_encode($seatInfo));
                 
                 if ($seatInfo) {
@@ -372,17 +375,6 @@ class PayController
     /**
      * Lấy mã loại vé theo loại ghế
      */
-    private function getLoaiVeIdByType($seatType)
-    {
-        $mapping = [
-            'normal' => 'LV001',
-            'vip' => 'LV002',
-            'luxury' => 'LV003',
-            'couple' => 'LV004'
-        ];
-        
-        return $mapping[$seatType] ?? 'LV001';
-    }
     
     /**
      * Tạo thanh toán - Sử dụng ThanhToan Model

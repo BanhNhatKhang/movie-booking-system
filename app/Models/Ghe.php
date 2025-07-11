@@ -41,39 +41,48 @@ class Ghe extends BaseModel
     public function createMultipleSeats($maPhong, $seatData)
     {
         try {
-            // bắt đầu transaction
             $this->db->beginTransaction();
             
-            // xóa các ghế đang tồn tại
+            // Xóa ghế cũ
             $this->deleteSeatsbyRoom($maPhong);
             
-            // chèn các ghế mới
+            // ✅ KIỂM TRA TRÙNG LẶP:
+            $uniqueSeats = [];
+            
+            foreach ($seatData as $seat) {
+                $seatCode = $seat['code']; // Chỉ lấy code, không tự tạo
+                
+                // ✅ Chỉ thêm nếu chưa tồn tại:
+                if (!isset($uniqueSeats[$seatCode])) {
+                    $uniqueSeats[$seatCode] = [
+                        'code' => $seatCode,
+                        'type' => $seat['type'],
+                        'display' => $seat['display']
+                    ];
+                }
+            }
+            
             $sql = "INSERT INTO {$this->table} (g_maghe, g_loaighe, g_trangthai, pc_maphongchieu) 
                     VALUES (:ma_ghe, :loai_ghe, :trang_thai, :ma_phong)";
             
             $stmt = $this->db->prepare($sql);
             
-            foreach ($seatData as $seat) {
-                // đảm bảo mã số duy nhất với prefix phòng
-                $seatCode = isset($seat['code']) ? $seat['code'] : $maPhong . '_' . $seat['display'];
-                
+            foreach ($uniqueSeats as $seat) {
                 $stmt->execute([
-                    'ma_ghe' => $seatCode,
+                    'ma_ghe' => $seat['code'],
                     'loai_ghe' => $seat['type'],
                     'trang_thai' => 'available',
                     'ma_phong' => $maPhong
                 ]);
             }
             
-            // Commit transaction
             $this->db->commit();
-            error_log("tạo thành công " . count($seatData) . " ghế cho phòng: " . $maPhong);
+            error_log("Tạo thành công " . count($uniqueSeats) . " ghế unique cho phòng: " . $maPhong);
             return true;
             
         } catch (Exception $e) {
-            // Rollback transaction
             $this->db->rollback();
-            error_log("xảy ra lỗi khi tạo ghế: " . $e->getMessage());
+            error_log("Lỗi tạo ghế: " . $e->getMessage());
             return false;
         }
     }
@@ -102,11 +111,13 @@ class Ghe extends BaseModel
     public function getByPhongChieu($maPhong)
     {
         try {
-            $sql = "SELECT * FROM {$this->table} WHERE pc_maphongchieu = :ma_phong ORDER BY g_maghe ASC";
+            $sql = "SELECT g_maghe, g_loaighe, g_trangthai, g_giaghe, pc_maphongchieu 
+                    FROM {$this->table} 
+                    WHERE pc_maphongchieu = ? 
+                    ORDER BY g_maghe";
             $stmt = $this->db->prepare($sql);
-            $stmt->execute(['ma_phong' => $maPhong]);
-            
-            return $stmt->fetchAll();
+            $stmt->execute([$maPhong]);
+            return $stmt->fetchAll(\PDO::FETCH_ASSOC);
         } catch (Exception $e) {
             error_log("xảy ra lỗi khi lấy ghế theo phòng: " . $e->getMessage());
             return [];
@@ -244,6 +255,118 @@ class Ghe extends BaseModel
         } catch (Exception $e) {
             error_log(" xảy ra kiểm tra xem mã chỗ ngồi đã tồn tại trên toàn cầu chưa: " . $e->getMessage());
             return false;
+        }
+    }
+    
+    /**
+     * Lấy thông tin ghế theo mã ghế
+     */
+    public function getGheByMaGhe($maGhe)
+    {
+        try {
+            $sql = "SELECT g_maghe, g_loaighe, g_trangthai, g_giaghe, pc_maphongchieu 
+                    FROM {$this->table} 
+                    WHERE g_maghe = ? 
+                    LIMIT 1";
+            $stmt = $this->db->prepare($sql);
+            $stmt->execute([$maGhe]);
+            return $stmt->fetch(\PDO::FETCH_ASSOC);
+        } catch (Exception $e) {
+            error_log("xảy ra lỗi khi lấy ghế theo mã: " . $e->getMessage());
+            return null;
+        }
+    }
+    
+    /**
+     * Cập nhật hàng loạt giá ghế theo loại - TOÀN HỆ THỐNG
+     */
+    public function bulkUpdateAllSeatPrices($loaiGhe, $giaGhe)
+    {
+        try {
+            // ✅ CẬP NHẬT TẤT CẢ GHẾ CÙNG LOẠI TRONG TOÀN HỆ THỐNG
+            $sql = "UPDATE {$this->table} SET g_giaghe = :gia_ghe WHERE g_loaighe = :loai_ghe";
+            $params = [
+                'loai_ghe' => $loaiGhe,
+                'gia_ghe' => $giaGhe
+            ];
+            
+            error_log("🔄 Executing SQL: " . $sql);
+            error_log("🔄 With params: " . json_encode($params));
+            
+            $stmt = $this->db->prepare($sql);
+            $result = $stmt->execute($params);
+            
+            if ($result) {
+                $affectedRows = $stmt->rowCount();
+                error_log("✅ Updated seat prices GLOBALLY - Type: {$loaiGhe}, Price: {$giaGhe}, Affected: {$affectedRows}");
+                return $affectedRows;
+            }
+            
+            error_log("❌ Update failed - no rows affected");
+            return false;
+            
+        } catch (Exception $e) {
+            error_log("💥 Error updating global seat prices: " . $e->getMessage());
+            return false;
+        }
+    }
+    
+    /**
+     * Lấy thống kê giá ghế theo loại - TOÀN HỆ THỐNG (CẢI THIỆN)
+     */
+    public function getPriceStatsByType()
+    {
+        try {
+            $sql = "SELECT 
+                    g_loaighe,
+                    COALESCE(MIN(g_giaghe), 0) as min_price,
+                    COALESCE(MAX(g_giaghe), 0) as max_price,
+                    COALESCE(AVG(g_giaghe), 0) as avg_price,
+                    COUNT(*) as total_seats,
+                    COUNT(CASE WHEN g_trangthai = 'available' THEN 1 END) as available_seats,
+                    COUNT(CASE WHEN g_trangthai = 'booked' THEN 1 END) as booked_seats,
+                    COUNT(CASE WHEN g_trangthai = 'locked' THEN 1 END) as locked_seats
+                FROM {$this->table} 
+                GROUP BY g_loaighe 
+                ORDER BY 
+                    CASE g_loaighe 
+                        WHEN 'normal' THEN 1 
+                        WHEN 'vip' THEN 2 
+                        WHEN 'luxury' THEN 3 
+                        WHEN 'couple' THEN 4 
+                        ELSE 5 
+                    END";
+        
+            $stmt = $this->db->prepare($sql);
+            $stmt->execute();
+            $results = $stmt->fetchAll(\PDO::FETCH_ASSOC);
+        
+            error_log("📊 Price stats loaded: " . count($results) . " seat types");
+        
+            return $results;
+        
+        } catch (Exception $e) {
+            error_log("💥 Error getting price stats: " . $e->getMessage());
+            return [];
+        }
+    }
+    
+    /**
+     * Lấy tổng số ghế theo loại (để validation)
+     */
+    public function getTotalSeatsByType($loaiGhe)
+    {
+        try {
+            $sql = "SELECT COUNT(*) as total FROM {$this->table} WHERE g_loaighe = :loai_ghe";
+            $stmt = $this->db->prepare($sql);
+            $stmt->execute(['loai_ghe' => $loaiGhe]);
+        
+            $result = $stmt->fetch(\PDO::FETCH_ASSOC);
+            return (int)($result['total'] ?? 0);
+        
+        } catch (Exception $e) {
+            error_log("Error getting total seats by type: " . $e->getMessage());
+            return 0;
         }
     }
 }

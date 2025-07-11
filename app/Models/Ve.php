@@ -250,7 +250,10 @@ class Ve extends BaseModel
     public function getGheDaDatByLichChieu($lichChieuId)
     {
         try {
-            $sql = "SELECT g_maghe FROM ve WHERE lc_malichchieu = ? AND v_trangthai = 'da_thanh_toan'";
+            // ✅ SỬA ĐIỀU KIỆN: bỏ điều kiện 'da_thanh_toan', lấy tất cả trạng thái trừ 'huy'
+            $sql = "SELECT DISTINCT g_maghe FROM {$this->table} 
+                    WHERE lc_malichchieu = ? 
+                    AND (v_trangthai != 'huy' OR v_trangthai IS NULL)";
             $stmt = $this->db->prepare($sql);
             $stmt->execute([$lichChieuId]);
             
@@ -309,13 +312,16 @@ class Ve extends BaseModel
 
     public function getTicketsByUser($userId, $limit = 10, $offset = 0)
     {
-        $sql = "SELECT v.*, p.p_tenphim, lc.lc_giobatdau, pc.pc_tenphong
+        $sql = "SELECT v.*, p.p_tenphim, lc.lc_giobatdau, pc.pc_tenphong,
+                    v.v_ngaydat::timestamp as sort_timestamp
                 FROM ve v
                 JOIN lich_chieu lc ON v.lc_malichchieu = lc.lc_malichchieu
                 JOIN phim p ON lc.p_maphim = p.p_maphim
                 JOIN phong_chieu pc ON lc.pc_maphongchieu = pc.pc_maphongchieu
                 WHERE v.nd_id = ?
-                ORDER BY v.v_ngaydat DESC, v.v_mave DESC
+                ORDER BY 
+                    v.v_ngaydat::timestamp DESC,    -- Cast về timestamp rõ ràng
+                    v.v_mave::text DESC             -- Cast về text để sort
                 LIMIT ? OFFSET ?";
         $stmt = $this->db->prepare($sql);
         $stmt->execute([$userId, $limit, $offset]);
@@ -324,20 +330,22 @@ class Ve extends BaseModel
 
     public function getTicketsByUserAtAdmin($userId, $limit = 10, $offset = 0)
     {
-                $sql = "SELECT 
-                p.p_tenphim AS movie_name,
-                lc.lc_giobatdau AS showtime,
-                v.g_maghe AS seats,
-                v.v_tongtien AS total_price,
-                v.v_ngaydat AS booking_date,
-                pc.pc_tenphong
-            FROM ve v
-            JOIN lich_chieu lc ON v.lc_malichchieu = lc.lc_malichchieu
-            JOIN phim p ON lc.p_maphim = p.p_maphim
-            JOIN phong_chieu pc ON lc.pc_maphongchieu = pc.pc_maphongchieu
-            WHERE v.nd_id = ?
-            ORDER BY v.v_ngaydat DESC, v.v_mave DESC
-            LIMIT ? OFFSET ?";
+        $sql = "SELECT 
+                    p.p_tenphim AS movie_name,
+                    lc.lc_giobatdau AS showtime,
+                    v.g_maghe AS seats,
+                    v.v_tongtien AS total_price,
+                    v.v_ngaydat AS booking_date,
+                    pc.pc_tenphong
+                FROM ve v
+                JOIN lich_chieu lc ON v.lc_malichchieu = lc.lc_malichchieu
+                JOIN phim p ON lc.p_maphim = p.p_maphim
+                JOIN phong_chieu pc ON lc.pc_maphongchieu = pc.pc_maphongchieu
+                WHERE v.nd_id = ?
+                ORDER BY 
+                    v.v_ngaydat::timestamp DESC,    -- Cast về timestamp rõ ràng
+                    v.v_mave::text DESC             -- Cast về text để sort
+                LIMIT ? OFFSET ?";
         $stmt = $this->db->prepare($sql);
         $stmt->execute([$userId, $limit, $offset]);
         return $stmt->fetchAll(\PDO::FETCH_ASSOC);
@@ -345,9 +353,12 @@ class Ve extends BaseModel
 
     public function countTicketsByUser($userId)
     {
-        $sql = "SELECT COUNT(*) FROM ve WHERE nd_id = ?";
+        $sql = "SELECT COUNT(*) as total 
+                FROM ve v
+                WHERE v.nd_id = ?";
         $stmt = $this->db->prepare($sql);
         $stmt->execute([$userId]);
-        return $stmt->fetchColumn();
+        $result = $stmt->fetch(\PDO::FETCH_ASSOC);
+        return $result['total'] ?? 0;
     }
 }
