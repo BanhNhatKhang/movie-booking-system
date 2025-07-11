@@ -25,9 +25,6 @@
     <div class="d-flex justify-content-between align-items-center mb-4">
         <h1><i class="bi bi-person-badge me-2"></i>Chi tiết nhân viên</h1>
         <div>
-            <span class="badge bg-danger me-2">
-                <i class="bi bi-shield-check me-1"></i>Admin
-            </span>
             <a href="/sua-nhan-vien?id={{ $nhanVien['nd_id'] }}" class="btn btn-warning me-2">
                 <i class="bi bi-pencil me-2"></i>Sửa thông tin
             </a>
@@ -108,18 +105,69 @@
                 </div>
             </div>
 
-            {{-- Lịch sử công việc --}}
+
+            {{-- Lịch sử đặt vé --}}
             <div class="card">
                 <div class="card-header bg-success text-white">
                     <h5 class="card-title mb-0">
-                        <i class="bi bi-clipboard-check me-2"></i>Lịch sử công việc
+                        <i class="bi bi-ticket-detailed me-2"></i>Lịch sử đặt vé
                     </h5>
                 </div>
                 <div class="card-body">
-                    <div class="text-center py-4">
-                        <i class="bi bi-clipboard text-muted" style="font-size: 3rem;"></i>
-                        <p class="text-muted mt-2">Chưa có lịch sử công việc</p>
-                    </div>
+                    @if(!empty($bookingHistory))
+                        <div class="table-responsive">
+                            <table class="table table-striped table-hover">
+                                <thead class="table-dark">
+                                    <tr>
+                                        <th>Phim</th>
+                                        <th>Suất chiếu</th>
+                                        <th>Ghế</th>
+                                        <th>Phòng chiếu</th>
+                                        <th>Tổng tiền</th>
+                                        <th>Ngày đặt</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach($bookingHistory as $booking)
+                                    <tr>
+                                        <td>{{ $booking['movie_name'] }}</td>
+                                        <td>{{ date('d/m/Y H:i', strtotime($booking['showtime'])) }}</td>
+                                        <td>
+                                            <span class="badge bg-info">
+                                                {{ isset($booking['seats']) ? preg_replace('/^.*_/', '', $booking['seats']) : '' }}
+                                            </span>
+                                        </td>
+                                        <td>{{ $booking['pc_tenphong'] ?? '' }}</td>
+                                        <td><strong>{{ number_format($booking['total_price']) }} VNĐ</strong></td>
+                                        <td>{{ date('d/m/Y', strtotime($booking['booking_date'])) }}</td>
+                                    </tr>
+                                    @endforeach
+                                </tbody>
+                            </table>
+                        </div>
+                        @if($totalPages > 1)
+                            <nav>
+                                <ul class="pagination justify-content-center mt-3">
+                                    <li class="page-item {{ $page == 1 ? 'disabled' : '' }}">
+                                        <a class="page-link" href="?id={{ $nhanVien['nd_id'] }}&page={{ $page - 1 }}" tabindex="-1">Trước</a>
+                                    </li>
+                                    @for($i = 1; $i <= $totalPages; $i++)
+                                        <li class="page-item {{ $i == $page ? 'active' : '' }}">
+                                            <a class="page-link" href="?id={{ $nhanVien['nd_id'] }}&page={{ $i }}">{{ $i }}</a>
+                                        </li>
+                                    @endfor
+                                    <li class="page-item {{ $page == $totalPages ? 'disabled' : '' }}">
+                                        <a class="page-link" href="?id={{ $nhanVien['nd_id'] }}&page={{ $page + 1 }}">Sau</a>
+                                    </li>
+                                </ul>
+                            </nav>
+                        @endif
+                    @else
+                        <div class="text-center py-4">
+                            <i class="bi bi-ticket text-muted" style="font-size: 3rem;"></i>
+                            <p class="text-muted mt-2">Người dùng chưa có lịch sử đặt vé nào</p>
+                        </div>
+                    @endif
                 </div>
             </div>
         </div>
@@ -263,34 +311,19 @@
                 </div>
                 <div class="card-body">
                     <div class="row text-center mb-3">
-                        <div class="col-4">
-                            <div class="border-end">
-                                <h5 class="text-primary mb-0">{{ $workStats['total_tasks'] ?? 0 }}</h5>
-                                <small class="text-muted">Tổng CV</small>
-                            </div>
-                        </div>
-                        <div class="col-4">
-                            <div class="border-end">
-                                <h5 class="text-success mb-0">{{ $workStats['completed_tasks'] ?? 0 }}</h5>
-                                <small class="text-muted">Hoàn thành</small>
-                            </div>
-                        </div>
-                        <div class="col-4">
-                            <h5 class="text-warning mb-0">{{ number_format($memberInfo['tv_diemtichluy'] ?? 0) }}</h5>
-                            <small class="text-muted">Điểm</small>
+                        <div class="col-12">
+                            <h5 class="text-primary mb-0">{{ $workStats['total_tasks'] ?? 0 }}</h5>
+                            <small class="text-muted">Tổng vé đã đặt</small>
                         </div>
                     </div>
-                    
-                    <div>
-                        <small class="text-muted">Tham gia từ:</small><br>
-                        <strong>{{ date('d/m/Y', strtotime($nhanVien['nd_ngaydangky'])) }}</strong>
-                    </div>
+
                 </div>
             </div>
         </div>
     </div>
 </div>
 @endsection
+
 @section('page-js')
 <script>
 document.addEventListener('DOMContentLoaded', function() {

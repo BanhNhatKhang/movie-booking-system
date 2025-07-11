@@ -4,7 +4,6 @@
 namespace App\Controllers;
 
 use Jenssegers\Blade\Blade;
-use App\Models\NguoiDung;
 use App\Helpers\AuthHelper;
 
 class QuanLyNhanVienController
@@ -18,7 +17,7 @@ class QuanLyNhanVienController
         $sort = $_GET['sort'] ?? 'newest';
         $page = (int)($_GET['page'] ?? 1);
         
-        $nguoiDungModel = new NguoiDung();
+        $nguoiDungModel = new \App\Models\NguoiDung();
         $nhanViens = $nguoiDungModel->getAllWithFilterPaginatedByRole($search, 'admin', $status, $page, 15, $sort); 
         $totalNhanViens = $nguoiDungModel->getTotalCountByRole($search, 'admin', $status);
         $totalPages = ceil($totalNhanViens / 15);
@@ -44,36 +43,59 @@ class QuanLyNhanVienController
     public function chiTietNhanVien()
     {
         AuthHelper::checkAccess('admin_only');
-        $blade = new Blade(
-            realpath(__DIR__ . '/../Views'),
-            realpath(__DIR__ . '/../../cache')
-        );
         $id = $_GET['id'] ?? '';
         if (empty($id)) {
             $_SESSION['error_message'] = 'ID nhân viên không hợp lệ!';
             header('Location: /quan-ly-nhan-vien');
             exit;
         }
-        
-        $nguoiDungModel = new NguoiDung();
+
+        $nguoiDungModel = new \App\Models\NguoiDung();
+        $veModel = new \App\Models\Ve();
+
+        // Thông tin nhân viên
         $nhanVien = $nguoiDungModel->getById($id);
-        
+
+        // Kiểm tra role là admin
         if (!$nhanVien || $nhanVien['nd_role'] !== 'admin') {
             $_SESSION['error_message'] = 'Không tìm thấy nhân viên!';
             header('Location: /quan-ly-nhan-vien');
             exit;
         }
 
+        // Thông tin thành viên (hạng, điểm)
         $memberInfo = $nguoiDungModel->getMemberInfo($id);
-        
-        // Lấy thống kê nhân viên
-        $workStats = $this->getNhanVienStats($id);
-        
+
+        // Thống kê hoạt động (dựa trên số vé đã đặt)
+        $totalTickets = $veModel->countTicketsByUser($id);
+        $workStats = [
+            'total_tasks' => $totalTickets,
+            'completed_tasks' => $totalTickets,
+            'pending_tasks' => 0,
+            'join_date' => $nhanVien['nd_ngaydangky'] ?? null
+        ];
+
+        // Lịch sử đặt vé (phân trang)
+        $page = isset($_GET['page']) ? max(1, intval($_GET['page'])) : 1;
+        $perPage = 5;
+        $offset = ($page - 1) * $perPage;
+
+        $bookingHistory = $veModel->getTicketsByUserAtAdmin($id, $perPage, $offset);
+        $totalPages = ceil($totalTickets / $perPage);
+
+        $blade = new Blade(
+            realpath(__DIR__ . '/../Views'),
+            realpath(__DIR__ . '/../../cache')
+        );
+
         echo $blade->render('admin-views.QuanLyNhanVien.ChiTietNhanVien', [
             'activePage' => 'NhanVien',
             'nhanVien' => $nhanVien,
             'memberInfo' => $memberInfo,
-            'workStats' => $workStats
+            'workStats' => $workStats,
+            'bookingHistory' => $bookingHistory,
+            'page' => $page,
+            'totalPages' => $totalPages,
         ]);
     }
 
@@ -93,7 +115,7 @@ class QuanLyNhanVienController
             exit;
         }
         
-        $nguoiDungModel = new NguoiDung();
+        $nguoiDungModel = new \App\Models\NguoiDung();
         $nhanVien = $nguoiDungModel->getById($id);
         
         if (!$nhanVien || $nhanVien['nd_role'] !== 'admin') {
@@ -133,7 +155,7 @@ class QuanLyNhanVienController
             exit;
         }
         
-        $nguoiDungModel = new NguoiDung();
+        $nguoiDungModel = new \App\Models\NguoiDung();
         
         $currentUser = $nguoiDungModel->getById($id);
         $oldRole = $currentUser['nd_role'] ?? 'admin';
@@ -177,7 +199,7 @@ class QuanLyNhanVienController
             exit;
         }
         
-        $nguoiDungModel = new NguoiDung();
+        $nguoiDungModel = new \App\Models\NguoiDung();
         
         if ($nguoiDungModel->toggleStatus($id)) {
             $_SESSION['success_message'] = 'Đã thay đổi trạng thái nhân viên!';
@@ -189,15 +211,6 @@ class QuanLyNhanVienController
         exit;
     }
 
-    private function getNhanVienStats($id)
-    {
-        return [
-            'total_tasks' => 0,
-            'completed_tasks' => 0,
-            'pending_tasks' => 0,
-            'join_date' => date('Y-m-d')
-        ];
-    }
     public function themNhanVien()
     {
         AuthHelper::checkAccess('admin_only');
@@ -268,7 +281,7 @@ class QuanLyNhanVienController
             }
         }
         
-        $nguoiDungModel = new NguoiDung();
+        $nguoiDungModel = new \App\Models\NguoiDung();
         
         $checkUsername = $nguoiDungModel->checkExists('nd_tendangnhap', $data['nd_tendangnhap']);
         if ($checkUsername) {
