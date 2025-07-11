@@ -43,9 +43,9 @@
                             <div class="card">
                                 <h2>🎁 Quà Tặng Theo Cấp Độ</h2>
                                 <ul>
-                                    <li><strong>KHF Member:</strong> 01 Combo đôi (1 phần bắp + 2 ly nước)</li>
-                                    <li><strong>KHF VIP:</strong> 01 Combo đôi + 01 vé xem phim 2D miễn phí</li>
-                                    <li><strong>KHF VVIP:</strong> 01 Combo đôi + 02 vé xem phim 2D miễn phí</li>
+                                    <li><strong>KHF Bạc:</strong> 01 Combo đôi (1 phần bắp + 2 ly nước)</li>
+                                    <li><strong>KHF Vàng:</strong> 01 Combo đôi + 01 vé xem phim 2D miễn phí</li>
+                                    <li><strong>KHF Kim cương:</strong> 01 Combo đôi + 02 vé xem phim 2D miễn phí</li>
                                 </ul>
                             </div>
 

@@ -3,56 +3,126 @@
 @section('page-css')
     <link rel="stylesheet" href="/static/css/users/HeaderFooter.css">
     <link rel="stylesheet" href="/static/css/users/ThongTinCaNhan.css">
+    <style>
+        .profile-container {
+            max-width: 600px;
+            margin: 40px auto;
+            background: #fff;
+            border-radius: 20px;
+            box-shadow: 0 4px 24px rgba(0,0,0,0.07);
+            padding: 36px 32px 28px 32px;
+        }
+        .profile-title {
+            font-size: 2rem;
+            font-weight: 700;
+            color: #ff5858;
+            letter-spacing: 1px;
+            margin-bottom: 10px;
+        }
+        .profile-badge {
+            font-size: 1rem;
+            padding: 6px 18px;
+            border-radius: 14px;
+            margin-bottom: 12px;
+            display: inline-block;
+        }
+        .profile-info-list {
+            list-style: none;
+            padding: 0;
+            margin: 0 0 24px 0;
+        }
+        .profile-info-list li {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px 0;
+            border-bottom: 1px solid #f2f2f2;
+        }
+        .profile-info-label {
+            color: #888;
+            font-size: 1rem;
+        }
+        .profile-info-value {
+            color: #222;
+            font-weight: 500;
+            font-size: 1.05rem;
+        }
+        .profile-btns {
+            display: flex;
+            gap: 16px;
+            justify-content: center;
+            margin-top: 18px;
+        }
+        .profile-btns .btn {
+            min-width: 160px;
+            font-size: 1.08rem;
+            border-radius: 10px;
+        }
+    </style>
 @endsection
 
 @section('content')
 <main>
-    <div class="container py-3">
-        {{-- Thông báo --}}
-        @if(isset($_SESSION['success_message']))
-            <div class="alert alert-success alert-dismissible fade show" role="alert">
-                <i class="bi bi-check-circle me-2"></i><strong>{{ $_SESSION['success_message'] }}</strong>
-                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    <div class="profile-container">
+        @php
+            $hang = $user['nd_loaithanhvien'] ?? 'bac';
+            $diem = $user['nd_diemtichluy'] ?? 0;
+            $badge = [
+                'bac' => 'light text-dark',
+                'vang' => 'warning',
+                'kimcuong' => 'info'
+            ][$hang] ?? 'light text-dark';
+            $tenHang = [
+                'bac' => 'Thành viên Bạc',
+                'vang' => 'Thành viên Vàng',
+                'kimcuong' => 'Thành viên Kim cương'
+            ][$hang] ?? 'Thành viên Bạc';
+        @endphp
+        <div class="text-center mb-2">
+            <div class="profile-title">{{ $_SESSION['user_name'] ?? 'Người dùng' }}</div>
+            <span class="badge bg-{{ $badge }} profile-badge">{{ $tenHang }}</span>
+            <div class="mt-2 mb-2">
+                <span class="fw-semibold text-secondary">Điểm tích lũy:</span>
+                <span class="badge bg-warning text-dark ms-1">{{ $diem }}</span>
             </div>
-            @php unset($_SESSION['success_message']); @endphp
-        @endif
-        
-        @if(isset($_SESSION['error_message']))
-            <div class="alert alert-danger alert-dismissible fade show" role="alert">
-                <i class="bi bi-exclamation-triangle me-2"></i><strong>{{ $_SESSION['error_message'] }}</strong>
-                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-            </div>
-            @php unset($_SESSION['error_message']); @endphp
-        @endif
-        
-        <div class="row justify-content-center">
-            <div class="col-12 col-md-12">
-                <div class="card profile-card shadow p-4 rounded-4">
-                    <div class="text-center mb-4">
-                        <h2 class="fw-semibold user-name">{{ $_SESSION['user_name'] ?? 'Người dùng' }}</h2>
-                        <br>
-                        <span class="badge bg-warning text-dark fs-6 px-4 py-2 fw-semibold">⭐ Thành viên Vàng</span>
-                    </div><br>
-                    <div class="row justify-content-center text-start">
-                        <div class="col-12 col-lg-4 mb-3 mb-lg-0">
-                            <p><strong>Email:</strong> {{ $user['nd_email'] ?? 'Chưa cập nhật' }}</p>
-                            <p><strong>Số điện thoại:</strong> {{ $user['nd_sdt'] ?? 'Chưa cập nhật' }}</p>
-                            <p><strong>Giới tính:</strong> {{ isset($user['nd_gioitinh']) ? ($user['nd_gioitinh'] ? 'Nam' : 'Nữ') : 'Chưa cập nhật' }}</p>
-                        </div>
-                        <div class="col-12 col-lg-4">
-                            <p><strong>Ngày sinh:</strong> {{ isset($user['nd_ngaysinh']) ? date('d/m/Y', strtotime($user['nd_ngaysinh'])) : 'Chưa cập nhật' }}</p>
-                            <p><strong>CCCD:</strong> {{ $user['nd_cccd'] ?? 'Chưa cập nhật' }}</p>
-                            <p><strong>Ngày đăng ký:</strong> {{ isset($user['nd_ngaydangky']) ? date('d/m/Y', strtotime($user['nd_ngaydangky'])) : 'Chưa cập nhật' }}</p>
-                        </div>
-                    </div>
-                    <div class="d-flex justify-content-center gap-3 mt-4 flex-wrap">
-                        <a href="/lich-su-dat-ve" class="btn btn-outline-primary px-4 py-2 shadow-sm">Lịch sử đặt vé</a>
-                        <button class="btn btn-danger px-4 py-2 shadow-sm" data-bs-toggle="modal" data-bs-target="#changePasswordModal">
-                            Đổi mật khẩu
-                        </button>
-                    </div>
-                </div>
-            </div>
+        </div>
+        <ul class="profile-info-list">
+            <li>
+                <span class="profile-info-label">Email</span>
+                <span class="profile-info-value">{{ $user['nd_email'] ?? 'Chưa cập nhật' }}</span>
+            </li>
+            <li>
+                <span class="profile-info-label">Số điện thoại</span>
+                <span class="profile-info-value">{{ $user['nd_sdt'] ?? 'Chưa cập nhật' }}</span>
+            </li>
+            <li>
+                <span class="profile-info-label">Giới tính</span>
+                <span class="profile-info-value">
+                    {{ isset($user['nd_gioitinh']) ? ($user['nd_gioitinh'] ? 'Nam' : 'Nữ') : 'Chưa cập nhật' }}
+                </span>
+            </li>
+            <li>
+                <span class="profile-info-label">Ngày sinh</span>
+                <span class="profile-info-value">
+                    {{ isset($user['nd_ngaysinh']) ? date('d/m/Y', strtotime($user['nd_ngaysinh'])) : 'Chưa cập nhật' }}
+                </span>
+            </li>
+            <li>
+                <span class="profile-info-label">CCCD</span>
+                <span class="profile-info-value">{{ $user['nd_cccd'] ?? 'Chưa cập nhật' }}</span>
+            </li>
+            <li>
+                <span class="profile-info-label">Ngày đăng ký</span>
+                <span class="profile-info-value">
+                    {{ isset($user['nd_ngaydangky']) ? date('d/m/Y', strtotime($user['nd_ngaydangky'])) : 'Chưa cập nhật' }}
+                </span>
+            </li>
+        </ul>
+        <div class="profile-btns">
+            <a href="/lich-su-dat-ve" class="btn btn-outline-primary shadow-sm">Lịch sử đặt vé</a>
+            <button class="btn btn-danger shadow-sm" data-bs-toggle="modal" data-bs-target="#changePasswordModal">
+                Đổi mật khẩu
+            </button>
         </div>
     </div>
 

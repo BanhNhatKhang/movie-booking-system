@@ -425,4 +425,32 @@ class NguoiDung extends BaseModel
         $stmt->execute($params);
         return $stmt->fetchColumn();
     }
+    public function congDiemTichLuy($userId, $diem)
+    {
+        $sql = "UPDATE nguoi_dung SET nd_diemtichluy = nd_diemtichluy + ? WHERE nd_id = ?";
+        $stmt = $this->db->prepare($sql);
+        return $stmt->execute([$diem, $userId]);
+    }
+
+    public function capNhatLoaiThanhVien($userId, $hang)
+    {
+        $sql = "UPDATE nguoi_dung SET nd_loaithanhvien = ? WHERE nd_id = ?";
+        $stmt = $this->db->prepare($sql);
+        return $stmt->execute([$hang, $userId]);
+    }
+    public function getThanhVienInfo($userId)
+    {
+        $sql = "SELECT nd_loaithanhvien, nd_diemtichluy FROM nguoi_dung WHERE nd_id = ?";
+        $stmt = $this->db->prepare($sql);
+        $stmt->execute([$userId]);
+        return $stmt->fetch(\PDO::FETCH_ASSOC);
+    }
+
+    public function tongChiTieu($userId)
+    {
+        $sql = "SELECT SUM(tt_sotien) FROM thanh_toan WHERE nd_id = ?";
+        $stmt = $this->db->prepare($sql);
+        $stmt->execute([$userId]);
+        return $stmt->fetchColumn() ?: 0;
+    }
 }

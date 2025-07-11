@@ -80,8 +80,6 @@
                     <th>Phim</th>
                     <th>Ngày chiếu</th>
                     <th>Giờ bắt đầu</th>
-                    <th>Thể loại</th>
-                    <th>Thời lượng</th>
                     <th>Trạng thái</th>
                     <th>Hành động</th>
                 </tr>
@@ -96,8 +94,6 @@
                         </td>
                         <td>{{ date('d/m/Y', strtotime($lichChieu['lc_ngaychieu'])) }}</td>
                         <td>{{ date('H:i', strtotime($lichChieu['lc_giobatdau'])) }}</td>
-                        <td>{{ $lichChieu['p_theloai'] ?? 'N/A' }}</td>
-                        <td>{{ $lichChieu['p_thoiluong'] ?? 'N/A' }} phút</td>
                         <td>
                             @if($lichChieu['lc_trangthai'] === 'Sắp chiếu')
                                 <span class="badge bg-warning text-dark">Sắp chiếu</span>

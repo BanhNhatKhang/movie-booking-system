@@ -90,7 +90,7 @@
                             </div>
                             <div class="mb-3 row">
                                 <div class="order-label col-sm-4">Ngày đặt:</div>
-                                <div class="order-value col-sm-8">{{ date('d/m/Y H:i', strtotime($order['v_ngaydat'])) }}</div>
+                                <div class="order-value col-sm-8">{{ date('d/m/Y', strtotime($order['v_ngaydat'])) }}</div>
                             </div>
                             <div class="mb-3 row">
                                 <div class="order-label col-sm-4">Trạng thái in:</div>

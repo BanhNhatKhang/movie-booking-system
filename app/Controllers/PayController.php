@@ -8,9 +8,10 @@ use App\Models\LoaiVe;
 use App\Models\Ve;
 use App\Models\ThanhToan;
 use App\Controllers\MovieController;
-use App\Core\Database; // ✅ Thêm Database class
+use App\Core\Database; //
 use Jenssegers\Blade\Blade;
 use Exception;
+use App\Models\NguoiDung; // Thêm dòng này
 
 class PayController
 {
@@ -271,7 +272,6 @@ class PayController
                 exit;
             }
             
-            // ✅ Tạo vé cho từng ghế
             $ticketCodes = [];
             foreach ($seatDetails as $seat) {
                 $maVe = $this->generateTicketCode();
@@ -299,6 +299,42 @@ class PayController
                 ]);
                 exit;
             }
+            
+            // Bắt đầu thêm mã tích điểm vào đây
+            $userId = $_SESSION['user_id'];
+            $nguoiDungModel = new NguoiDung();
+
+            // 1. Lấy hạng hiện tại của user
+            $user = $nguoiDungModel->getById($userId);
+            $loai = $user['nd_loaithanhvien'] ?? 'bac';
+
+            // 2. Xác định tỷ lệ tích điểm theo hạng
+            switch ($loai) {
+                case 'vang': $tyle = 0.07; break;
+                case 'kimcuong': $tyle = 0.10; break;
+                default: $tyle = 0.05;
+            }
+
+            // 3. Cộng điểm tích lũy cho từng vé
+            foreach ($seatDetails as $seat) {
+                $diemCongTien = round($seat['price'] * $tyle);
+                $diemCong = floor($diemCongTien / 1000);
+                if ($diemCong > 0) {
+                    $nguoiDungModel->congDiemTichLuy($userId, $diemCong);
+                }
+            }
+
+            // 4. Sau khi cộng điểm, kiểm tra tổng chi tiêu để nâng bậc
+            $totalChiTieu = $nguoiDungModel->tongChiTieu($userId);
+            if ($totalChiTieu >= 4000000) {
+                $hang = 'kimcuong';
+            } elseif ($totalChiTieu >= 2000000) {
+                $hang = 'vang';
+            } else {
+                $hang = 'bac';
+            }
+            $nguoiDungModel->capNhatLoaiThanhVien($userId, $hang);
+            // Kết thúc thêm mã tích điểm
             
             echo json_encode([
                 'success' => true,

@@ -35,13 +35,6 @@ CREATE TABLE ghe (
     pc_maphongchieu VARCHAR(10) REFERENCES phong_chieu(pc_maphongchieu)
 );
 
--- Bảng THANH_VIEN
-CREATE TABLE thanh_vien (
-    tv_mathanhvien VARCHAR(10) PRIMARY KEY,
-    tv_loaithanhvien VARCHAR(20),
-    tv_diemtichluy INTEGER,
-    nd_id VARCHAR(10) REFERENCES nguoi_dung(nd_id)
-);
 
 -- Bảng PHIM
 CREATE TABLE phim (

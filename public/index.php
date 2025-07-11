@@ -1,5 +1,7 @@
 <?php
 
+date_default_timezone_set('Asia/Ho_Chi_Minh');
+
 $sessionPath = __DIR__ . '/../storage/sessions';
 if (!is_dir($sessionPath)) {
     mkdir($sessionPath, 0755, true);

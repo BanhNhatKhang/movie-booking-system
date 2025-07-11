@@ -31,6 +31,28 @@ class LichSuDatVeController
             realpath(__DIR__ . '/../../cache')
         );
 
-        echo $blade->render('users-views.LichSuDatVe.LichSuDatVe', ['activePage' => 'lichsudatve']);
+        // Lấy user id từ session
+        $userId = $_SESSION['user_id'];
+
+        // Gọi model để lấy danh sách vé của user
+        require_once __DIR__ . '/../Models/Ve.php';
+        $veModel = new \App\Models\Ve();
+
+        // Phân trang
+        $page = isset($_GET['page']) ? max(1, (int)$_GET['page']) : 1;
+        $perPage = 10;
+        $offset = ($page - 1) * $perPage;
+
+        $total = $veModel->countTicketsByUser($userId); // Viết hàm này trả về tổng số vé
+        $tickets = $veModel->getTicketsByUser($userId, $perPage, $offset); // Sửa hàm này nhận limit, offset
+
+        $totalPages = ceil($total / $perPage);
+
+        echo $blade->render('users-views.LichSuDatVe.LichSuDatVe', [
+            'activePage' => 'lichsudatve',
+            'tickets' => $tickets,
+            'page' => $page,
+            'totalPages' => $totalPages
+        ]);
     }
 }
