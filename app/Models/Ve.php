@@ -73,7 +73,8 @@ class Ve extends BaseModel
                 $sql .= " WHERE " . implode(" AND ", $conditions);
             }
             
-            $sql .= " ORDER BY v.v_ngaydat DESC LIMIT ? OFFSET ?";
+            // Sắp xếp theo thời gian thanh toán mới nhất, nếu chưa thanh toán thì xếp sau
+            $sql .= " ORDER BY tt.tt_thoigianthanhtoan DESC NULLS LAST, v.v_ngaydat DESC, v.v_mave DESC LIMIT ? OFFSET ?";
             $params[] = $limit;
             $params[] = $offset;
             
@@ -312,16 +313,14 @@ class Ve extends BaseModel
 
     public function getTicketsByUser($userId, $limit = 10, $offset = 0)
     {
-        $sql = "SELECT v.*, p.p_tenphim, lc.lc_giobatdau, pc.pc_tenphong,
-                    v.v_ngaydat::timestamp as sort_timestamp
+        $sql = "SELECT v.*, p.p_tenphim, lc.lc_giobatdau, pc.pc_tenphong, tt.tt_thoigianthanhtoan
                 FROM ve v
                 JOIN lich_chieu lc ON v.lc_malichchieu = lc.lc_malichchieu
                 JOIN phim p ON lc.p_maphim = p.p_maphim
                 JOIN phong_chieu pc ON lc.pc_maphongchieu = pc.pc_maphongchieu
+                LEFT JOIN thanh_toan tt ON v.tt_mathanhtoan = tt.tt_mathanhtoan
                 WHERE v.nd_id = ?
-                ORDER BY 
-                    v.v_ngaydat::timestamp DESC,    -- Cast về timestamp rõ ràng
-                    v.v_mave::text DESC             -- Cast về text để sort
+                ORDER BY tt.tt_thoigianthanhtoan DESC NULLS LAST, v.v_ngaydat DESC, v.v_mave DESC
                 LIMIT ? OFFSET ?";
         $stmt = $this->db->prepare($sql);
         $stmt->execute([$userId, $limit, $offset]);
@@ -336,15 +335,15 @@ class Ve extends BaseModel
                     v.g_maghe AS seats,
                     v.v_tongtien AS total_price,
                     v.v_ngaydat AS booking_date,
-                    pc.pc_tenphong
+                    pc.pc_tenphong,
+                    tt.tt_thoigianthanhtoan
                 FROM ve v
                 JOIN lich_chieu lc ON v.lc_malichchieu = lc.lc_malichchieu
                 JOIN phim p ON lc.p_maphim = p.p_maphim
                 JOIN phong_chieu pc ON lc.pc_maphongchieu = pc.pc_maphongchieu
+                LEFT JOIN thanh_toan tt ON v.tt_mathanhtoan = tt.tt_mathanhtoan
                 WHERE v.nd_id = ?
-                ORDER BY 
-                    v.v_ngaydat::timestamp DESC,    -- Cast về timestamp rõ ràng
-                    v.v_mave::text DESC             -- Cast về text để sort
+                ORDER BY tt.tt_thoigianthanhtoan DESC NULLS LAST, v.v_ngaydat DESC, v.v_mave DESC
                 LIMIT ? OFFSET ?";
         $stmt = $this->db->prepare($sql);
         $stmt->execute([$userId, $limit, $offset]);
