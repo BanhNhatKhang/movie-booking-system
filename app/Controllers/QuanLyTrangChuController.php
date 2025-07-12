@@ -123,19 +123,26 @@ class QuanLyTrangChuController
             $id = $_POST['pt_maposter'];
             $file = $_FILES['anhPoster'];
             $imgPath = $_POST['old_img'];
-            
+
             if ($file && $file['error'] === UPLOAD_ERR_OK) {
                 $ext = pathinfo($file['name'], PATHINFO_EXTENSION);
-                $imgPath = '/static/uploads/posters/' . uniqid('poster_') . '.' . $ext;
-                
+                $imgPathNew = '/static/uploads/posters/' . uniqid('poster_') . '.' . $ext;
+
                 $uploadDir = $_SERVER['DOCUMENT_ROOT'] . '/static/uploads/posters/';
                 if (!is_dir($uploadDir)) {
                     mkdir($uploadDir, 0755, true);
                 }
-                
-                move_uploaded_file($file['tmp_name'], $_SERVER['DOCUMENT_ROOT'] . $imgPath);
+
+                move_uploaded_file($file['tmp_name'], $_SERVER['DOCUMENT_ROOT'] . $imgPathNew);
+
+                // XÓA ẢNH CŨ nếu có
+                if (!empty($imgPath) && file_exists($_SERVER['DOCUMENT_ROOT'] . $imgPath)) {
+                    unlink($_SERVER['DOCUMENT_ROOT'] . $imgPath);
+                }
+
+                $imgPath = $imgPathNew;
             }
-            
+
             $this->posterModel->update($id, ['pt_anhposter' => $imgPath]);
             header('Location: /quan-ly-trang-chu?success=update_poster');
         }
@@ -255,54 +262,32 @@ class QuanLyTrangChuController
     public function capNhatUuDai()
     {
         AuthHelper::checkAccess('admin_only');
-        try {
-            if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
-                header('Location: /quan-ly-trang-chu');
-                exit;
-            }
-    
-            $id = $_POST['id'] ?? '';
-    
-            if (empty($id)) {
-                header('Location: /quan-ly-trang-chu?error=invalid_id');
-                exit;
-            }
-    
-            // Lấy thông tin hiện tại
-            $currentUuDai = $this->uuDaiModel->getUuDaiById($id);
-            if (!$currentUuDai) {
-                header('Location: /quan-ly-trang-chu?error=not_found');
-                exit;
-            }
-    
-            // Xử lý upload ảnh mới (nếu có)
-            $imagePath = $currentUuDai['udtc_anhuudai']; // Giữ ảnh cũ
-            if (isset($_FILES['anhUuDai']) && $_FILES['anhUuDai']['error'] === UPLOAD_ERR_OK) {
-                $newImagePath = $this->handleImageUpload($_FILES['anhUuDai']);
-                if ($newImagePath) {
-                    // Xóa ảnh cũ
-                    if (!empty($imagePath) && file_exists($_SERVER['DOCUMENT_ROOT'] . $imagePath)) {
-                        unlink($_SERVER['DOCUMENT_ROOT'] . $imagePath);
-                    }
-                    $imagePath = $newImagePath;
+        if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+            header('Location: /quan-ly-trang-chu');
+            exit;
+        }
+
+        $id = $_POST['id'] ?? '';
+        $currentUuDai = $this->uuDaiModel->getUuDaiById($id);
+        $imagePath = $currentUuDai['udtc_anhuudai']; // Giữ ảnh cũ
+
+        if (isset($_FILES['anhUuDai']) && $_FILES['anhUuDai']['error'] === UPLOAD_ERR_OK) {
+            $newImagePath = $this->handleImageUpload($_FILES['anhUuDai']);
+            if ($newImagePath) {
+                // XÓA ẢNH CŨ nếu có
+                if (!empty($imagePath) && file_exists($_SERVER['DOCUMENT_ROOT'] . $imagePath)) {
+                    unlink($_SERVER['DOCUMENT_ROOT'] . $imagePath);
                 }
+                $imagePath = $newImagePath;
             }
-    
-            // ✅ Cập nhật database - chỉ cập nhật ảnh
-            $data = [
-                'udtc_anhuudai' => $imagePath
-            ];
-    
-            if ($this->uuDaiModel->updateUuDai($id, $data)) {
-                header('Location: /quan-ly-trang-chu?success=update_uudai');
-                exit;
-            } else {
-                header('Location: /sua-uu-dai-home?id=' . $id . '&error=update_failed');
-                exit;
-            }
-        } catch (Exception $e) {
-            error_log("Error in capNhatUuDai: " . $e->getMessage());
-            header('Location: /quan-ly-trang-chu?error=system_error');
+        }
+
+        $data = ['udtc_anhuudai' => $imagePath];
+        if ($this->uuDaiModel->updateUuDai($id, $data)) {
+            header('Location: /quan-ly-trang-chu?success=update_uudai');
+            exit;
+        } else {
+            header('Location: /sua-uu-dai-home?id=' . $id . '&error=update_failed');
             exit;
         }
     }

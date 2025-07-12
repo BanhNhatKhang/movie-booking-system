@@ -286,10 +286,17 @@ class QuanLyPhimController
             }
     
             // Handle poster upload
-            $posterPath = $existingPhim['p_poster']; // ✅ Giữ poster cũ
+           $posterPath = $existingPhim['p_poster']; // Giữ poster cũ
             if (isset($_FILES['poster']) && $_FILES['poster']['error'] === UPLOAD_ERR_OK) {
                 $newPosterPath = $this->uploadPoster($_FILES['poster']);
                 if ($newPosterPath) {
+                    // XÓA ẢNH CŨ nếu có và không phải ảnh mặc định
+                    if (!empty($posterPath) && $posterPath !== '/static/imgs/no-poster.jpg') {
+                        $oldPath = $_SERVER['DOCUMENT_ROOT'] . $posterPath;
+                        if (file_exists($oldPath)) {
+                            unlink($oldPath);
+                        }
+                    }
                     $posterPath = $newPosterPath;
                 }
             }

@@ -3,3 +3,5 @@
 /.vscode
 /cache
 /storage/sessions
+/public/uploads
+/public/static/imgs

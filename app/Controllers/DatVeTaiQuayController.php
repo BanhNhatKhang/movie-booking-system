@@ -385,13 +385,11 @@ class DatVeTaiQuayController
 
     private function createTicketForWalkIn($ticketData)
     {
-        // ✅ SỬA TỪ:
-        // $veModel = new \App\Models\Ve();
-    
-        // ✅ THÀNH:
         $veModel = new Ve();
-    
-        $ticketId = 'V' . strtoupper(substr(uniqid(), 0, 9));       
+
+        // Sinh mã vé duy nhất mỗi lần gọi
+        $ticketId = 'V' . strtoupper(substr(uniqid(mt_rand(), true), 0, 9));
+
         $ticketInfo = [
             'v_mave' => $ticketId,
             'v_ngaydat' => date('Y-m-d'),
@@ -399,21 +397,16 @@ class DatVeTaiQuayController
             'v_trangthai' => 'da_in',
             'nd_id' => $ticketData['employee_id'],
             'tt_mathanhtoan' => $ticketData['payment_id'],
-            'g_maghe' => $ticketData['seat_id'] ?? $ticketData['id'], // ✅ SỬA
+            'g_maghe' => $ticketData['seat_id'] ?? $ticketData['id'],
             'lc_malichchieu' => $ticketData['showtime_id']
         ];
-        
-        // ✅ THÊM DEBUG
-        error_log("🎫 Creating ticket: " . json_encode($ticketInfo));
-    
+
         $result = $veModel->create($ticketInfo);
-    
-        // ✅ KIỂM TRA KẾT QUẢ
+
         if (!$result) {
-            throw new Exception("Không thể tạo vé cho ghế: " . $ticketData['seat_id']);
+            throw new Exception("Không thể tạo vé cho ghế: " . ($ticketData['seat_id'] ?? $ticketData['id']));
         }
-    
-        error_log("✅ Ticket created successfully: " . $ticketId);
+
         return $ticketId;
     }
 }

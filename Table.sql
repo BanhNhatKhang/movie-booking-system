@@ -17,6 +17,8 @@ CREATE TABLE nguoi_dung (
     nd_matkhau VARCHAR(255),
     nd_ngaydangky DATE,
     nd_trangthai VARCHAR(15),
+    nd_loaithanhvien VARCHAR(20) DEFAULT 'bac',
+    nd_diemtichluy INTEGER DEFAULT 0,
     nd_role VARCHAR(10)
 );
 
