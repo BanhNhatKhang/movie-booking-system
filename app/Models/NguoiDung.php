@@ -434,4 +434,8 @@ class NguoiDung extends BaseModel
         $stmt->execute([$userId]);
         return $stmt->fetchColumn() ?: 0;
     }
+    public function countAllUsers() {
+        $stmt = $this->db->query("SELECT COUNT(*) FROM nguoi_dung");
+        return $stmt->fetchColumn();
+    }
 }

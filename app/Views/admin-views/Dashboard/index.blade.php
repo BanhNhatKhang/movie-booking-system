@@ -21,9 +21,12 @@
             </tr>
         </thead>
         <tbody>
-            <tr><td>Vé đã bán</td><td>12,540</td></tr>
-            <tr><td>Doanh thu tháng</td><td>100.000.000 VND</td></tr>
-            <tr><td>Người dùng</td><td>8,120</td></tr>
+            <tr><td>Vé đã bán</td><td>{{ number_format($totalTickets ?? 0) }}</td></tr>
+            <tr>
+                <td>Doanh thu tháng ({{ $month }}/{{ $year }})</td>
+                <td>{{ number_format($monthlyRevenue ?? 0) }} VND</td>
+            </tr>
+            <tr><td>Người dùng</td><td>{{ number_format($totalUsers ?? 0) }}</td></tr>
         </tbody>
     </table>
     <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-4 mb-4">
@@ -32,7 +35,7 @@
                 <i class="bi bi-ticket-perforated"></i>
                 <div class="stat-content">
                     <h6>Vé đã bán</h6>
-                    <h4>12,540</h4>
+                    <h4>{{ number_format($totalTickets ?? 0) }}</h4>
                 </div>
             </div>
         </div>
@@ -40,8 +43,8 @@
             <div class="stat-card bg-green">
                 <i class="bi bi-currency-dollar"></i>
                 <div class="stat-content">
-                    <h6>Doanh thu tháng</h6>
-                    <h4>100.000.000 VND</h4>
+                    <h6>Doanh thu tháng ({{ $month }}/{{ $year }})</h6>
+                    <h4>{{ number_format($monthlyRevenue ?? 0) }} VND</h4>
                 </div>
             </div>
         </div>
@@ -50,7 +53,7 @@
                 <i class="bi bi-people"></i>
                 <div class="stat-content">
                     <h6>Người dùng</h6>
-                    <h4>8,120</h4>
+                    <h4>{{ number_format($totalUsers ?? 0) }}</h4>
                 </div>
             </div>
         </div>
@@ -64,7 +67,9 @@
         </div>
         <div class="col-lg-6">
             <div class="chart-container">
-                <h6 class="mb-3">Tỷ lệ đặt vé theo phim</h6>
+                <h6 class="mb-3">
+                    Tỷ lệ đặt vé theo phim ({{ $month }}/{{ $year }})
+                </h6>
                 <canvas id="movieChart"></canvas>
             </div>
         </div>
@@ -75,19 +80,39 @@
 @section('page-js')
 <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script id="revenue-labels" type="application/json">
+    {!! json_encode(array_keys($revenueByMonth ?? [])) !!}
+</script>
+<script id="revenue-data" type="application/json">
+    {!! json_encode(array_values($revenueByMonth ?? [])) !!}
+</script>
+<script id="movie-labels" type="application/json">
+    {!! json_encode(array_keys($ticketsByMovie ?? [])) !!}
+</script>
+<script id="movie-data" type="application/json">
+    {!! json_encode(array_values($ticketsByMovie ?? [])) !!}
+</script>
+
 <script>
+    // Lấy dữ liệu từ thẻ script JSON
+    var revenueLabels = JSON.parse(document.getElementById('revenue-labels').textContent);
+    var revenueData = JSON.parse(document.getElementById('revenue-data').textContent);
+    var movieLabels = JSON.parse(document.getElementById('movie-labels').textContent);
+    var movieData = JSON.parse(document.getElementById('movie-data').textContent);
+
     function exportTableToExcel(tableID, filename = ''){
         var wb = XLSX.utils.table_to_book(document.getElementById(tableID), {sheet:"Sheet 1"});
         return XLSX.writeFile(wb, filename ? filename+'.xlsx' : 'excel-data.xlsx');
     }
 
+    // Biểu đồ doanh thu theo tháng
     new Chart(document.getElementById("revenueChart"), {
         type: 'line',
         data: {
-            labels: ['T1', 'T2', 'T3', 'T4', 'T5', 'T6'],
+            labels: revenueLabels,
             datasets: [{
                 label: 'Doanh thu (triệu)',
-                data: [320, 420, 580, 440, 690, 510],
+                data: revenueData,
                 borderColor: '#007bff',
                 backgroundColor: 'rgba(0,123,255,0.1)',
                 tension: 0.3,
@@ -102,13 +127,14 @@
         }
     });
 
+    // Biểu đồ tỷ lệ đặt vé theo phim
     new Chart(document.getElementById("movieChart"), {
         type: 'doughnut',
         data: {
-            labels: ['Endgame', 'Spider-Man', 'Minions'],
+            labels: movieLabels,
             datasets: [{
-                data: [2430, 1980, 1510],
-                backgroundColor: ['#6610f2', '#fd7e14', '#20c997'],
+                data: movieData,
+                backgroundColor: ['#6610f2', '#fd7e14', '#20c997', '#ffc107', '#dc3545'],
                 borderWidth: 1
             }]
         },

@@ -361,4 +361,51 @@ class Ve extends BaseModel
         $result = $stmt->fetch(\PDO::FETCH_ASSOC);
         return $result['total'] ?? 0;
     }
+
+    public function countAllTickets() {
+        $stmt = $this->db->query("SELECT COUNT(*) FROM ve");
+        return $stmt->fetchColumn();
+    }
+
+    public function getMonthlyRevenue($month = null, $year = null) {
+        $month = $month ?: date('m');
+        $year = $year ?: date('Y');
+        $sql = "SELECT SUM(tt_sotien) FROM thanh_toan WHERE EXTRACT(MONTH FROM tt_thoigianthanhtoan) = ? AND EXTRACT(YEAR FROM tt_thoigianthanhtoan) = ?";
+        $stmt = $this->db->prepare($sql);
+        $stmt->execute([$month, $year]);
+        return $stmt->fetchColumn() ?: 0;
+    }
+
+    public function getTicketsByMovieInMonth($month = null) {
+        $month = $month ?: date('m');
+        $sql = "SELECT p.p_tenphim, COUNT(*) as total
+                FROM ve v
+                JOIN lich_chieu lc ON v.lc_malichchieu = lc.lc_malichchieu
+                JOIN phim p ON lc.p_maphim = p.p_maphim
+                WHERE EXTRACT(MONTH FROM v.v_ngaydat) = ?
+                GROUP BY p.p_tenphim";
+        $stmt = $this->db->prepare($sql);
+        $stmt->execute([$month]);
+        $result = [];
+        foreach ($stmt->fetchAll(\PDO::FETCH_ASSOC) as $row) {
+            $result[$row['p_tenphim']] = (int)$row['total'];
+        }
+        return $result;
+    }
+
+    public function getRevenueByMonth($year = null) {
+        $year = $year ?: date('Y');
+        $sql = "SELECT EXTRACT(MONTH FROM tt_thoigianthanhtoan) AS month, SUM(tt_sotien) AS total
+                FROM thanh_toan
+                WHERE EXTRACT(YEAR FROM tt_thoigianthanhtoan) = ?
+                GROUP BY month
+                ORDER BY month";
+        $stmt = $this->db->prepare($sql);
+        $stmt->execute([$year]);
+        $result = [];
+        foreach ($stmt->fetchAll(\PDO::FETCH_ASSOC) as $row) {
+            $result['T' . (int)$row['month']] = (int)$row['total'];
+        }
+        return $result;
+    }
 }
