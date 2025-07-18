@@ -1,39 +1,61 @@
-// Lọc ưu đãi theo trạng thái
 document.addEventListener("DOMContentLoaded", function () {
-  const filterButtons = document.querySelectorAll(".filter-btn");
-  const offerItems = document.querySelectorAll(".offer-item");
+  const filterBtns = document.querySelectorAll(".filter-btn");
+  const offerCards = document.querySelectorAll(".offer-card");
 
-  // sự kiện click cho các nút lọc
-  filterButtons.forEach((button) => {
-    button.addEventListener("click", function () {
-      const filter = this.getAttribute("data-filter");
-
-      // Cập nhật trạng thái active
-      filterButtons.forEach((btn) => btn.classList.remove("active"));
-      this.classList.add("active");
-
-      // Lọc các ưu đãi
-      offerItems.forEach((item) => {
-        const status = item.getAttribute("data-status");
-
-        if (filter === "all") {
-          item.style.display = "block";
-        } else if (filter === status) {
-          item.style.display = "block";
-        } else {
-          item.style.display = "none";
-        }
-      });
-    });
+  console.log("=== FILTER DEBUG ===");
+  console.log("Total cards found:", offerCards.length);
+  offerCards.forEach((card, index) => {
+    console.log(`Card ${index + 1}: data-status="${card.dataset.status}"`);
   });
 
-  // Hiệu ứng chuyển trang
-  document.querySelectorAll('a[href^="#"]').forEach((anchor) => {
-    anchor.addEventListener("click", function (e) {
-      e.preventDefault();
-      document.querySelector(this.getAttribute("href")).scrollIntoView({
-        behavior: "smooth",
+  filterBtns.forEach((btn) => {
+    btn.addEventListener("click", function () {
+      const filter = this.dataset.filter;
+      console.log(" Filter clicked:", filter);
+
+      filterBtns.forEach((b) => b.classList.remove("active"));
+      this.classList.add("active");
+
+      // lọc cards
+      let visibleCount = 0;
+      offerCards.forEach((card, index) => {
+        const cardContainer = card.closest(".col-lg-4, .col-md-6");
+        const cardStatus = card.dataset.status;
+        let shouldShow = false;
+
+        console.log(
+          `Card ${index + 1}: status="${cardStatus}", filter="${filter}"`
+        );
+
+        if (filter === "all") {
+          shouldShow = true;
+        } else {
+          switch (filter) {
+            case "ongoing":
+              shouldShow = cardStatus === "dang-dien-ra";
+              break;
+            case "upcoming":
+              shouldShow = cardStatus === "sap-dien-ra";
+              break;
+            case "expired":
+              shouldShow = cardStatus === "ket-thuc";
+              break;
+          }
+        }
+
+        console.log(`  → Should show: ${shouldShow}`);
+
+        if (shouldShow) {
+          cardContainer.style.display = "block";
+          visibleCount++;
+        } else {
+          cardContainer.style.display = "none";
+        }
       });
+
+      console.log(
+        `Filter "${filter}" completed - Showing ${visibleCount} cards`
+      );
     });
   });
 });

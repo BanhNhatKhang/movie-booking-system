@@ -3,6 +3,7 @@
 namespace App\Controllers;
 
 use Jenssegers\Blade\Blade;
+use App\Core\Csrf;
 
 class AuthController
 {
@@ -30,6 +31,15 @@ class AuthController
     public function xuLyDangKy()
     {
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            // ✅ THÊM: Kiểm tra CSRF token ĐẦU TIÊN
+            $csrfToken = $_POST['csrf_token'] ?? '';
+            
+            if (!Csrf::checkToken($csrfToken)) {
+                $_SESSION['error_message'] = 'Token bảo mật không hợp lệ! Vui lòng thử lại.';
+                header('Location: /dang-ky');
+                exit;
+            }
+
             $nguoiDungModel = new \App\Models\NguoiDung();
             
             // Lấy dữ liệu từ form
@@ -46,18 +56,22 @@ class AuthController
             // THÊM: Kiểm tra độ dài mật khẩu (tối thiểu 6 ký tự)
             if (strlen($matkhau) < 6) {
                 $_SESSION['error_message'] = 'Mật khẩu phải có ít nhất 6 ký tự!';
+                // ✅ REFRESH CSRF token khi có lỗi
+                Csrf::refreshToken();
                 header('Location: /dang-ky');
                 exit;
             }
             // Kiểm tra mật khẩu khớp
             if ($_POST['nd_matkhau'] !== $_POST['confirm_password']) {
                 $_SESSION['error_message'] = 'Mật khẩu nhập lại không khớp!';
+                Csrf::refreshToken();
                 header('Location: /dang-ky');
                 exit;
             }
             //Kiểm tra ngày sinh bắt buộc
             if (empty($ngaysinh)) {
                 $_SESSION['error_message'] = 'Ngày sinh không được để trống!';
+                Csrf::refreshToken();
                 header('Location: /dang-ky');
                 exit;
             }
@@ -69,12 +83,14 @@ class AuthController
                 
                 if ($age < 13) {
                     $_SESSION['error_message'] = 'Bạn phải đủ 13 tuổi trở lên để đăng ký tài khoản!';
+                    Csrf::refreshToken();
                     header('Location: /dang-ky');
                     exit;
                 }
                 
                 if ($age > 100) {
                     $_SESSION['error_message'] = 'Ngày sinh không hợp lệ!';
+                    Csrf::refreshToken();
                     header('Location: /dang-ky');
                     exit;
                 }
@@ -83,6 +99,7 @@ class AuthController
             $checkUsername = $nguoiDungModel->checkExists('nd_tendangnhap', $tendangnhap);
             if ($checkUsername) {
                 $_SESSION['error_message'] = 'Tên đăng nhập đã tồn tại!';
+                Csrf::refreshToken();
                 header('Location: /dang-ky');
                 exit;
             }
@@ -91,12 +108,14 @@ class AuthController
             $checkEmail = $nguoiDungModel->checkExists('nd_email', $email);
             if ($checkEmail) {
                 $_SESSION['error_message'] = 'Email đã được sử dụng!';
+                Csrf::refreshToken();
                 header('Location: /dang-ky');
                 exit;
             }
              // Kiểm tra định dạng CCCD (12 số)
             if (!preg_match('/^\d{12}$/', $cccd)) {
                 $_SESSION['error_message'] = 'CCCD phải có đúng 12 số!';
+                Csrf::refreshToken();
                 header('Location: /dang-ky');
                 exit;
             }
@@ -104,6 +123,7 @@ class AuthController
             // Kiểm tra định dạng SĐT (10 số)
             if (!preg_match('/^\d{10}$/', $sdt)) {
                 $_SESSION['error_message'] = 'Số điện thoại phải có đúng 10 số!';
+                Csrf::refreshToken();
                 header('Location: /dang-ky');
                 exit;
             }
@@ -111,6 +131,7 @@ class AuthController
             $checkCCCD = $nguoiDungModel->checkExists('nd_cccd', $cccd);
             if ($checkCCCD) {
                 $_SESSION['error_message'] = 'CCCD đã được sử dụng!';
+                Csrf::refreshToken();
                 header('Location: /dang-ky');
                 exit;
             }
@@ -119,6 +140,7 @@ class AuthController
             $checkSDT = $nguoiDungModel->checkExists('nd_sdt', $sdt);
             if ($checkSDT) {
                 $_SESSION['error_message'] = 'Số điện thoại đã được sử dụng!';
+                Csrf::refreshToken();
                 header('Location: /dang-ky');
                 exit;
             }
@@ -142,6 +164,10 @@ class AuthController
             
             // Xóa form_data sau khi thành công
             unset($_SESSION['form_data']);
+            
+            // REFRESH CSRF token sau khi thành công
+            Csrf::refreshToken();
+            
             $_SESSION['success_message'] = 'Đăng ký thành công! Vui lòng đăng nhập để tiếp tục.';
             header('Location: /dang-nhap');
             exit;
@@ -150,11 +176,19 @@ class AuthController
         exit;
     }
 
-
     //Xử lý đăng nhập người dùng
     public function xuLyDangNhap()
     {
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            // THÊM: Kiểm tra CSRF token ĐẦU TIÊN
+            $csrfToken = $_POST['csrf_token'] ?? '';
+            
+            if (!Csrf::checkToken($csrfToken)) {
+                $_SESSION['error_message'] = 'Token bảo mật không hợp lệ! Vui lòng thử lại.';
+                header('Location: /dang-nhap');
+                exit;
+            }
+
             $nguoiDungModel = new \App\Models\NguoiDung();
             
             $username = $_POST['username'] ?? '';
@@ -162,6 +196,8 @@ class AuthController
             
             if (empty($username) || empty($password)) {
                 $_SESSION['error_message'] = 'Vui lòng nhập đầy đủ thông tin!';
+                // REFRESH CSRF token khi có lỗi
+                Csrf::refreshToken();
                 header('Location: /dang-nhap');
                 exit;
             }
@@ -172,6 +208,7 @@ class AuthController
                 // Kiểm tra tài khoản có bị khóa không
                 if (isset($user['nd_trangthai']) && $user['nd_trangthai'] === 'locked') {
                     $_SESSION['error_message'] = 'Tài khoản của bạn đã bị khóa. Vui lòng liên hệ admin!';
+                    Csrf::refreshToken();
                     header('Location: /dang-nhap');
                     exit;
                 }
@@ -182,6 +219,9 @@ class AuthController
                 $_SESSION['user_name'] = $user['nd_hoten'];
                 $_SESSION['user_role'] = $user['nd_role'];
                 $_SESSION['user_email'] = $user['nd_email'];
+                
+                //  REFRESH CSRF token sau khi đăng nhập thành công
+                Csrf::refreshToken();
                 
                 // PHÂN HƯỚNG THEO ROLE
                 if ($user['nd_role'] === 'admin') {
@@ -206,6 +246,7 @@ class AuthController
             } else {
                 // Đăng nhập thất bại
                 $_SESSION['error_message'] = 'Tên đăng nhập hoặc mật khẩu không chính xác!';
+                Csrf::refreshToken();
                 header('Location: /dang-nhap');
                 exit;
             }
@@ -213,6 +254,7 @@ class AuthController
         header('Location: /dang-nhap');
         exit;
     }
+    
     public function dangXuat()
     {
         // Xóa tất cả session

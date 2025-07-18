@@ -6,13 +6,7 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" />
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
     <link href="/static/css/admin/LayoutAdmin.css" rel="stylesheet">
-    <style>
-        .bg-momo { background: #a50064 !important; color: #fff !important; }
-        .bg-vnpay { background: #0060af !important; color: #fff !important; }
-        .bg-zalopay { background: #00b4f3 !important; color: #fff !important; }
-        .bg-bank { background: #28a745 !important; color: #fff !important; }
-        .bg-cash { background: #6c757d !important; color: #fff !important; }
-    </style>
+    <link href="/static/css/admin/QuanLyThanhToan.css" rel="stylesheet">
 @endsection
 
 @section('content')

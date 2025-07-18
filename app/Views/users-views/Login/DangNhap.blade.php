@@ -1,4 +1,4 @@
-{{-- filepath: d:\Server\ct27501-project-BanhNhatKhang\app\Views\users-views\Login\DangNhap.blade.php --}}
+{{-- filepath: d:\Server\project\app\Views\users-views\Login\DangNhap.blade.php --}}
 @extends('layouts.users.master')
 
 @section('page-css')
@@ -43,7 +43,13 @@
                                 @endif
                                 
                                 <form method="post" action="/dang-nhap">
-                                    <input type="hidden" name="csrf_token" value="{{ $_SESSION['csrf_token'] ?? '' }}">
+                                    {{-- CSRF Token được generate động --}}
+                                    @php
+                                        use App\Core\Csrf;
+                                        $csrfToken = Csrf::generateToken();
+                                    @endphp
+                                    <input type="hidden" name="csrf_token" value="{{ $csrfToken }}">
+                                    
                                     <div class="mb-3">
                                         <input
                                             type="text"

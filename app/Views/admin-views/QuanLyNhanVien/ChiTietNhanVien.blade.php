@@ -6,18 +6,6 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/dist/css/bootstrap.min.css">
     <link rel="stylesheet" href="/static/css/admin/LayoutAdmin.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
-    <style>
-        .bg-gradient-gold {
-            background: linear-gradient(45deg, #FFD700, #FFA500) !important;
-        }
-        .progress {
-            border-radius: 10px;
-            overflow: hidden;
-        }
-        .progress-bar {
-            transition: width 0.6s ease;
-        }
-    </style>
 @endsection
 
 @section('content')
@@ -325,15 +313,5 @@
 @endsection
 
 @section('page-js')
-<script>
-document.addEventListener('DOMContentLoaded', function() {
-    const progressBars = document.querySelectorAll('.progress-dynamic[data-progress]');
-    progressBars.forEach(bar => {
-        const progress = bar.getAttribute('data-progress');
-        setTimeout(() => {
-            bar.style.width = progress + '%';
-        }, 100); // Delay nhỏ để có animation
-    });
-});
-</script>
+<script src="/static/js/admin/ChiTietNhanVien.js"></script>
 @endsection

@@ -1,0 +1,21 @@
+.movie-poster {
+  width: 60px;
+  height: 80px;
+  object-fit: cover;
+  border-radius: 4px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+.action-btn {
+  margin: 2px;
+}
+.table-responsive {
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+.movie-info {
+  min-width: 200px;
+}
+.status-badge {
+  font-size: 0.85em;
+  padding: 4px 8px;
+}

@@ -1,0 +1,44 @@
+.form-section {
+  background: #f8f9fa;
+  border-radius: 8px;
+  padding: 20px;
+  margin-bottom: 20px;
+}
+.section-title {
+  color: #495057;
+  font-weight: 600;
+  margin-bottom: 15px;
+  border-bottom: 2px solid #dee2e6;
+  padding-bottom: 8px;
+}
+.required {
+  color: #dc3545;
+}
+/* UTF-8 Font Fix */
+* {
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif !important;
+}
+
+/* Fix for form inputs */
+input[type="text"],
+textarea,
+.form-control {
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif !important;
+}
+
+.form-section {
+  background: #f8f9fa;
+  border-radius: 8px;
+  padding: 20px;
+  margin-bottom: 20px;
+}
+.section-title {
+  color: #495057;
+  font-weight: 600;
+  margin-bottom: 15px;
+  border-bottom: 2px solid #dee2e6;
+  padding-bottom: 8px;
+}
+.required {
+  color: #dc3545;
+}

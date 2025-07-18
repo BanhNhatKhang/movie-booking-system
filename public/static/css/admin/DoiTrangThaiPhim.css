@@ -1,0 +1,28 @@
+.status-option {
+  border: 2px solid #dee2e6;
+  border-radius: 8px;
+  padding: 15px;
+  margin-bottom: 10px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+.status-option:hover {
+  border-color: #007bff;
+  background-color: #f8f9fa;
+}
+.status-option.selected {
+  border-color: #007bff;
+  background-color: #e7f3ff;
+}
+.status-option input[type="radio"] {
+  margin-right: 10px;
+}
+.movie-info {
+  background: #f8f9fa;
+  border-radius: 8px;
+  padding: 20px;
+  margin-bottom: 20px;
+}
+.cursor-pointer {
+  cursor: pointer;
+}

@@ -6,37 +6,9 @@
 @section('page-css')
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/dist/css/bootstrap.min.css">
     <link rel="stylesheet" href="/static/css/admin/LayoutAdmin.css">
+    <link rel="stylesheet" href="/static/css/admin/LayoutAdmin.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
-    <style>
-        .status-option {
-            border: 2px solid #dee2e6;
-            border-radius: 8px;
-            padding: 15px;
-            margin-bottom: 10px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-        }
-        .status-option:hover {
-            border-color: #007bff;
-            background-color: #f8f9fa;
-        }
-        .status-option.selected {
-            border-color: #007bff;
-            background-color: #e7f3ff;
-        }
-        .status-option input[type="radio"] {
-            margin-right: 10px;
-        }
-        .movie-info {
-            background: #f8f9fa;
-            border-radius: 8px;
-            padding: 20px;
-            margin-bottom: 20px;
-        }
-        .cursor-pointer {
-            cursor: pointer;
-        }
-    </style>
+
 @endsection
 
 @section('content')
@@ -266,6 +238,7 @@
 
 @section('page-js')
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/dist/js/bootstrap.bundle.min.js"></script>
+<script src="/static/js/admin/DoiTrangThaiPhim.js"></script>
 
 @if(isset($success) && $success)
 <script>
@@ -275,63 +248,4 @@ setTimeout(function() {
 }, 3000);
 </script>
 @endif
-
-<script>
-document.addEventListener('DOMContentLoaded', function() {
-    const statusOptions = document.querySelectorAll('.status-option');
-    const form = document.getElementById('status-form');
-    const submitBtn = document.getElementById('submit-btn');
-
-    // Form submission
-    form.addEventListener('submit', function(e) {
-        const selectedStatus = document.querySelector('input[name="status"]:checked');
-        
-        if (!selectedStatus) {
-            e.preventDefault();
-            alert('Vui lòng chọn trạng thái mới!');
-            return;
-        }
-
-        submitBtn.disabled = true;
-        submitBtn.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>Đang cập nhật...';
-        
-        
-        const statusText = selectedStatus.closest('.status-option').querySelector('strong').textContent;
-        const movieName = '{{ addslashes($phim["name"] ?? "Phim không xác định") }}';
-        
-        if (!confirm('Bạn có chắc muốn đổi trạng thái phim "' + movieName + '" thành "' + statusText + '"?')) {
-            e.preventDefault();
-            submitBtn.disabled = false;
-            submitBtn.innerHTML = '<i class="bi bi-check-circle"></i> Đổi thành "' + statusText + '"';
-            return;
-        }
-    });
-
-    // Status option click handlers
-    statusOptions.forEach(option => {
-        option.addEventListener('click', function() {
-            statusOptions.forEach(opt => opt.classList.remove('selected'));
-            this.classList.add('selected');
-            
-            const radio = this.querySelector('input[type="radio"]');
-            if (radio) {
-                radio.checked = true;
-            }
-            
-            const statusText = this.querySelector('strong').textContent;
-            submitBtn.innerHTML = '<i class="bi bi-check-circle"></i> Đổi thành "' + statusText + '"';
-        });
-    });
-
-    // Set initial selected option
-    const checkedRadio = document.querySelector('input[name="status"]:checked');
-    if (checkedRadio) {
-        const selectedOption = checkedRadio.closest('.status-option');
-        selectedOption.classList.add('selected');
-        
-        const statusText = selectedOption.querySelector('strong').textContent;
-        submitBtn.innerHTML = '<i class="bi bi-check-circle"></i> Đổi thành "' + statusText + '"';
-    }
-});
-</script>
 @endsection

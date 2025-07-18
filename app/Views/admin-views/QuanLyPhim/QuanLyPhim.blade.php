@@ -6,30 +6,9 @@
 @section('page-css')
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/dist/css/bootstrap.min.css">
     <link rel="stylesheet" href="/static/css/admin/LayoutAdmin.css">
+    <link rel="stylesheet" href="/static/css/admin/QuanLyPhim.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
-    <style>
-        .movie-poster {
-            width: 60px;
-            height: 80px;
-            object-fit: cover;
-            border-radius: 4px;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-        }
-        .action-btn {
-            margin: 2px;
-        }
-        .table-responsive {
-            border-radius: 8px;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-        }
-        .movie-info {
-            min-width: 200px;
-        }
-        .status-badge {
-            font-size: 0.85em;
-            padding: 4px 8px;
-        }
-    </style>
+
 @endsection
 
 @section('content')
@@ -298,37 +277,5 @@
 @endsection
 
 @section('page-js')
-<script>
-document.addEventListener('DOMContentLoaded', function() {
-    // Auto-dismiss alerts after 5 seconds
-    const alerts = document.querySelectorAll('.alert-dismissible');
-    alerts.forEach(alert => {
-        setTimeout(() => {
-            const bsAlert = new bootstrap.Alert(alert);
-            bsAlert.close();
-        }, 5000);
-    });
-
-    // Confirm status change
-    const statusButtons = document.querySelectorAll('a[href*="doi-trang-thai-phim"]');
-    statusButtons.forEach(btn => {
-        btn.addEventListener('click', function(e) {
-            const movieName = this.closest('tr').querySelector('.text-primary').textContent;
-            if (!confirm(`Bạn có chắc muốn đổi trạng thái phim "${movieName}"?`)) {
-                e.preventDefault();
-            }
-        });
-    });
-
-    // Enhanced search with enter key
-    const searchInput = document.querySelector('input[name="q"]');
-    if (searchInput) {
-        searchInput.addEventListener('keypress', function(e) {
-            if (e.key === 'Enter') {
-                this.form.submit();
-            }
-        });
-    }
-});
-</script>
+<script src="/static/js/admin/QuanLyPhim.js"></script>
 @endsection

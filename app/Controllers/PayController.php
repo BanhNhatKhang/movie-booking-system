@@ -50,20 +50,20 @@ class PayController
         try {
             header('Content-Type: text/html; charset=UTF-8');
             
-            error_log("=== THANH TOAN DEBUG START ===");
-            error_log("POST params: " . json_encode($_POST));
-            error_log("SESSION logged_in: " . ($_SESSION['logged_in'] ?? 'not set'));
-            error_log("SESSION user_id: " . ($_SESSION['user_id'] ?? 'not set'));
-            error_log("SESSION user_name: " . ($_SESSION['user_name'] ?? 'not set'));
+            // error_log("=== THANH TOAN DEBUG START ===");
+            // error_log("POST params: " . json_encode($_POST));
+            // error_log("SESSION logged_in: " . ($_SESSION['logged_in'] ?? 'not set'));
+            // error_log("SESSION user_id: " . ($_SESSION['user_id'] ?? 'not set'));
+            // error_log("SESSION user_name: " . ($_SESSION['user_name'] ?? 'not set'));
             
             // Kiểm tra đăng nhập
             if (!isset($_SESSION['logged_in']) || $_SESSION['logged_in'] !== true) {
-                error_log("User not logged in, redirecting to login");
+                // error_log("User not logged in, redirecting to login");
                 
                 // ✅ LƯU POST DATA VÀO SESSION
                 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['lich_chieu'])) {
                     $_SESSION['pending_payment'] = $_POST;
-                    error_log("Saved pending payment: " . json_encode($_SESSION['pending_payment']));
+                    // error_log("Saved pending payment: " . json_encode($_SESSION['pending_payment']));
                 }
                 
                 $_SESSION['error_message'] = 'Vui lòng đăng nhập để thanh toán vé!';
@@ -109,33 +109,33 @@ class PayController
                 
             } else {
                 // ✅ KHÔNG CÓ DỮ LIỆU - REDIRECT VỀ TRANG CHỦ
-                error_log("No payment data found - redirecting");
+                // error_log("No payment data found - redirecting");
                 $_SESSION['error_message'] = 'Không tìm thấy thông tin đặt vé!';
                 header('Location: /phim-dang-chieu');
                 exit;
             }
             
-            error_log("Processed params:");
-            error_log("LichChieu ID: " . $lichChieuId);
-            error_log("Seat codes: " . $seatCodes);
-            error_log("Seat displays: " . $seatDisplays);
-            error_log("Total: " . $total);
+            // error_log("Processed params:");
+            // error_log("LichChieu ID: " . $lichChieuId);
+            // error_log("Seat codes: " . $seatCodes);
+            // error_log("Seat displays: " . $seatDisplays);
+            // error_log("Total: " . $total);
             
             // Kiểm tra dữ liệu đầu vào
             if (empty($lichChieuId) || empty($seatCodes)) {
-                error_log("Invalid input data - missing lichChieuId or seatCodes");
+                // error_log("Invalid input data - missing lichChieuId or seatCodes");
                 $_SESSION['error_message'] = 'Thông tin đặt vé không hợp lệ!';
                 header('Location: /phim-dang-chieu');
                 exit;
             }
             
             // Lấy thông tin lịch chiếu
-            error_log("Getting lichChieu info for ID: " . $lichChieuId);
+            // error_log("Getting lichChieu info for ID: " . $lichChieuId);
             $lichChieu = $this->lichChieuModel->getLichChieuWithPhongChieu($lichChieuId);
-            error_log("LichChieu result: " . json_encode($lichChieu));
+            // error_log("LichChieu result: " . json_encode($lichChieu));
             
             if (!$lichChieu) {
-                error_log("LichChieu not found");
+                // error_log("LichChieu not found");
                 $_SESSION['error_message'] = 'Không tìm thấy thông tin lịch chiếu!';
                 header('Location: /phim-dang-chieu');
                 exit;
@@ -147,40 +147,40 @@ class PayController
             $seatTypeList = !empty($seatTypes) ? explode(',', $seatTypes) : [];
             $seatPriceList = !empty($seatPrices) ? explode(',', $seatPrices) : [];
             
-            error_log("Seat processing:");
-            error_log("Seat list: " . json_encode($seatList));
-            error_log("Seat display list: " . json_encode($seatDisplayList));
-            error_log("Seat type list: " . json_encode($seatTypeList));
-            error_log("Seat price list: " . json_encode($seatPriceList));
+            // error_log("Seat processing:");
+            // error_log("Seat list: " . json_encode($seatList));
+            // error_log("Seat display list: " . json_encode($seatDisplayList));
+            // error_log("Seat type list: " . json_encode($seatTypeList));
+            // error_log("Seat price list: " . json_encode($seatPriceList));
             
             // ✅ Lấy giá vé từ MovieController
-            error_log("Getting price from MovieController");
+            // error_log("Getting price from MovieController");
             $giaBanVe = $this->movieController->getGiaBanVeTheoPhong($lichChieu);
-            error_log("Price list: " . json_encode($giaBanVe));
+            // error_log("Price list: " . json_encode($giaBanVe));
             
             // Lấy thông tin chi tiết ghế với giá chính xác
             $seatDetails = [];
             $calculatedTotal = 0;
             
             foreach ($seatList as $index => $seatCode) {
-                error_log("Processing seat: " . $seatCode);
+                // error_log("Processing seat: " . $seatCode);
                 
                 // ✅ SỬ DỤNG DATA TỪ POST TRƯỚC, NẾU KHÔNG CÓ THÌ QUERY DATABASE
                 if (!empty($seatTypeList[$index]) && !empty($seatPriceList[$index])) {
                     $seatType = $seatTypeList[$index];
                     $seatPrice = intval($seatPriceList[$index]);
-                    error_log("Using POST data - Seat type: " . $seatType . ", Price: " . $seatPrice);
+                    // error_log("Using POST data - Seat type: " . $seatType . ", Price: " . $seatPrice);
                 } else {
                     // Fallback: query database
                     $seatInfo = $this->gheModel->getGheByMaGhe($seatCode);
-                    error_log("Seat info from DB: " . json_encode($seatInfo));
+                    // error_log("Seat info from DB: " . json_encode($seatInfo));
                     
                     if ($seatInfo) {
                         $seatType = $seatInfo['g_loaighe'] ?? 'normal';
                         $seatPrice = $giaBanVe[$seatType] ?? $giaBanVe['normal'];
-                        error_log("From DB - Seat type: " . $seatType . ", Price: " . $seatPrice);
+                        // error_log("From DB - Seat type: " . $seatType . ", Price: " . $seatPrice);
                     } else {
-                        error_log("Seat info not found for: " . $seatCode);
+                        // error_log("Seat info not found for: " . $seatCode);
                         continue;
                     }
                 }
@@ -198,10 +198,10 @@ class PayController
             $total = $total > 0 ? $total : $calculatedTotal;
             
             // Debug trước khi render
-            error_log("=== RENDERING THANH TOAN VIEW ===");
-            error_log("LichChieu data: " . json_encode($lichChieu));
-            error_log("Seat details: " . json_encode($seatDetails));
-            error_log("Total: " . $total);
+            // error_log("=== RENDERING THANH TOAN VIEW ===");
+            // error_log("LichChieu data: " . json_encode($lichChieu));
+            // error_log("Seat details: " . json_encode($seatDetails));
+            // error_log("Total: " . $total);
             
             // ✅ Kiểm tra file poster có tồn tại không
             $posterPath = $lichChieu['p_poster'] ?? '';
@@ -245,7 +245,7 @@ class PayController
             
             // Lấy dữ liệu JSON
             $input = json_decode(file_get_contents('php://input'), true);
-            error_log("Payment request data: " . json_encode($input));
+
             
             $lichChieuId = $input['lichChieuId'] ?? '';
             $seatDetails = $input['seatDetails'] ?? [];
@@ -291,12 +291,6 @@ class PayController
                 'tt_thoigianthanhtoan' => date('Y-m-d H:i:s'),
                 'nd_id' => $_SESSION['user_id']
             ];
-            
-            error_log("nd_id: " . $thanhToanData['nd_id']);
-            error_log("tt_mathanhtoan: " . $thanhToanData['tt_mathanhtoan']);
-            error_log("tt_sotien: " . $thanhToanData['tt_sotien']);
-            error_log("tt_phuongthuc: " . $thanhToanData['tt_phuongthuc']);
-            error_log("tt_thoigianthanhtoan: " . $thanhToanData['tt_thoigianthanhtoan']);
             
             $thanhToanCreated = $this->createThanhToan($thanhToanData);
             
@@ -380,7 +374,6 @@ class PayController
             ]);
             
         } catch (Exception $e) {
-            error_log("Error in PayController xuLyThanhToan: " . $e->getMessage());
             echo json_encode([
                 'success' => false,
                 'message' => 'Có lỗi xảy ra khi xử lý thanh toán!'
@@ -415,7 +408,6 @@ class PayController
     private function createThanhToan($data)
     {
         try {
-            error_log("Creating thanh_toan with data: " . json_encode($data));
             $result = $this->thanhToanModel->create($data);
 
             if ($result) {
@@ -438,9 +430,7 @@ class PayController
      */
     private function createVe($data)
     {
-        try {
-            error_log("Creating ve with data: " . json_encode($data));
-            
+        try {            
             // ✅ Sử dụng Ve Model thay vì SQL trực tiếp
             $result = $this->veModel->create($data);
             

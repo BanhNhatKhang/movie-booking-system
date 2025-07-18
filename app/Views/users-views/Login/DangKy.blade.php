@@ -21,7 +21,7 @@
                                         <strong>{{ $_SESSION['success_message'] }}</strong>
                                     </div>
                                     @php
-                                        unset($_SESSION['success_message']); // Xóa thông báo sau khi hiển thị
+                                        unset($_SESSION['success_message']);
                                     @endphp
                                 @endif
                                 @if(isset($_SESSION['error_message']))
@@ -32,8 +32,15 @@
                                         unset($_SESSION['error_message']);
                                     @endphp
                                 @endif
+                                
                                 <form method="post" action="/dang-ky">
-                                    <input type="hidden" name="csrf_token" value="{{ $_SESSION['csrf_token'] ?? '' }}">
+                                    {{-- CSRF Token được generate động --}}
+                                    @php
+                                        use App\Core\Csrf;
+                                        $csrfToken = Csrf::generateToken();
+                                    @endphp
+                                    <input type="hidden" name="csrf_token" value="{{ $csrfToken }}">
+                                    
                                     <div class="row mb-3">
                                         <div class="col-md-6">
                                             <input type="text" class="form-control" placeholder="Họ & tên(*)" name="nd_hoten" required value="{{ $_SESSION['form_data']['nd_hoten'] ?? '' }}" />

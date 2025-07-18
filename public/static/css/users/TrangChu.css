@@ -1,210 +1,207 @@
 .carousel-img {
-        width: 100%;
-        object-fit: cover;   
-        height: 70vh;
-    }
-   
-    .align-div{
-        align-items: center;
-    }
-        
-    .carousel-img-inner{
-        height:50vh;
-        object-fit: cover;
-        width: 100%;
-    }
+  width: 100%;
+  object-fit: cover;
+  height: 70vh;
+}
 
-    .book-bg {
-            text-align: center;
-            z-index: 10;
-            position: relative;
-            background-color: #ff4444;
-            padding:10px;
-            border-radius: 5px;
-            margin-bottom:30px;
-    }
+.align-div {
+  align-items: center;
+}
 
-    .book-bg:hover{
-            background-color: #cc0000;
-    }
+.carousel-img-inner {
+  height: 50vh;
+  object-fit: cover;
+  width: 100%;
+}
 
-    .book-tk {
-        text-decoration: none;
-        color: white;
-        font-weight: bold;
-        z-index: 11;
-        position: relative;
-        display: inline-block;
-    }
+.book-bg {
+  text-align: center;
+  z-index: 10;
+  position: relative;
+  background-color: #ff4444;
+  padding: 10px;
+  border-radius: 5px;
+  margin-bottom: 30px;
+}
 
-    
+.book-bg:hover {
+  background-color: #cc0000;
+}
 
-    .movie-card-text{
-        margin-top:10px;
-        text-align: center;
-        font-weight: bold;
-        color:white;
-        height: 3.5rem; /* ✅ Cố định chiều cao */
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        overflow: hidden;
-    }
+.book-tk {
+  text-decoration: none;
+  color: white;
+  font-weight: bold;
+  z-index: 11;
+  position: relative;
+  display: inline-block;
+}
 
-    .movie-card-text p {
-        margin: 0;
-        padding: 0;
-        line-height: 1.3;
-        display: -webkit-box;
-        -webkit-line-clamp: 2;
-        -webkit-box-orient: vertical;
-        overflow: hidden;
-        word-wrap: break-word;
-        text-align: center;
-    }
+.movie-card-text {
+  margin-top: 10px;
+  text-align: center;
+  font-weight: bold;
+  color: white;
+  height: 3.5rem; /* ✅ Cố định chiều cao */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
 
-    .movie-card {
-            position: relative;
-            cursor: pointer;
-            z-index: 11;
-            overflow: visible;
-    }
+.movie-card-text p {
+  margin: 0;
+  padding: 0;
+  line-height: 1.3;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  word-wrap: break-word;
+  text-align: center;
+}
 
-    /*Nút đặt vé hover*/
-    .book-hover-btn {
-        position: absolute;
-        top: 50%;
-        left: 50%;
-        transform: translate(-50%, -50%);
-        display: none;
-        padding: 10px 20px;
-        background-color: rgba(255, 0, 0, 0.8);
-        color: white;
-        text-decoration: none;
-        font-weight: bold;
-        border-radius: 6px;
-        z-index: 20;
-        box-shadow: 0 0 10px rgba(0,0,0,0.5);
-        pointer-events: auto;
-    }
-    
+.movie-card {
+  position: relative;
+  cursor: pointer;
+  z-index: 11;
+  overflow: visible;
+}
 
-    /* Hiển thị nút khi hover vào ảnh */
-    .movie-card:hover .book-hover-btn {
-        display: block;
-    }
+/*Nút đặt vé hover*/
+.book-hover-btn {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  display: none;
+  padding: 10px 20px;
+  background-color: rgba(255, 0, 0, 0.8);
+  color: white;
+  text-decoration: none;
+  font-weight: bold;
+  border-radius: 6px;
+  z-index: 20;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+  pointer-events: auto;
+}
 
-    .movie-card img {
-        transition: 0.3s ease;
-    }
+/* Hiển thị nút khi hover vào ảnh */
+.movie-card:hover .book-hover-btn {
+  display: block;
+}
 
-    .movie-card:hover img {
-        filter: brightness(50%);
-    }
+.movie-card img {
+  transition: 0.3s ease;
+}
 
-    .align-text{
-        text-align: center;
-        color: white;
-    }
+.movie-card:hover img {
+  filter: brightness(50%);
+}
 
-    .service-img{
-        width: 100%;
-        height: 100%;
-        object-fit: cover;
-    }
+.align-text {
+  text-align: center;
+  color: white;
+}
 
-    .swap-f-btn{
-        color: #ff4444 !important;
-    }
+.service-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
 
-    .nav-tabs .nav-link {
-        background-color: transparent;
-        color: #ccc;
-        border: none;
-        transition: color 0.3s ease;
-    }
+.swap-f-btn {
+  color: #ff4444 !important;
+}
 
-    .nav-tabs .nav-link.active {
-        background-color: transparent !important;
-        color: #fff !important;
-        border-bottom: 2px solid #fff;
-    }
+.nav-tabs .nav-link {
+  background-color: transparent;
+  color: #ccc;
+  border: none;
+  transition: color 0.3s ease;
+}
 
-    .nav-tabs .nav-link:hover {
-        color: #fff;
-    }
+.nav-tabs .nav-link.active {
+  background-color: transparent !important;
+  color: #fff !important;
+  border-bottom: 2px solid #fff;
+}
 
-    .div-pad{
-        margin-top:10px;
-    }
+.nav-tabs .nav-link:hover {
+  color: #fff;
+}
 
-    .responsive-text{
-        font-size:40px;
-        font-weight: bold;
-    }
-    /*Mobile*/
-    @media (max-width: 480px) {
-        .carousel-img {
-            height: 25vh; 
-        }
+.div-pad {
+  margin-top: 10px;
+}
 
-        .carousel-img-inner {
-            height: 25vh; 
-        }
+.responsive-text {
+  font-size: 40px;
+  font-weight: bold;
+}
+/*Mobile*/
+@media (max-width: 480px) {
+  .carousel-img {
+    height: 25vh;
+  }
 
-        .book-hover-btn{
-            font-size: 12px;
-        }
-        
-        .service-img{
-            height:25vh;
-        }
+  .carousel-img-inner {
+    height: 25vh;
+  }
 
-        .responsive-text {
-            font-size: 15px; 
-        }
-         .nav-tabs .nav-link {
-            padding: 0px 0px; /* Giảm padding để tiết kiệm không gian */
-        }
-        
-        .movie-card-text {
-        height: 3rem;
-    }
-    
-    .movie-card-text p {
-        font-size: 14px;
-    }
-    }
-    /*Tablet*/
-    @media (min-width: 481px) and (max-width: 768px) {
-        .carousel-img {
-            height: 32vh; 
-        }
+  .book-hover-btn {
+    font-size: 12px;
+  }
 
-        .carousel-img-inner {
-            height: 30vh; 
-        }
+  .service-img {
+    height: 25vh;
+  }
 
-        .book-hover-btn{
-            font-size: 14px;
-        }
-        
-        .service-img{
-            height:25vh;
-        }
+  .responsive-text {
+    font-size: 15px;
+  }
+  .nav-tabs .nav-link {
+    padding: 0px 0px; /* Giảm padding để tiết kiệm không gian */
+  }
 
-        .responsive-text {
-            font-size: 30px; 
-        }
-         .nav-tabs .nav-link {
-            padding: 0px 0px; /* Giảm padding để tiết kiệm không gian */
-        }
-        
-        .movie-card-text {
-        height: 3.2rem;
-    }
-    
-    .movie-card-text p {
-        font-size: 15px;
-    }
-    }
+  .movie-card-text {
+    height: 3rem;
+  }
+
+  .movie-card-text p {
+    font-size: 14px;
+  }
+}
+/*Tablet*/
+@media (min-width: 481px) and (max-width: 768px) {
+  .carousel-img {
+    height: 32vh;
+  }
+
+  .carousel-img-inner {
+    height: 30vh;
+  }
+
+  .book-hover-btn {
+    font-size: 14px;
+  }
+
+  .service-img {
+    height: 25vh;
+  }
+
+  .responsive-text {
+    font-size: 30px;
+  }
+  .nav-tabs .nav-link {
+    padding: 0px 0px; /* Giảm padding để tiết kiệm không gian */
+  }
+
+  .movie-card-text {
+    height: 3.2rem;
+  }
+
+  .movie-card-text p {
+    font-size: 15px;
+  }
+}

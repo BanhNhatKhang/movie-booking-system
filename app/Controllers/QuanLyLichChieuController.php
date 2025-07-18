@@ -103,6 +103,7 @@ class QuanLyLichChieuController
             $phongChieuList = $this->phongChieuModel->getAllPhongChieu();
 
             echo $this->blade->render('admin-views.LichChieu.ThemLichChieu', [
+                'activePage' => 'schedule',
                 'phimList' => $phimList,
                 'phongChieuList' => $phongChieuList // Thêm danh sách phòng chiếu
             ]);
@@ -212,6 +213,7 @@ class QuanLyLichChieuController
             }
 
             echo $this->blade->render('admin-views.LichChieu.SuaLichChieu', [
+                'activePage' => 'schedule',
                 'lichChieu' => $lichChieu,
                 'phimList' => $phimList, // Có thêm thời lượng
                 'phongChieuList' => $phongChieuList,

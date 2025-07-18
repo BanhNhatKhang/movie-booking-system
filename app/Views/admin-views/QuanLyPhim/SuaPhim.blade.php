@@ -6,22 +6,8 @@
 @section('page-css')
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/dist/css/bootstrap.min.css">
     <link rel="stylesheet" href="/static/css/admin/LayoutAdmin.css">
+    <link rel="stylesheet" href="/static/css/admin/SuaPhim.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
-    <style>
-        .form-section {
-            background: #f8f9fa;
-            border-radius: 8px;
-            padding: 20px;
-            margin-bottom: 20px;
-        }
-        .section-title {
-            color: #495057;
-            font-weight: 600;
-            margin-bottom: 15px;
-            border-bottom: 2px solid #dee2e6;
-            padding-bottom: 8px;
-        }
-    </style>
 @endsection
 
 @section('content')
@@ -159,7 +145,7 @@
             </div>
         </div>
 
-        <!-- ✅ Section 3: Media -->
+        <!-- ✅ Section 3: Media (CẬP NHẬT) -->
         <div class="form-section">
             <h4 class="section-title">
                 <i class="bi bi-play-circle"></i> Media & Trailer
@@ -171,10 +157,12 @@
                        value="{{ $movie['trailer'] ?? '' }}">
             </div>
 
-            <div class="mb-3">
-                <label class="form-label fw-bold">Poster hiện tại</label><br>
+            <div class="mb-3 current-poster-container">
+                <label class="form-label fw-bold current-poster-label">Poster hiện tại</label><br>
                 @if(!empty($movie['poster']))
-                    <img src="{{ $movie['poster'] }}" style="max-width:200px; max-height:300px; border-radius: 8px;" 
+                    <img src="{{ $movie['poster'] }}" 
+                         class="current-poster-img"
+                         style="max-width:200px; max-height:300px; border-radius: 8px;" 
                          alt="Poster hiện tại">
                 @else
                     <div class="alert alert-info">Chưa có poster</div>
@@ -185,7 +173,10 @@
                 <label class="form-label fw-bold">Đổi poster mới (tùy chọn)</label>
                 <input type="file" class="form-control" name="poster" 
                        accept="image/jpeg,image/png,image/jpg,image/webp">
-                <small class="text-muted">Chỉ upload nếu muốn thay đổi poster hiện tại</small>
+                <small class="text-muted">
+                    <i class="bi bi-info-circle"></i> 
+                    Chỉ upload nếu muốn thay đổi poster hiện tại. Poster cũ sẽ bị xóa.
+                </small>
             </div>
         </div>
 
@@ -203,4 +194,5 @@
 @endsection
 
 @section('page-js')
+    <script src="/static/js/admin/SuaPhim.js"></script>
 @endsection

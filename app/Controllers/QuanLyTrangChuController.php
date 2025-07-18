@@ -62,7 +62,7 @@ class QuanLyTrangChuController
                 'totalPages' => 1,
                 'totalItems' => 0,
                 'itemsPerPage' => 5,
-                'activePage' => 'quan-ly-trang-chu',
+                'activePage' => 'home',
                 'error' => 'Không thể tải dữ liệu'
             ]);
         }
@@ -73,7 +73,7 @@ class QuanLyTrangChuController
         AuthHelper::checkAccess('admin_only');
         $newId = $this->posterModel->generateNewId();
         echo $this->blade->render('admin-views.TrangChu.ThemPoster', [
-            'activePage' => 'quan-ly-trang-chu',
+            'activePage' => 'home',
             'newId' => $newId
         ]);
     }
@@ -112,7 +112,7 @@ class QuanLyTrangChuController
         $poster = $this->posterModel->getById($id);
         echo $this->blade->render('admin-views.TrangChu.SuaPoster', [
             'poster' => $poster,
-            'activePage' => 'quan-ly-trang-chu'
+            'activePage' => 'home'
         ]);
     }
 
@@ -176,7 +176,7 @@ class QuanLyTrangChuController
     {
         AuthHelper::checkAccess('admin_only');
         echo $this->blade->render('admin-views.TrangChu.ThemUuDaiHome', [
-            'activePage' => 'quan-ly-trang-chu'
+            'activePage' => 'home'
         ]);
     }
 
@@ -246,7 +246,7 @@ class QuanLyTrangChuController
             }
 
             echo $this->blade->render('admin-views.TrangChu.SuaUuDaiHome', [
-                'activePage' => 'quan-ly-trang-chu',
+                'activePage' => 'home',
                 'uuDai' => $uuDai
             ]);
         } catch (Exception $e) {
