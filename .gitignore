@@ -3,5 +3,8 @@
 /.vscode
 /cache
 /storage/sessions
-/public/static/uploads
+/public/static/uploads/posters/*
+!/public/static/uploads/posters/.gitkeep
+/public/static/uploads/uudai/*
+!/public/static/uploads/uudai/.gitkeep
 /public/static/imgs
