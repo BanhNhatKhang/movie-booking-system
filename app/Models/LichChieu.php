@@ -453,7 +453,7 @@ class LichChieu extends BaseModel
     }
 
     /**
-     * Lấy lịch chiếu theo phim (từ hôm nay trở đi)
+     * Lấy lịch chiếu theo phim
      */
     public function getLichChieuByPhim($phimId)
     {
@@ -465,27 +465,39 @@ class LichChieu extends BaseModel
                     lc.lc_giobatdau,
                     lc.lc_trangthai,
                     lc.pc_maphongchieu,
-                    pc.pc_tenphong
+                    lc.p_maphim,
+                    pc.pc_tenphong,
+                    p.p_tenphim,
+                    p.p_poster,
+                    p.p_theloai,
+                    p.p_thoiluong,
+                    p.p_daodien,
+                    p.p_dienvien,
+                    p.p_mota
                 FROM lich_chieu lc  
-                LEFT JOIN phong_chieu pc ON lc.pc_maphongchieu = pc.pc_maphongchieu  -- ✅ Kiểm tra tên table phong_chieu
+                LEFT JOIN phong_chieu pc ON lc.pc_maphongchieu = pc.pc_maphongchieu
+                INNER JOIN phim p ON lc.p_maphim = p.p_maphim 
                 WHERE lc.p_maphim = :phim_id 
                     AND lc.lc_ngaychieu >= CURRENT_DATE
                     AND lc.lc_trangthai IN ('Đang chiếu', 'Sắp chiếu')
                 ORDER BY lc.lc_ngaychieu ASC, lc.lc_giobatdau ASC";
-    
-            $stmt = $this->db->prepare($sql);
-            $stmt->execute(['phim_id' => $phimId]);
-            $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
-            
-            error_log("getLichChieuByPhim result: " . count($result) . " rows for phim " . $phimId);
-            
-            return $result;
-            
-        } catch (Exception $e) {
-            error_log("Error in getLichChieuByPhim: " . $e->getMessage());
-            return [];
+
+        $stmt = $this->db->prepare($sql);
+        $stmt->execute(['phim_id' => $phimId]);
+        $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        
+        error_log("getLichChieuByPhim result: " . count($result) . " rows for phim " . $phimId);
+        if (!empty($result)) {
+            error_log("Sample result: " . json_encode($result[0]));
         }
+        
+        return $result;
+        
+    } catch (Exception $e) {
+        error_log("Error in getLichChieuByPhim: " . $e->getMessage());
+        return [];
     }
+}
 
     /**
      * Lấy lịch chiếu với thông tin phòng chiếu (cho chọn ghế)  
@@ -700,5 +712,161 @@ class LichChieu extends BaseModel
             error_log("💥 SQL Error: " . $e->getMessage());
             return [];
         }
+    }
+
+    /**
+     * Tạo slug từ thông tin lịch chiếu
+     */
+    public function createLichChieuSlug($lichChieu) 
+    {
+        error_log("=== CREATE SLUG DEBUG ===");
+        error_log("Input lichChieu: " . json_encode($lichChieu));
+        
+        //  Lấy tên phim từ data
+        $phimName = $lichChieu['p_tenphim'] ?? 'phim';
+        error_log("Original phim name: " . $phimName);
+        
+        // Loại bỏ dấu và ký tự đặc biệt
+        $phimSlug = $this->removeVietnameseAccents($phimName);
+        error_log("After remove accents: " . $phimSlug);
+        
+        $phimSlug = strtolower($phimSlug);
+        error_log("After lowercase: " . $phimSlug);
+        
+        $phimSlug = preg_replace('/[^a-z0-9\s]+/', '', $phimSlug); 
+        error_log("After remove special chars: " . $phimSlug);
+        
+        $phimSlug = preg_replace('/\s+/', '-', trim($phimSlug));
+        error_log("After convert spaces: " . $phimSlug);
+        
+        $phimSlug = trim($phimSlug, '-');
+        error_log("Final phim slug: " . $phimSlug);
+        
+        // Tạo date-time slug
+        $ngayChieu = date('Y-m-d', strtotime($lichChieu['lc_ngaychieu']));
+        
+        // Handle different time formats properly
+        $gioChieu = '';
+        if (isset($lichChieu['lc_giobatdau'])) {
+            if (strpos($lichChieu['lc_giobatdau'], ' ') !== false) {
+                // Full datetime: "2025-07-19 10:45:00" -> extract time part
+                $timePart = explode(' ', $lichChieu['lc_giobatdau'])[1];
+                $gioChieu = date('H-i', strtotime($timePart));
+            } else {
+                // Time only: "10:45:00"
+                $gioChieu = date('H-i', strtotime($lichChieu['lc_giobatdau']));
+            }
+        }
+        
+        error_log("Date: " . $ngayChieu);
+        error_log("Time: " . $gioChieu);
+        
+        // Tạo slug cuối cùng
+        $finalSlug = $phimSlug . '-' . $ngayChieu . '-' . $gioChieu;
+        error_log("Final slug: " . $finalSlug);
+        error_log("=== END CREATE SLUG DEBUG ===");
+        
+        return $finalSlug;
+    }
+
+    /**
+     * Tìm lịch chiếu theo slug
+     */
+    public function getLichChieuBySlug($slug)
+    {
+        try {
+            error_log("Searching for lichChieu slug: " . $slug);
+            
+            // Lấy tất cả lịch chiếu với thông tin phim
+            $sql = "SELECT 
+                    lc.lc_malichchieu,
+                    lc.lc_ngaychieu,
+                    lc.lc_giobatdau,
+                    lc.lc_trangthai,
+                    lc.p_maphim,
+                    lc.pc_maphongchieu,
+                    p.p_tenphim,
+                    p.p_poster,
+                    p.p_theloai,
+                    p.p_thoiluong,
+                    p.p_daodien,
+                    p.p_dienvien,
+                    p.p_mota,
+                    pc.pc_tenphong,
+                    pc.pc_loaiphong
+                FROM lich_chieu lc
+                INNER JOIN phim p ON lc.p_maphim = p.p_maphim
+                INNER JOIN phong_chieu pc ON lc.pc_maphongchieu = pc.pc_maphongchieu
+                WHERE lc.lc_trangthai IN ('Sắp chiếu', 'Đang chiếu')
+                ORDER BY lc.lc_ngaychieu ASC, lc.lc_giobatdau ASC";
+            
+            $stmt = $this->db->prepare($sql);
+            $stmt->execute();
+            $allLichChieu = $stmt->fetchAll(PDO::FETCH_ASSOC);
+            
+            foreach ($allLichChieu as $lichChieu) {
+                $lichChieuSlug = $this->createLichChieuSlug($lichChieu);
+                error_log("Comparing: '$lichChieuSlug' with '$slug' for showtime: " . $lichChieu['lc_malichchieu']);
+                
+                if ($lichChieuSlug === $slug) {
+                    error_log("Found match for slug: " . $slug);
+                    return $lichChieu;
+                }
+            }
+            
+            error_log("No match found for slug: " . $slug);
+            return null;
+            
+        } catch (Exception $e) {
+            error_log("Error getting lich chieu by slug: " . $e->getMessage());
+            return null;
+        }
+    }
+
+    /**
+     * Loại bỏ dấu tiếng Việt
+     */
+    private function removeVietnameseAccents($str) 
+    {
+        // Thêm uppercase variants
+        $accents = [
+            // Lowercase
+            'à', 'á', 'ạ', 'ả', 'ã', 'â', 'ầ', 'ấ', 'ậ', 'ẩ', 'ẫ', 'ă', 'ằ', 'ắ', 'ặ', 'ẳ', 'ẵ',
+            'è', 'é', 'ẹ', 'ẻ', 'ẽ', 'ê', 'ề', 'ế', 'ệ', 'ể', 'ễ',
+            'ì', 'í', 'ị', 'ỉ', 'ĩ',
+            'ò', 'ó', 'ọ', 'ỏ', 'õ', 'ô', 'ồ', 'ố', 'ộ', 'ổ', 'ỗ', 'ơ', 'ờ', 'ớ', 'ợ', 'ở', 'ỡ',
+            'ù', 'ú', 'ụ', 'ủ', 'ũ', 'ư', 'ừ', 'ứ', 'ự', 'ử', 'ữ',
+            'ỳ', 'ý', 'ỵ', 'ỷ', 'ỹ',
+            'đ',
+            // Uppercase  
+            'À', 'Á', 'Ạ', 'Ả', 'Ã', 'Â', 'Ầ', 'Ấ', 'Ậ', 'Ẩ', 'Ẫ', 'Ă', 'Ằ', 'Ắ', 'Ặ', 'Ẳ', 'Ẵ',
+            'È', 'É', 'Ẹ', 'Ẻ', 'Ẽ', 'Ê', 'Ề', 'Ế', 'Ệ', 'Ể', 'Ễ',
+            'Ì', 'Í', 'Ị', 'Ỉ', 'Ĩ',
+            'Ò', 'Ó', 'Ọ', 'Ỏ', 'Õ', 'Ô', 'Ồ', 'Ố', 'Ộ', 'Ổ', 'Ỗ', 'Ơ', 'Ờ', 'Ớ', 'Ợ', 'Ở', 'Ỡ',
+            'Ù', 'Ú', 'Ụ', 'Ủ', 'Ũ', 'Ư', 'Ừ', 'Ứ', 'Ự', 'Ử', 'Ữ',
+            'Ỳ', 'Ý', 'Ỵ', 'Ỷ', 'Ỹ',
+            'Đ'
+        ];
+        
+        $noAccents = [
+            // Lowercase replacements
+            'a', 'a', 'a', 'a', 'a', 'a', 'a', 'a', 'a', 'a', 'a', 'a', 'a', 'a', 'a', 'a', 'a',
+            'e', 'e', 'e', 'e', 'e', 'e', 'e', 'e', 'e', 'e', 'e',
+            'i', 'i', 'i', 'i', 'i',
+            'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o',
+            'u', 'u', 'u', 'u', 'u', 'u', 'u', 'u', 'u', 'u', 'u',
+            'y', 'y', 'y', 'y', 'y',
+            'd',
+            // Uppercase replacements
+            'A', 'A', 'A', 'A', 'A', 'A', 'A', 'A', 'A', 'A', 'A', 'A', 'A', 'A', 'A', 'A', 'A',
+            'E', 'E', 'E', 'E', 'E', 'E', 'E', 'E', 'E', 'E', 'E',
+            'I', 'I', 'I', 'I', 'I',
+            'O', 'O', 'O', 'O', 'O', 'O', 'O', 'O', 'O', 'O', 'O', 'O', 'O', 'O', 'O', 'O', 'O',
+            'U', 'U', 'U', 'U', 'U', 'U', 'U', 'U', 'U', 'U', 'U',
+            'Y', 'Y', 'Y', 'Y', 'Y',
+            'D'
+        ];
+        
+        return str_replace($accents, $noAccents, $str);
     }
 }

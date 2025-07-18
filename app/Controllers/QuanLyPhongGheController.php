@@ -33,7 +33,6 @@ class QuanLyPhongGheController
         
         // Kiểm tra có phòng nào không
         if (empty($rooms)) {
-            error_log("No rooms found in database");
             
             // Render view với thông báo không có phòng
             echo $blade->render('admin-views.QuanLyPhongGhe.QuanLyPhongGhe', [
@@ -117,11 +116,7 @@ class QuanLyPhongGheController
         $gheListByRoom = array_filter($filteredGhes, function($ghe) use ($actualRoomCode) {
             return $ghe['pc_maphongchieu'] == $actualRoomCode;
         });
-        
-        // debug
-        error_log("Selected room: " . $actualRoomCode);
-        error_log("Total filtered seats: " . count($filteredGhes));
-        error_log("Seats for room: " . count($gheListByRoom));
+    
         
         // render view
         echo $blade->render('admin-views.QuanLyPhongGhe.QuanLyPhongGhe', [
@@ -167,7 +162,6 @@ class QuanLyPhongGheController
             $seatDataJson = trim($_POST['seat_data'] ?? '');
             
             if (empty($maPhong) || empty($tenPhong) || empty($loaiPhong) || empty($seatDataJson)) {
-                error_log("Missing required data for seat map creation");
                 header('Location: /tao-so-do-ghe?error=missing_data');
                 exit;
             }
@@ -175,26 +169,24 @@ class QuanLyPhongGheController
             // Phân tích dữ liệu chỗ ngồi
             $seatData = json_decode($seatDataJson, true);
             if (!$seatData || !is_array($seatData)) {
-                error_log("Invalid seat data JSON: " . $seatDataJson);
                 header('Location: /tao-so-do-ghe?error=invalid_seat_data');
                 exit;
             }
             
             // Chuyển đổi dữ liệu chỗ ngồi bao gồm tiền tố phòng
             $transformedSeats = [];
-            $processedDisplays = []; // ✅ THÊM BIẾN ĐỂ TRACK GHẾ ĐÃ XỬ LÝ
+            $processedDisplays = []; // THÊM BIẾN ĐỂ TRACK GHẾ ĐÃ XỬ LÝ
 
             foreach ($seatData as $seatCode => $seat) {
-                // ✅ LẤY DISPLAY NAME (VD: J01)
+                // LẤY DISPLAY NAME (VD: J01)
                 $displayName = $seat['display'] ?? '';
                 
-                // ✅ BỎ QUA NẾU ĐÃ XỬ LÝ DISPLAY NAME NÀY
+                // BỎ QUA NẾU ĐÃ XỬ LÝ DISPLAY NAME NÀY
                 if (in_array($displayName, $processedDisplays)) {
-                    error_log("Bỏ qua ghế trùng: {$displayName}");
                     continue;
                 }
                 
-                // ✅ TẠO MÃ GHẾ CHUẨN
+                // TẠO MÃ GHẾ CHUẨN
                 $standardSeatCode = $maPhong . '_' . $displayName;
                 
                 $transformedSeats[$standardSeatCode] = [
@@ -204,17 +196,13 @@ class QuanLyPhongGheController
                     'display' => $displayName
                 ];
                 
-                // ✅ ĐÁNH DẤU ĐÃ XỬ LÝ
+                // ĐÁNH DẤU ĐÃ XỬ LÝ
                 $processedDisplays[] = $displayName;
                 
-                error_log("Tạo ghế: {$standardSeatCode} (display: {$displayName})");
             }
-            
-            error_log("✅ Tổng ghế unique: " . count($transformedSeats));
             
             // kiểm tra nếu phòng đã tồn tại
             if ($this->phongChieuModel->checkPhongExists($maPhong)) {
-                error_log("phòng đã tồn tại: " . $maPhong);
                 header('Location: /tao-so-do-ghe?error=room_exists&ma_phong=' . urlencode($maPhong));
                 exit;
             }
@@ -227,25 +215,20 @@ class QuanLyPhongGheController
             ];
             
             if (!$this->phongChieuModel->createPhongChieu($roomData)) {
-                error_log("tạo phòng thất bại: " . $maPhong);
                 header('Location: /tao-so-do-ghe?error=create_room_failed');
                 exit;
             }
             
             // tạo ghế với mã tiền tố pref 
             if (!$this->gheModel->createMultipleSeats($maPhong, $transformedSeats)) {
-                error_log("Failed to create seats for room: " . $maPhong);
                 header('Location: /tao-so-do-ghe?error=create_seats_failed');
                 exit;
             }
             
-            // thông báo thành công
-            error_log("tạo phòng và ghế thành công: " . $maPhong);
             header('Location: /quan-ly-phong-ghe?success=created&room=' . urlencode($maPhong));
             exit;
             
         } catch (Exception $e) {
-            error_log("xảy ra lỗi khi lưu sơ đồ ghế: " . $e->getMessage());
             header('Location: /tao-so-do-ghe?error=system_error');
             exit;
         }
@@ -290,20 +273,18 @@ class QuanLyPhongGheController
     {
         AuthHelper::checkAccess('admin_only');
         try {
-            // ✅ Set header JSON ngay từ đầu
+            // Set header JSON ngay từ đầu
             header('Content-Type: application/json');
             
             $maGhe = $_POST['ma_ghe'] ?? '';
             $trangThai = $_POST['trang_thai'] ?? '';
-            
-            error_log("Update seat status - Seat: $maGhe, Status: $trangThai");
             
             if (empty($maGhe) || empty($trangThai)) {
                 echo json_encode(['success' => false, 'message' => 'Thiếu thông tin']);
                 exit;
             }
             
-            // ✅ Validate trạng thái
+            // Validate trạng thái
             $validStatuses = ['available', 'locked', 'booked'];
             if (!in_array($trangThai, $validStatuses)) {
                 echo json_encode(['success' => false, 'message' => 'Trạng thái không hợp lệ']);
@@ -311,8 +292,6 @@ class QuanLyPhongGheController
             }
             
             $result = $this->gheModel->updateSeatStatus($maGhe, $trangThai);
-            
-            error_log("Update result: " . ($result ? 'success' : 'failed'));
             
             echo json_encode([
                 'success' => $result,
@@ -322,7 +301,6 @@ class QuanLyPhongGheController
             ]);
             
         } catch (Exception $e) {
-            error_log("Error in updateSeatStatus: " . $e->getMessage());
             echo json_encode(['success' => false, 'message' => 'Lỗi hệ thống: ' . $e->getMessage()]);
         }
         exit;
@@ -333,20 +311,18 @@ class QuanLyPhongGheController
     {
         AuthHelper::checkAccess('admin_only');
         try {
-            // ✅ Set header JSON ngay từ đầu
+            // Set header JSON ngay từ đầu
             header('Content-Type: application/json');
             
             $maGhe = $_POST['ma_ghe'] ?? '';
             $loaiGhe = $_POST['loai_ghe'] ?? '';
-            
-            error_log("Update seat type - Seat: $maGhe, Type: $loaiGhe");
             
             if (empty($maGhe) || empty($loaiGhe)) {
                 echo json_encode(['success' => false, 'message' => 'Thiếu thông tin']);
                 exit;
             }
             
-            // ✅ Validate loại ghế
+            // Validate loại ghế
             $validTypes = ['normal', 'vip', 'luxury'];
             if (!in_array($loaiGhe, $validTypes)) {
                 echo json_encode(['success' => false, 'message' => 'Loại ghế không hợp lệ']);
@@ -354,8 +330,6 @@ class QuanLyPhongGheController
             }
             
             $result = $this->gheModel->updateSeatType($maGhe, $loaiGhe);
-            
-            error_log("Update result: " . ($result ? 'success' : 'failed'));
             
             echo json_encode([
                 'success' => $result,
@@ -365,7 +339,6 @@ class QuanLyPhongGheController
             ]);
             
         } catch (Exception $e) {
-            error_log("Error in updateSeatType: " . $e->getMessage());
             echo json_encode(['success' => false, 'message' => 'Lỗi hệ thống: ' . $e->getMessage()]);
         }
         exit;
@@ -424,11 +397,6 @@ class QuanLyPhongGheController
             
             $loaiGhe = $_POST['loai_ghe'] ?? '';
             $giaGhe = $_POST['gia_ghe'] ?? 0;
-            // ✅ BỎ HOÀN TOÀN PHÒNG CHIẾU - CẬP NHẬT TẤT CẢ
-            
-            error_log("=== UPDATE PRICE BY TYPE - GLOBAL SYSTEM ===");
-            error_log("Loai ghe: " . $loaiGhe);
-            error_log("Gia ghe: " . $giaGhe);
             
             // Validate loại ghế
             $validTypes = ['normal', 'vip', 'luxury', 'couple'];
@@ -451,11 +419,10 @@ class QuanLyPhongGheController
             
             $gheModel = new Ghe();
             
-            // ✅ KHÔNG TRUYỀN PHÒNG CHIẾU = CẬP NHẬT TẤT CẢ HỆ THỐNG
+            // KHÔNG TRUYỀN PHÒNG CHIẾU = CẬP NHẬT TẤT CẢ HỆ THỐNG
             $result = $gheModel->bulkUpdateAllSeatPrices($loaiGhe, intval($giaGhe));
             
             if ($result !== false) {
-                error_log("✅ Successfully updated price GLOBALLY for seat type: " . $loaiGhe . ", affected rows: " . $result);
                 echo json_encode([
                     'success' => true,
                     'message' => "Cập nhật thành công giá cho {$result} ghế loại {$loaiGhe} trên toàn hệ thống",
@@ -464,7 +431,6 @@ class QuanLyPhongGheController
                     'new_price' => intval($giaGhe)
                 ]);
             } else {
-                error_log("❌ Failed to update global price for seat type: " . $loaiGhe);
                 echo json_encode([
                     'success' => false,
                     'message' => 'Không thể cập nhật giá ghế. Vui lòng thử lại.'
@@ -472,7 +438,6 @@ class QuanLyPhongGheController
             }
             
         } catch (Exception $e) {
-            error_log("💥 Error in updatePriceByType: " . $e->getMessage());
             echo json_encode([
                 'success' => false,
                 'message' => 'Lỗi hệ thống: ' . $e->getMessage()
@@ -499,7 +464,6 @@ class QuanLyPhongGheController
             ]);
             
         } catch (Exception $e) {
-            error_log("Error in getPriceStats: " . $e->getMessage());
             echo json_encode([
                 'success' => false,
                 'message' => 'Lỗi hệ thống: ' . $e->getMessage()

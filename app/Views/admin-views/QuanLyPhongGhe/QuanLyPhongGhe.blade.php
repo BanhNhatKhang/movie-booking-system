@@ -869,16 +869,16 @@ $(document).ready(function() {
     function updateSelectionDisplay() {
         $('.seat-selection-count').remove();
         
-        if (selectedSeats.length > 0) {
-            const counter = $(`
-                <div class="seat-selection-count" style="position: fixed; bottom: 20px; right: 20px; background: #198754; color: white; padding: 10px; border-radius: 5px; z-index: 1000;">
-                    <i class="bi bi-check-circle"></i> 
-                    Đã chọn: ${selectedSeats.length} ghế
-                    <br><small>${selectedSeats.join(', ')}</small>
-                </div>
-            `);
-            $('body').append(counter);
-        }
+        // if (selectedSeats.length > 0) {
+        //     const counter = $(`
+        //         <div class="seat-selection-count" style="position: fixed; bottom: 20px; right: 20px; background: #198754; color: white; padding: 10px; border-radius: 5px; z-index: 1000;">
+        //             <i class="bi bi-check-circle"></i> 
+        //             Đã chọn: ${selectedSeats.length} ghế
+        //             <br><small>${selectedSeats.join(', ')}</small>
+        //         </div>
+        //     `);
+        //     $('body').append(counter);
+        // }
     }
     
     // ✅ XỬ LÝ CÁC NÚT CHỨC NĂNG KHÁC (GIỮ NGUYÊN)

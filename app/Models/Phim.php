@@ -266,4 +266,162 @@ class Phim extends BaseModel
     {
         return $this->getPhimByStatus('coming_soon');
     }
+
+    /**
+     * Tìm phim theo slug (dựa trên tên phim)
+     */
+    public function getPhimBySlug($slug)
+    {
+        try {
+            error_log("Searching for slug: " . $slug);
+            
+            // Tạo slug từ tên phim trong database để so sánh
+            $sql = "SELECT * FROM {$this->table} ORDER BY p_maphim";
+            $stmt = $this->db->prepare($sql);
+            $stmt->execute();
+            $allPhim = $stmt->fetchAll(PDO::FETCH_ASSOC);
+            
+            foreach ($allPhim as $phim) {
+                $phimSlug = $this->createSlug($phim['p_tenphim']);
+                error_log("Comparing: '$phimSlug' with '$slug' for movie: " . $phim['p_tenphim']);
+                
+                if ($phimSlug === $slug) {
+                    error_log("Found match for slug: " . $slug);
+                    return $phim;
+                }
+            }
+            
+            error_log("No match found for slug: " . $slug);
+            return null;
+        } catch (Exception $e) {
+            error_log("Error getting phim by slug: " . $e->getMessage());
+            return null;
+        }
+    }
+
+    /**
+     * Tạo slug từ tên phim
+     */
+    private function createSlug($text) 
+    {
+        $text = $this->removeVietnameseAccents($text);
+        $text = strtolower($text);
+        $text = preg_replace('/[^a-z0-9]+/', '-', $text);
+        $text = trim($text, '-');
+        return $text;
+    }
+
+    /**
+     * Loại bỏ dấu tiếng Việt
+     */
+    private function removeVietnameseAccents($str) 
+    {
+        $accents = [
+            'à', 'á', 'ạ', 'ả', 'ã', 'â', 'ầ', 'ấ', 'ậ', 'ẩ', 'ẫ', 'ă', 'ằ', 'ắ', 'ặ', 'ẳ', 'ẵ',
+            'è', 'é', 'ẹ', 'ẻ', 'ẽ', 'ê', 'ề', 'ế', 'ệ', 'ể', 'ễ',
+            'ì', 'í', 'ị', 'ỉ', 'ĩ',
+            'ò', 'ó', 'ọ', 'ỏ', 'õ', 'ô', 'ồ', 'ố', 'ộ', 'ổ', 'ỗ', 'ơ', 'ờ', 'ớ', 'ợ', 'ở', 'ỡ',
+            'ù', 'ú', 'ụ', 'ủ', 'ũ', 'ư', 'ừ', 'ứ', 'ự', 'ử', 'ữ',
+            'ỳ', 'ý', 'ỵ', 'ỷ', 'ỹ',
+            'đ'
+        ];
+        
+        $noAccents = [
+            'a', 'a', 'a', 'a', 'a', 'a', 'a', 'a', 'a', 'a', 'a', 'a', 'a', 'a', 'a', 'a', 'a',
+            'e', 'e', 'e', 'e', 'e', 'e', 'e', 'e', 'e', 'e', 'e',
+            'i', 'i', 'i', 'i', 'i',
+            'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o',
+            'u', 'u', 'u', 'u', 'u', 'u', 'u', 'u', 'u', 'u', 'u',
+            'y', 'y', 'y', 'y', 'y',
+            'd'
+        ];
+        
+        return str_replace($accents, $noAccents, $str);
+    }
+
+    /**
+     * Tìm lịch chiếu theo slug
+     */
+    public function getLichChieuBySlug($slug)
+    {
+        try {
+            error_log("Searching for lichChieu slug: " . $slug);
+            
+            // Lấy tất cả lịch chiếu với thông tin phim
+            $sql = "SELECT 
+                    lc.lc_malichchieu,
+                    lc.lc_ngaychieu,
+                    lc.lc_giobatdau,
+                    lc.lc_trangthai,
+                    lc.p_maphim,
+                    lc.pc_maphongchieu,
+                    p.p_tenphim,
+                    p.p_poster,
+                    p.p_theloai,
+                    p.p_thoiluong,
+                    p.p_daodien,
+                    p.p_dienvien,
+                    p.p_mota,
+                    pc.pc_tenphong,
+                    pc.pc_loaiphong
+                FROM lich_chieu lc
+                INNER JOIN phim p ON lc.p_maphim = p.p_maphim
+                INNER JOIN phong_chieu pc ON lc.pc_maphongchieu = pc.pc_maphongchieu
+                WHERE lc.lc_ngaychieu >= CURDATE() - INTERVAL 1 DAY";
+            
+            $stmt = $this->db->prepare($sql);
+            $stmt->execute();
+            $allLichChieu = $stmt->fetchAll(PDO::FETCH_ASSOC);
+            
+            foreach ($allLichChieu as $lichChieu) {
+                // ✅ Tạo slug cho từng lịch chiếu và so sánh
+                $generatedSlug = $this->createLichChieuSlug($lichChieu);
+                
+                error_log("Comparing: '{$generatedSlug}' with '{$slug}' for showtime: {$lichChieu['lc_malichchieu']}");
+                
+                if ($generatedSlug === $slug) {
+                    error_log("Found match for slug: " . $slug);
+                    return $lichChieu;
+                }
+            }
+            
+            error_log("No match found for slug: " . $slug);
+            return null;
+            
+        } catch (Exception $e) {
+            error_log("Error getting lich chieu by slug: " . $e->getMessage());
+            return null;
+        }
+    }
+
+    /**
+     * Tạo slug từ thông tin lịch chiếu
+     */
+    public function createLichChieuSlug($lichChieu) 
+    {
+        // ✅ Lấy tên phim và làm sạch
+        $phimName = $lichChieu['p_tenphim'] ?? 'phim';
+        $phimSlug = $this->removeVietnameseAccents($phimName);
+        $phimSlug = strtolower(preg_replace('/[^a-z0-9]+/', '-', $phimSlug));
+        $phimSlug = trim($phimSlug, '-');
+        
+        // ✅ Tạo date-time slug
+        $ngayChieu = date('Y-m-d', strtotime($lichChieu['lc_ngaychieu']));
+        
+        // Handle both timestamp and time-only formats
+        if (strpos($lichChieu['lc_giobatdau'], ' ') !== false) {
+            // Full timestamp: "2025-07-19 10:45:00"
+            $gioChieu = date('H-i', strtotime($lichChieu['lc_giobatdau']));
+        } else {
+            // Time only: "10:45:00"
+            $gioChieu = date('H-i', strtotime($lichChieu['lc_giobatdau']));
+        }
+        
+        // ✅ Tạo slug: phim-name-YYYY-MM-DD-HH-mm
+        $finalSlug = $phimSlug . '-' . $ngayChieu . '-' . $gioChieu;
+        
+        error_log("Generated slug: '{$finalSlug}' from movie: '{$phimName}', date: '{$ngayChieu}', time: '{$gioChieu}'");
+        
+        return $finalSlug;
+    }
 }

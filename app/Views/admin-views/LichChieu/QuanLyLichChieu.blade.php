@@ -110,12 +110,6 @@
                                class="btn btn-sm btn-warning me-1" title="Sửa">
                                 <i class="bi bi-pencil-square"></i>
                             </a>
-                            <a href="/xoa-lich-chieu?id={{ $lichChieu['lc_malichchieu'] }}"
-                               class="btn btn-sm btn-danger delete-btn" 
-                               title="Xóa"
-                               data-name="{{ $lichChieu['p_tenphim'] ?? 'lịch chiếu này' }}">
-                                <i class="bi bi-trash"></i>
-                            </a>
                         </td>
                     </tr>
                 @empty

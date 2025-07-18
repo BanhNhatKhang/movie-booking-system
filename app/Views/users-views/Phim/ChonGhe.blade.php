@@ -284,34 +284,31 @@ document.addEventListener('DOMContentLoaded', function() {
             return;
         }
         
-        // Tạo query string
-        const seatCodes = selectedSeats.map(seat => seat.code).join(',');
-        const seatDisplays = selectedSeats.map(seat => seat.display).join(',');
-        const total = selectedSeats.reduce((sum, seat) => sum + seat.price, 0);
+        // ✅ TẠO FORM POST ĐẾN /thanh-toan
+        const form = document.createElement('form');
+        form.method = 'POST';
+        form.action = '/thanh-toan'; // ✅ ĐÚNG ROUTE
+        form.style.display = 'none';
         
-        // Log để debug
-        console.log('Seat codes:', seatCodes);
-        console.log('Seat displays:', seatDisplays);
-        console.log('Total:', total);
+        const fields = {
+            'lich_chieu': lichChieuId,
+            'seats': selectedSeats.map(seat => seat.code).join(','),
+            'seat_displays': selectedSeats.map(seat => seat.display).join(','),
+            'seat_types': selectedSeats.map(seat => seat.type).join(','),
+            'seat_prices': selectedSeats.map(seat => seat.price).join(','),
+            'total': selectedSeats.reduce((sum, seat) => sum + seat.price, 0)
+        };
         
-        // Kiểm tra dữ liệu trước khi redirect
-        if (!seatCodes || !seatDisplays || total <= 0) {
-            alert('Lỗi: Dữ liệu ghế không hợp lệ!');
-            return;
-        }
-        
-        const params = new URLSearchParams({
-            lich_chieu: lichChieuId,
-            seats: seatCodes,
-            seat_displays: seatDisplays,
-            total: total
+        Object.keys(fields).forEach(key => {
+            const input = document.createElement('input');
+            input.type = 'hidden';
+            input.name = key;
+            input.value = fields[key];
+            form.appendChild(input);
         });
         
-        const redirectUrl = '/thanh-toan?' + params.toString();
-        console.log('Redirecting to:', redirectUrl);
-        
-        // Redirect
-        window.location.href = redirectUrl;
+        document.body.appendChild(form);
+        form.submit();
     };
     
     // Test click trực tiếp

@@ -1,4 +1,4 @@
-{{-- filepath: d:\Server\ct27501-project-BanhNhatKhang\app\Views\users-views\Phim\PhimSapChieu.blade.php --}}
+{{-- filepath: d:\Server\project\app\Views\users-views\Phim\PhimSapChieu.blade.php --}}
 @extends('layouts.users.master')
 
 @section('title', 'Phim sắp chiếu')
@@ -14,16 +14,18 @@
             <div class="row p-2">
                 @forelse($phimSapChieu ?? [] as $phim)
                     <div class="col-12 col-sm-6 col-lg-3 mb-4">
-                    <div class="movie-card" data-poster="{{ $phim['poster'] ?? '/static/imgs/default-poster.jpg' }}">
+                        <div class="movie-card" data-poster="{{ $phim['poster'] ?? '/static/imgs/default-poster.jpg' }}">
                             <div class="movie-header">
-                                <a href="/chi-tiet-phim?id={{ $phim['id'] }}" style="display: block; height: 100%; text-decoration: none;">
+                                {{-- ✅ Sử dụng slug thay vì ID --}}
+                                <a href="/phim/{{ $phim['slug'] ?? $phim['id'] }}" style="display: block; height: 100%; text-decoration: none;">
                                 </a>
                             </div>
                             <div class="movie-content">
                                 <div class="movie-title">{{ strtoupper($phim['name'] ?? 'TÊN PHIM KHÔNG XÁC ĐỊNH') }}</div>
                                 <div class="movie-buttons">
                                     <span class="btn btn-outline-light btn-sm hover-trailer">Sắp chiếu</span>
-                                    <a href="/chi-tiet-phim?id={{ $phim['id'] }}" class="btn btn-outline-light btn-sm hover-trailer">Xem chi tiết</a>
+                                    {{-- ✅ Sử dụng slug thay vì ID --}}
+                                    <a href="/phim/{{ $phim['slug'] ?? $phim['id'] }}" class="btn btn-outline-light btn-sm hover-trailer">Xem chi tiết</a>
                                 </div>
                                 <div class="movie-footer">
                                     <p><span class="fw-bold">Thể loại:</span> {{ $phim['genre'] ?? 'Chưa phân loại' }}</p>

@@ -6,12 +6,20 @@ $router->add('GET', '/', 'HomeController@index');
 //phim
 $router->add('GET', '/phim-dang-chieu', 'MovieController@phimDangChieu');
 $router->add('GET', '/phim-sap-chieu', 'MovieController@phimSapChieu');
+
 $router->add('GET', '/chi-tiet-phim', 'MovieController@chiTietPhim');
 $router->add('GET', '/chon-ghe', 'MovieController@chonGhe');
 
+$router->add('GET', '/phim/{slug}', 'MovieController@chiTietPhim');
+$router->add('GET', '/chon-ghe/{showtime_slug}', 'MovieController@chonGhe');
+
+$router->add('POST', '/set-current-movie', 'MovieController@setCurrentMovie');
+
 //thanhtoan
 $router->add('GET', '/thanh-toan', 'PayController@thanhToan');
+$router->add('POST', '/thanh-toan', 'PayController@thanhToan');
 $router->add('POST', '/xu-ly-thanh-toan', 'PayController@xuLyThanhToan');
+$router->add('GET', '/thanh-toan/clear', 'PayController@clearPaymentSession');
 
 //auth
 $router->add('GET', '/dang-ky', 'AuthController@dangKy');

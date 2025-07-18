@@ -1,10 +1,11 @@
 <?php
 
 namespace App\Controllers;
+
 use App\Models\Phim;
 use App\Models\LichChieu; 
 use App\Models\LoaiVe;
-use App\Models\Ghe; // ✅ THÊM DÒNG NÀY
+use App\Models\Ghe;
 use Jenssegers\Blade\Blade;
 use Exception;
 
@@ -13,7 +14,7 @@ class MovieController
     private $phimModel;
     private $lichChieuModel; 
     private $loaiVeModel;
-    private $gheModel; // ✅ THÊM PROPERTY NÀY
+    private $gheModel;
     private $blade;
 
     public function __construct()
@@ -21,7 +22,7 @@ class MovieController
         $this->phimModel = new Phim();
         $this->lichChieuModel = new LichChieu(); 
         $this->loaiVeModel = new LoaiVe();
-        $this->gheModel = new Ghe(); // ✅ THÊM DÒNG NÀY
+        $this->gheModel = new Ghe();
         $this->blade = new Blade(
             realpath(__DIR__ . '/../Views'),
             cachePath: realpath(__DIR__ . '/../../cache')
@@ -37,17 +38,15 @@ class MovieController
             header('Content-Type: text/html; charset=UTF-8');
             error_log("MovieController@phimDangChieu called");
             
-            // ✅ Lấy danh sách phim đang chiếu (active)
             $phimList = $this->phimModel->getPhimByStatus('active');
-            
             error_log("Found " . count($phimList) . " active movies");
             
-            // ✅ Format dữ liệu để hiển thị - sửa tên biến
             $phimDangChieu = [];
             foreach ($phimList as $phim) {
                 $phimDangChieu[] = [
                     'id' => $phim['p_maphim'],
                     'name' => $phim['p_tenphim'],
+                    'slug' => $this->createSlug($phim['p_tenphim']),
                     'genre' => $phim['p_theloai'],
                     'duration' => $phim['p_thoiluong'],
                     'release' => $phim['p_phathanh'],
@@ -62,10 +61,9 @@ class MovieController
             
             error_log("Formatted movies: " . json_encode($phimDangChieu));
             
-            // ✅ Render với đúng tên biến
             echo $this->blade->render('users-views.Phim.PhimDangChieu', [
                 'activePage' => 'movies',
-                'phimDangChieu' => $phimDangChieu // ✅ Đúng tên biến
+                'phimDangChieu' => $phimDangChieu
             ]);
             
         } catch (Exception $e) {
@@ -83,15 +81,14 @@ class MovieController
     {
         try {
             header('Content-Type: text/html; charset=UTF-8');
-            // Lấy danh sách phim sắp chiếu
             $phimList = $this->phimModel->getPhimByStatus('coming_soon');
             
-            // Format dữ liệu
             $phimSapChieu = [];
             foreach ($phimList as $phim) {
                 $phimSapChieu[] = [
                     'id' => $phim['p_maphim'],
                     'name' => $phim['p_tenphim'],
+                    'slug' => $this->createSlug($phim['p_tenphim']), 
                     'genre' => $phim['p_theloai'],
                     'duration' => $phim['p_thoiluong'],
                     'release' => $phim['p_phathanh'],
@@ -118,40 +115,44 @@ class MovieController
     }
 
     /**
-     * Hiển thị chi tiết phim
+     * Hiển thị chi tiết phim với slug hoặc ID
      */
     public function chiTietPhim()
     {
         try {
             header('Content-Type: text/html; charset=UTF-8');
+            
+            // Lấy slug hoặc ID từ URL
+            $slug = $_GET['slug'] ?? '';
             $phimId = $_GET['id'] ?? '';
             
             error_log("=== CHI TIET PHIM DEBUG ===");
+            error_log("Slug: " . $slug);
             error_log("Phim ID: " . $phimId);
             
-            if (empty($phimId)) {
-                error_log("Empty phim ID");
-                $_SESSION['error_message'] = 'Không tìm thấy thông tin phim!';
-                header('Location: /phim-dang-chieu');
-                exit;
+            $phim = null;
+            
+            // Tìm phim theo slug trước, nếu không có thì tìm theo ID
+            if (!empty($slug)) {
+                error_log("Searching by slug: " . $slug);
+                $phim = $this->phimModel->getPhimBySlug($slug);
+            } elseif (!empty($phimId)) {
+                error_log("Searching by ID: " . $phimId);
+                $phim = $this->phimModel->getPhimById($phimId);
             }
-    
-            // Lấy thông tin phim
-            $phim = $this->phimModel->getPhimById($phimId);
-            error_log("Phim data: " . json_encode($phim));
             
             if (!$phim) {
-                error_log("Phim not found in database");
+                error_log("Phim not found");
                 $_SESSION['error_message'] = 'Phim không tồn tại!';
                 header('Location: /phim-dang-chieu');
                 exit;
             }
-    
-            // ✅ Format dữ liệu phim - sửa poster
+
             $phimData = [
                 'id' => $phim['p_maphim'],
                 'name' => $phim['p_tenphim'],
-                'poster' => $phim['p_poster'] ?: '/static/imgs/no-poster.jpg', // ✅ Sửa đây
+                'slug' => $this->createSlug($phim['p_tenphim']),
+                'poster' => $phim['p_poster'] ?: '/static/imgs/no-poster.jpg',
                 'genre' => $phim['p_theloai'],
                 'director' => $phim['p_daodien'],
                 'actors' => $phim['p_dienvien'],
@@ -163,21 +164,19 @@ class MovieController
             ];
             
             error_log("Formatted phim data: " . json_encode($phimData));
-    
-            // Lấy lịch chiếu của phim
-            $lichChieuList = $this->lichChieuModel->getLichChieuByPhim($phimId);
+
+            $lichChieuList = $this->lichChieuModel->getLichChieuByPhim($phim['p_maphim']);
             error_log("LichChieu list count: " . count($lichChieuList));
             
-            // Tổ chức lịch chiếu theo ngày
             $lichChieuByDate = $this->organizeLichChieuByDate($lichChieuList);
             error_log("Organized lichChieu: " . json_encode($lichChieuByDate));
-    
+
             echo $this->blade->render('users-views.Phim.ChiTietPhim', [
                 'activePage' => 'movies',
                 'phim' => $phimData,
                 'lichChieuByDate' => $lichChieuByDate
             ]);
-    
+
         } catch (Exception $e) {
             error_log("=== ERROR IN CHI TIET PHIM ===");
             error_log("Error message: " . $e->getMessage());
@@ -196,40 +195,47 @@ class MovieController
     {
         try {
             header('Content-Type: text/html; charset=UTF-8');
+            
+            // Lấy slug hoặc ID từ URL
+            $showtimeSlug = $_GET['showtime_slug'] ?? '';
             $lichChieuId = $_GET['lich_chieu'] ?? '';
             
             error_log("=== CHON GHE DEBUG ===");
+            error_log("Showtime Slug: " . $showtimeSlug);
             error_log("Lich Chieu ID: " . $lichChieuId);
             
-            if (empty($lichChieuId)) {
-                $_SESSION['error_message'] = 'Không tìm thấy thông tin lịch chiếu!';
-                header('Location: /phim-dang-chieu');
-                exit;
+            $lichChieu = null;
+            
+            // Tìm lịch chiếu theo slug trước, nếu không có thì tìm theo ID
+            if (!empty($showtimeSlug)) {
+                $lichChieu = $this->lichChieuModel->getLichChieuBySlug($showtimeSlug);
+                if ($lichChieu) {
+                    $lichChieuId = $lichChieu['lc_malichchieu'];
+                }
+            } elseif (!empty($lichChieuId)) {
+                $lichChieu = $this->lichChieuModel->getLichChieuWithPhongChieu($lichChieuId);
             }
-
-            // Lấy thông tin lịch chiếu với phòng chiếu
-            $lichChieu = $this->lichChieuModel->getLichChieuWithPhongChieu($lichChieuId);
-            error_log("Lich Chieu data: " . json_encode($lichChieu));
             
             if (!$lichChieu) {
-                $_SESSION['error_message'] = 'Lịch chiếu không tồn tại!';
+                error_log("Lich chieu not found");
+                $_SESSION['error_message'] = 'Không tìm thấy thông tin lịch chiếu!';
                 header('Location: /phim-dang-chieu');
                 exit;
             }
 
             if (!in_array($lichChieu['lc_trangthai'], ['Sắp chiếu', 'Đang chiếu'])) {
                 $_SESSION['error_message'] = 'Suất chiếu này không thể đặt vé! Trạng thái: ' . $lichChieu['lc_trangthai'];
-                header('Location: /chi-tiet-phim?id=' . $lichChieu['p_maphim']);
+                header('Location: /phim/' . $this->createSlug($lichChieu['p_tenphim']));
                 exit;
             }
 
-            // ✅ LẤY GHẾ TỪ MODEL GHE (CÓ g_giaghe)
+            // LẤY GHẾ TỪ MODEL GHE
             $gheList = $this->gheModel->getByPhongChieu($lichChieu['pc_maphongchieu']);
             error_log("Ghe list count: " . count($gheList));
             
             if (empty($gheList)) {
                 $_SESSION['error_message'] = 'Phòng chiếu chưa được thiết lập sơ đồ ghế!';
-                header('Location: /chi-tiet-phim?id=' . $lichChieu['p_maphim']);
+                header('Location: /phim/' . $this->createSlug($lichChieu['p_tenphim']));
                 exit;
             }
             
@@ -242,7 +248,7 @@ class MovieController
             $gheByRow = $this->organizeGheByRow($gheList, $gheDaDat);
             error_log("Ghe by row: " . json_encode($gheByRow));
             
-            // ✅ TÍNH GIÁ VÉ THEO LOẠI GHẾ (SỬ DỤNG g_giaghe)
+            // TÍNH GIÁ VÉ THEO LOẠI GHẾ
             $giaBanVe = $this->getGiaBanVeTheoPhong($lichChieu);
 
             echo $this->blade->render('users-views.Phim.ChonGhe', [
@@ -487,7 +493,47 @@ class MovieController
     }
 
     /**
-     * Tổ chức lịch chiếu theo ngày
+     * ✅ Tạo slug từ tên phim
+     */
+    private function createSlug($text) 
+    {
+        $text = $this->removeVietnameseAccents($text);
+        $text = strtolower($text);
+        $text = preg_replace('/[^a-z0-9]+/', '-', $text);
+        $text = trim($text, '-');
+        return $text;
+    }
+
+    /**
+     * ✅ Loại bỏ dấu tiếng Việt
+     */
+    private function removeVietnameseAccents($str) 
+    {
+        $accents = [
+            'à', 'á', 'ạ', 'ả', 'ã', 'â', 'ầ', 'ấ', 'ậ', 'ẩ', 'ẫ', 'ă', 'ằ', 'ắ', 'ặ', 'ẳ', 'ẵ',
+            'è', 'é', 'ẹ', 'ẻ', 'ẽ', 'ê', 'ề', 'ế', 'ệ', 'ể', 'ễ',
+            'ì', 'í', 'ị', 'ỉ', 'ĩ',
+            'ò', 'ó', 'ọ', 'ỏ', 'õ', 'ô', 'ồ', 'ố', 'ộ', 'ổ', 'ỗ', 'ơ', 'ờ', 'ớ', 'ợ', 'ở', 'ỡ',
+            'ù', 'ú', 'ụ', 'ủ', 'ũ', 'ư', 'ừ', 'ứ', 'ự', 'ử', 'ữ',
+            'ỳ', 'ý', 'ỵ', 'ỷ', 'ỹ',
+            'đ'
+        ];
+        
+        $noAccents = [
+            'a', 'a', 'a', 'a', 'a', 'a', 'a', 'a', 'a', 'a', 'a', 'a', 'a', 'a', 'a', 'a', 'a',
+            'e', 'e', 'e', 'e', 'e', 'e', 'e', 'e', 'e', 'e', 'e',
+            'i', 'i', 'i', 'i', 'i',
+            'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o',
+            'u', 'u', 'u', 'u', 'u', 'u', 'u', 'u', 'u', 'u', 'u',
+            'y', 'y', 'y', 'y', 'y',
+            'd'
+        ];
+        
+        return str_replace($accents, $noAccents, $str);
+    }
+
+    /**
+     * ✅ Tổ chức lịch chiếu theo ngày với slug URLs
      */
     private function organizeLichChieuByDate($lichChieuList)
     {
@@ -495,60 +541,62 @@ class MovieController
         
         foreach ($lichChieuList as $lichChieu) {
             try {
+                error_log("=== ORGANIZING LICH CHIEU ===");
+                error_log("LichChieu data: " . json_encode($lichChieu));
+                
                 $ngay = $lichChieu['lc_ngaychieu'];
-                
-                
                 $gioChieuRaw = $lichChieu['lc_giobatdau'];
                 
-                // Nếu có cả ngày và giờ trong field
+                // ✅ Fix time parsing - chỉ lấy time part
                 if (strpos($gioChieuRaw, ' ') !== false) {
-                    $gio = date('H:i', strtotime($gioChieuRaw));
+                    // Full datetime: "2025-07-19 10:45:00" -> chỉ lấy "10:45:00"
+                    $timePart = explode(' ', $gioChieuRaw)[1];
+                    $gio = date('H:i', strtotime($timePart));
                 } else {
-                    // Nếu chỉ có giờ
+                    // Time only: "10:45:00"
                     $gio = date('H:i', strtotime($gioChieuRaw));
                 }
                 
-                
+                // ✅ Status calculation - sử dụng datetime đúng format
                 $trangthai = 'Sắp chiếu';
-                
                 try {
                     $now = new \DateTime();
                     
-                    // Tạo datetime cho lịch chiếu
-                    if (strpos($gioChieuRaw, ' ') !== false) {
-                        // Format: "2025-07-07 09:00:00"
-                        $lichChieuTime = new \DateTime($gioChieuRaw);
-                    } else {
-                        // Format: "09:00:00"
-                        $lichChieuTime = new \DateTime($ngay . ' ' . $gioChieuRaw);
-                    }
+                    // ✅ Tạo datetime từ date + time riêng biệt
+                    $lichChieuDateTime = new \DateTime($ngay . ' ' . $gio);
                     
-                    if ($lichChieuTime < $now) {
+                    if ($lichChieuDateTime < $now) {
                         $trangthai = 'Đã chiếu';
                     } else {
-                        // Tạo copy để avoid modifying original
                         $nowPlus15 = clone $now;
                         $nowPlus15->add(new \DateInterval('PT15M'));
                         
-                        if ($lichChieuTime <= $nowPlus15) {
+                        if ($lichChieuDateTime <= $nowPlus15) {
                             $trangthai = 'Đang chiếu';
                         }
                     }
                 } catch (Exception $dateError) {
-                    error_log("Error processing datetime: " . $dateError->getMessage());
-                    // Keep default "Sắp chiếu"
+                    error_log("Date parsing error: " . $dateError->getMessage());
+                    $trangthai = 'Sắp chiếu'; // fallback
                 }
                 
                 if (!isset($organized[$ngay])) {
                     $organized[$ngay] = [];
                 }
                 
+                // ✅ Tạo slug với full data (bao gồm p_tenphim)
+                $slug = $this->lichChieuModel->createLichChieuSlug($lichChieu);
+                error_log("Generated slug for UI: " . $slug);
+                
                 $organized[$ngay][] = [
                     'id' => $lichChieu['lc_malichchieu'],
                     'gio' => $gio,
                     'trangthai' => $trangthai,
-                    'phong' => $lichChieu['pc_maphongchieu'] ?? 'N/A'
+                    'phong' => $lichChieu['pc_maphongchieu'] ?? 'N/A',
+                    'slug' => $slug
                 ];
+                
+                error_log("Added to organized: " . json_encode(end($organized[$ngay])));
                 
             } catch (Exception $itemError) {
                 error_log("Error processing lich chieu item: " . $itemError->getMessage());
@@ -556,16 +604,15 @@ class MovieController
             }
         }
         
-        // Sắp xếp theo ngày
+        // Sort by date and time
         ksort($organized);
-        
-        // Sắp xếp theo giờ trong mỗi ngày
         foreach ($organized as &$gioList) {
             usort($gioList, function($a, $b) {
                 return strcmp($a['gio'], $b['gio']);
             });
         }
         
+        error_log("Final organized lichChieu: " . json_encode($organized));
         return $organized;
     }
 }

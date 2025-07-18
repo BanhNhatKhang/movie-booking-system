@@ -76,6 +76,7 @@ class UuDaiAdminController
         AuthHelper::checkAccess('admin_only');
         try {
             echo $this->blade->render('admin-views.UuDai.ThemUuDai', [
+                'activePage' => 'uudai',
                 'error' => $_GET['error'] ?? null,
                 'oldData' => $_SESSION['old_data'] ?? [] // ✅ Truyền old data thay vì dùng old() function
             ]);
@@ -227,6 +228,7 @@ class UuDaiAdminController
             }
     
             echo $this->blade->render('admin-views.UuDai.SuaUuDai', [
+                'activePage' => 'uudai',
                 'uuDai' => $uuDai,
                 'error' => $_GET['error'] ?? null,
                 'oldData' => $_SESSION['old_data'] ?? []

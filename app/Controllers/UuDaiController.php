@@ -23,8 +23,6 @@ class UuDaiController
     public function uudai()
     {
         try {
-            // ✅ DEBUG: Thêm log
-            error_log("=== UU DAI CONTROLLER DEBUG ===");
             
             // Cập nhật trạng thái ưu đãi theo thời gian
             $this->uuDaiModel->updateStatusByDate();
@@ -32,9 +30,6 @@ class UuDaiController
             // Lấy tất cả ưu đãi từ database
             $allOffers = $this->uuDaiModel->getAllUuDai();
             
-            // ✅ DEBUG: Kiểm tra dữ liệu
-            error_log("All offers count: " . count($allOffers));
-            error_log("All offers data: " . print_r($allOffers, true));
 
             // Phân loại ưu đãi theo trạng thái
             $ongoingOffers = [];
@@ -42,7 +37,7 @@ class UuDaiController
             $expiredOffers = [];
 
             foreach ($allOffers as $offer) {
-                error_log("Processing offer: " . $offer['ud_tenuudai'] . " - Status: " . $offer['ud_trangthai']);
+                // error_log("Processing offer: " . $offer['ud_tenuudai'] . " - Status: " . $offer['ud_trangthai']);
                 
                 switch ($offer['ud_trangthai']) {
                     case 'Đang diễn ra':
@@ -56,10 +51,6 @@ class UuDaiController
                         break;
                 }
             }
-            
-            error_log("Ongoing: " . count($ongoingOffers));
-            error_log("Upcoming: " . count($upcomingOffers));
-            error_log("Expired: " . count($expiredOffers));
 
             echo $this->blade->render('users-views.UuDai.UuDai', [
                 'activePage' => 'offers',

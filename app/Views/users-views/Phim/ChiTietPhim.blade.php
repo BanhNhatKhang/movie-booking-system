@@ -1,3 +1,4 @@
+{{-- filepath: d:\Server\project\app\Views\users-views\Phim\ChiTietPhim.blade.php --}}
 @php
     header('Content-Type: text/html; charset=UTF-8');
 @endphp
@@ -83,7 +84,8 @@
                         <div class="border border-top-0 p-2 d-flex flex-wrap gap-2">
                             @foreach($gioList as $lichChieu)
                                 @if($lichChieu['trangthai'] === 'Sắp chiếu')
-                                    <a href="/chon-ghe?lich_chieu={{ urlencode($lichChieu['id']) }}" class="text-decoration-none">
+                                    {{-- ✅ Use the correct slug format --}}
+                                    <a href="/chon-ghe/{{ $lichChieu['slug'] }}" class="text-decoration-none">
                                         <button class="btn btn-danger btn-sm">
                                             {{ $lichChieu['gio'] }}
                                         </button>
