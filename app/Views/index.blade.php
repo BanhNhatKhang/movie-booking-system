@@ -92,17 +92,20 @@
                                     @foreach($chunks as $index => $chunk)
                                     <div class="carousel-item {{ $index === 0 ? 'active' : '' }}">
                                         <div class="row">
+                                            {{-- Phim đang chiếu --}}
                                             @foreach($chunk as $phim)
                                             <div class="col-6 col-md-4 col-lg-3">
                                                 <div class="movie-card">
                                                     <img src="{{ $phim['p_poster'] }}" class="img-fluid carousel-img-inner" alt="{{ $phim['p_tenphim'] }}" onerror="this.src='/static/imgs/placeholder-movie.jpg'">
-                                                    <a href="/chi-tiet-phim?id={{ $phim['p_maphim'] }}" class="book-hover-btn">Đặt vé</a>
+                                                    {{-- Sử dụng slug thay vì ID --}}
+                                                    <a href="/phim/{{ $phim['slug'] }}" class="book-hover-btn">Đặt vé</a>
                                                 </div>  
                                                 <div class="movie-card-text">
                                                     <p>{{ $phim['p_tenphim'] }}</p>
                                                 </div>
                                                 <div class="book-bg">
-                                                    <a href="/chi-tiet-phim?id={{ $phim['p_maphim'] }}" class="book-tk">Đặt vé</a>
+                                                    {{-- Sử dụng slug thay vì ID --}}
+                                                    <a href="/phim/{{ $phim['slug'] }}" class="book-tk">Đặt vé</a>
                                                 </div>                                                                    
                                             </div>
                                             @endforeach
@@ -146,17 +149,21 @@
                                     @foreach($chunks as $index => $chunk)
                                     <div class="carousel-item {{ $index === 0 ? 'active' : '' }}">
                                         <div class="row">
+                                            {{-- Phim sắp chiếu --}}
                                             @foreach($chunk as $phim)
                                             <div class="col-6 col-md-4 col-lg-3">
                                                 <div class="movie-card">
-                                                    <a href="/chi-tiet-phim?id={{ $phim['p_maphim'] }}" class="text-decoration-none">
-                                                        <img src="{{ $phim['p_poster']}}" class="img-fluid carousel-img-inner" alt="{{ $phim['p_tenphim'] }}">                                                    </a>
+                                                    {{-- ✅ Sử dụng slug thay vì ID --}}
+                                                    <a href="/phim/{{ $phim['slug'] }}" class="text-decoration-none">
+                                                        <img src="{{ $phim['p_poster']}}" class="img-fluid carousel-img-inner" alt="{{ $phim['p_tenphim'] }}">
+                                                    </a>
                                                 </div>                                                
                                                 <div class="movie-card-text">
                                                     <p>{{ $phim['p_tenphim'] }}</p>
                                                 </div>
                                                 <div class="book-bg">
-                                                    <a href="/chi-tiet-phim?id={{ $phim['p_maphim'] }}" class="book-tk">Sắp chiếu</a>
+                                                    {{-- ✅ Sử dụng slug thay vì ID --}}
+                                                    <a href="/phim/{{ $phim['slug'] }}" class="book-tk">Sắp chiếu</a>
                                                 </div>
                                             </div>
                                             @endforeach

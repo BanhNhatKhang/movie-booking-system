@@ -10,6 +10,7 @@ class HomeController
     
     public function __construct()
     {
+
         $viewsPath = __DIR__ . '/../Views';
         $cachePath = __DIR__ . '/../../cache';
         
@@ -27,17 +28,29 @@ class HomeController
     public function index()
     {
         try {
-
             $uuDaiModel = new \App\Models\UuDaiTrangChu();
             $uuDaiList = $uuDaiModel->getAllUuDai();
             
             $phimModel = new \App\Models\Phim();
-            $phimDangChieu = $phimModel->getPhimByStatus('active');
-
-            $phimSapChieu = $phimModel->getPhimByStatus('coming_soon');
+            $phimDangChieuRaw = $phimModel->getPhimByStatus('active');
+            $phimSapChieuRaw = $phimModel->getPhimByStatus('coming_soon');
+            
+            // Thêm slug cho phim đang chiếu
+            $phimDangChieu = [];
+            foreach ($phimDangChieuRaw as $phim) {
+                $phim['slug'] = $phimModel->createSlug($phim['p_tenphim']);
+                $phimDangChieu[] = $phim;
+            }
+            
+            // Thêm slug cho phim sắp chiếu
+            $phimSapChieu = [];
+            foreach ($phimSapChieuRaw as $phim) {
+                $phim['slug'] = $phimModel->createSlug($phim['p_tenphim']);
+                $phimSapChieu[] = $phim;
+            }
             
             $posterModel = new \App\Models\Poster();
-            $posterList = $posterModel->getAll(); // Lấy tất cả poster
+            $posterList = $posterModel->getAll();
             
             echo $this->blade->render('index', [
                 'activePage' => 'home',
@@ -50,7 +63,6 @@ class HomeController
         } catch (Exception $e) {
             error_log("Error in HomeController: " . $e->getMessage());
             
-            // ✅ Fallback với mảng rỗng nếu lỗi
             echo $this->blade->render('index', [
                 'activePage' => 'home',
                 'uuDaiList' => [],

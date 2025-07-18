@@ -302,7 +302,7 @@ class Phim extends BaseModel
     /**
      * Tạo slug từ tên phim
      */
-    private function createSlug($text) 
+    public function createSlug($text) 
     {
         $text = $this->removeVietnameseAccents($text);
         $text = strtolower($text);
