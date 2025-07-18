@@ -2,15 +2,15 @@
 
 Học kỳ 3, Năm học 2024-2025
 
-**Tên dự án**:
+**Tên dự án**: CINEMA KHF MANAGEMENT SYSTEM
 
-**MSSV 1**:
+**MSSV 1**: B2205878
 
-**Họ tên SV 1**:
+**Họ tên SV 1**: Bành Nhật Khang
 
-**MSSV 2**:
+**MSSV 2**: B2205870
 
-**Họ tên SV 2**:
+**Họ tên SV 2**: Đỗ Quang Huy
 
-**Lớp học phần**:
+**Lớp học phần**: CT275/01
 
