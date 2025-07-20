@@ -1,4 +1,3 @@
-{{-- filepath: c:\Servers\test\app\Views\admin-views\TrangChu\SuaUuDaiHome.blade.php --}}
 @extends('layouts.admin.master')
 
 @section('title', 'Sửa ưu đãi')
@@ -10,21 +9,26 @@
 
 @section('content')
 <div class="container bg-white shadow-sm p-4 rounded mt-4">
-    <h4 class="mb-4">Sửa ưu đãi: {{ $uuDai['udtc_tenuudai'] ?? 'N/A' }}</h4>
+    <h4 class="mb-4">Sửa ưu đãi: {{ $uuDai['udtc_mauudai'] ?? 'N/A' }}</h4>
     
-    <!-- thông báo lỗi -->
+    <!-- Thông báo lỗi -->
     @if(isset($_GET['error']))
-        @if($_GET['error'] == 'empty_data')
-            <div class="alert alert-danger">Vui lòng điền đầy đủ thông tin!</div>
-        @elseif($_GET['error'] == 'name_exists')
-            <div class="alert alert-danger">Tên ưu đãi đã tồn tại!</div>
-        @elseif($_GET['error'] == 'upload_failed')
-            <div class="alert alert-danger">Upload ảnh thất bại!</div>
-        @elseif($_GET['error'] == 'update_failed')
-            <div class="alert alert-danger">Cập nhật ưu đãi thất bại!</div>
-        @elseif($_GET['error'] == 'system_error')
-            <div class="alert alert-danger">Lỗi hệ thống, vui lòng thử lại!</div>
-        @endif
+        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+            @if($_GET['error'] == 'empty_data')
+                Vui lòng điền đầy đủ thông tin!
+            @elseif($_GET['error'] == 'name_exists')
+                Tên ưu đãi đã tồn tại!
+            @elseif($_GET['error'] == 'upload_failed')
+                Upload ảnh thất bại!
+            @elseif($_GET['error'] == 'update_failed')
+                Cập nhật ưu đãi thất bại!
+            @elseif($_GET['error'] == 'system_error')
+                Lỗi hệ thống, vui lòng thử lại!
+            @else
+                Có lỗi xảy ra!
+            @endif
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
     @endif
 
     <form method="POST" enctype="multipart/form-data" action="/cap-nhat-uu-dai-home">
@@ -35,22 +39,32 @@
             
             @if($uuDai['udtc_anhuudai'])
                 <div class="mb-2">
-                    <img src="{{ $uuDai['udtc_anhuudai'] }}" alt="Ảnh hiện tại" class="current-image">
-                    <p class="text-muted mt-1 mb-0">Ảnh hiện tại</p>
+                    <img src="{{ $uuDai['udtc_anhuudai'] }}" 
+                         alt="Ảnh hiện tại" 
+                         class="current-image"
+                         style="max-width: 200px; max-height: 150px; object-fit: cover; border: 1px solid #ddd; border-radius: 4px;">
+                    <p class="text-muted mt-1 mb-0"><small>Ảnh hiện tại</small></p>
                 </div>
             @endif
             
-            <input type="file" class="form-control" id="anhUuDai" name="anhUuDai" 
-                   accept="image/jpeg,image/jpg,image/png" />
-            <div class="form-text">Để trống nếu không muốn thay đổi ảnh. Định dạng: JPG, PNG. Kích thước tối đa: 5MB</div>
+            <input type="file" 
+                   class="form-control" 
+                   id="anhUuDai" 
+                   name="anhUuDai" 
+                   accept="image/jpeg,image/jpg,image/png,image/gif,image/webp" />
+            <div class="form-text">Để trống nếu không muốn thay đổi ảnh. Định dạng: JPG, PNG, GIF, WebP. Kích thước tối đa: 5MB</div>
             
-            <!-- preview ảnh -->
-            <div class="image-preview-container">
+            <!-- Preview ảnh mới -->
+            <div class="image-preview-container mt-2" style="display: none;">
                 <div class="image-preview" id="imagePreview">
-                    <button type="button" class="remove-preview" id="removePreview">
-                        <i class="bi bi-x"></i>
+                    <button type="button" class="btn btn-sm btn-danger remove-preview" id="removePreview">
+                        <i class="bi bi-x"></i> Hủy ảnh mới
                     </button>
-                    <img class="preview-img" id="previewImg" src="" alt="Preview">
+                    <img class="preview-img mt-2" 
+                         id="previewImg" 
+                         src="" 
+                         alt="Preview"
+                         style="max-width: 200px; max-height: 150px; object-fit: cover; border: 1px solid #ddd; border-radius: 4px;">
                     <p class="text-muted mt-1 mb-0"><small>Ảnh mới sẽ thay thế</small></p>
                 </div>
             </div>

@@ -38,17 +38,17 @@ class UuDai extends BaseModel
         try {
             $sql = "SELECT * FROM {$this->table} ORDER BY ud_thoigianbatdau DESC";
             
-            // ✅ DEBUG: Log SQL
-            error_log("SQL Query: " . $sql);
-            error_log("Table name: " . $this->table);
+            // DEBUG: Log SQL
+            // error_log("SQL Query: " . $sql);
+            // error_log("Table name: " . $this->table);
             
             $stmt = $this->db->prepare($sql);
             $stmt->execute();
             $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
             
-            // ✅ DEBUG: Log kết quả
-            error_log("Query result count: " . count($result));
-            error_log("Query result: " . print_r($result, true));
+            // DEBUG: Log kết quả
+            // error_log("Query result count: " . count($result));
+            // error_log("Query result: " . print_r($result, true));
             
             return $result;
         } catch (Exception $e) {

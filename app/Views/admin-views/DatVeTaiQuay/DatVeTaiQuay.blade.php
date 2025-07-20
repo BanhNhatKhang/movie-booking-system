@@ -6,7 +6,7 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" />
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
     <link href="/static/css/admin/LayoutAdmin.css" rel="stylesheet">
-    <link href="/static/css/admin/DatVeTaiQuay.css" rel="stylesheet">
+    <link href="/static/css/admin/DatVeTaiQuay.css" rel="stylesheet">   
 @endsection
 
 @section('content')
@@ -134,7 +134,7 @@ var lichChieuData = <?= json_encode($lichChieuList ?? []) ?>;
 var gheData = <?= json_encode($gheList ?? []) ?>;
 var soldSeatsData = <?= json_encode($soldSeats ?? []) ?>;
 
-// ✅ DEBUG DỮ LIỆU NGAY TẠI ĐÂY
+// DEBUG DỮ LIỆU NGAY TẠI ĐÂY
 console.log("=== DEBUGGING DATA ===");
 console.log("📊 Lich chieu raw data:", lichChieuData);
 if (lichChieuData.length > 0) {

@@ -675,43 +675,43 @@ class LichChieu extends BaseModel
                     lc.pc_maphongchieu,
                     lc.lc_ngaychieu,
                     lc.lc_giobatdau,
-                    TIME_FORMAT(lc.lc_giobatdau, '%H:%i') as gio_chieu,
+                    TO_CHAR(lc.lc_giobatdau, 'HH24:MI') as gio_chieu,
                     lc.lc_trangthai,
                     p.p_tenphim,
                     p.p_thoiluong,
-                    COALESCE(pc.pc_tenphong, CONCAT('Phòng ', lc.pc_maphongchieu)) as pc_tenphong,
+                    COALESCE(pc.pc_tenphong, 'Phòng ' || lc.pc_maphongchieu) as pc_tenphong,
                     COALESCE(pc.pc_loaiphong, 'Không xác định') as pc_loaiphong
                 FROM {$this->table} lc
                 LEFT JOIN phim p ON lc.p_maphim = p.p_maphim  
                 LEFT JOIN phong_chieu pc ON lc.pc_maphongchieu = pc.pc_maphongchieu
-                WHERE lc.lc_ngaychieu >= CURDATE()
+                WHERE lc.lc_ngaychieu >= CURRENT_DATE
                 ORDER BY lc.lc_ngaychieu ASC, lc.lc_giobatdau ASC";
-    
-            $stmt = $this->db->prepare($sql);
-            $stmt->execute();
-            $results = $stmt->fetchAll(\PDO::FETCH_ASSOC);
-            
-            error_log("🎬 Query result count: " . count($results));
-            
-            // ✅ DEBUG TỪNG RECORD
-            foreach ($results as $index => $result) {
-                error_log("=== RECORD {$index} ===");
-                error_log("ID: " . ($result['lc_malichchieu'] ?? 'NULL'));
-                error_log("Movie ID: " . ($result['p_maphim'] ?? 'NULL'));
-                error_log("Room ID: " . ($result['pc_maphongchieu'] ?? 'NULL'));
-                error_log("Room Name: " . ($result['pc_tenphong'] ?? 'NULL'));
-                error_log("Date: " . ($result['lc_ngaychieu'] ?? 'NULL'));
-                error_log("Time: " . ($result['gio_chieu'] ?? 'NULL'));
-                error_log("Raw timestamp: " . ($result['lc_giobatdau'] ?? 'NULL'));
-                error_log("Movie name: " . ($result['p_tenphim'] ?? 'NULL'));
-            }
-            
-            return $results;
-            
-        } catch (Exception $e) {
-            error_log("💥 SQL Error: " . $e->getMessage());
-            return [];
+
+        $stmt = $this->db->prepare($sql);
+        $stmt->execute();
+        $results = $stmt->fetchAll(\PDO::FETCH_ASSOC);
+        
+        error_log("🎬 Query result count: " . count($results));
+        
+        // ✅ DEBUG TỪNG RECORD
+        foreach ($results as $index => $result) {
+            error_log("=== RECORD {$index} ===");
+            error_log("ID: " . ($result['lc_malichchieu'] ?? 'NULL'));
+            error_log("Movie ID: " . ($result['p_maphim'] ?? 'NULL'));
+            error_log("Room ID: " . ($result['pc_maphongchieu'] ?? 'NULL'));
+            error_log("Room Name: " . ($result['pc_tenphong'] ?? 'NULL'));
+            error_log("Date: " . ($result['lc_ngaychieu'] ?? 'NULL'));
+            error_log("Time: " . ($result['gio_chieu'] ?? 'NULL'));
+            error_log("Raw timestamp: " . ($result['lc_giobatdau'] ?? 'NULL'));
+            error_log("Movie name: " . ($result['p_tenphim'] ?? 'NULL'));
         }
+        
+        return $results;
+        
+    } catch (Exception $e) {
+        error_log("💥 SQL Error: " . $e->getMessage());
+        return [];
+    }
     }
 
     /**
@@ -868,5 +868,89 @@ class LichChieu extends BaseModel
         ];
         
         return str_replace($accents, $noAccents, $str);
+    }
+
+    /**
+     * Lấy lịch chiếu chỉ trong ngày hôm nay
+     */
+    public function getLichChieuToday()
+    {
+        try {
+            $sql = "SELECT 
+                    lc.lc_malichchieu,
+                    lc.p_maphim,
+                    lc.pc_maphongchieu,
+                    lc.lc_ngaychieu,
+                    lc.lc_giobatdau,
+                    TO_CHAR(lc.lc_giobatdau, 'HH24:MI') as gio_chieu,
+                    lc.lc_trangthai,
+                    p.p_tenphim,
+                    p.p_thoiluong,
+                    COALESCE(pc.pc_tenphong, CONCAT('Phòng ', lc.pc_maphongchieu)) as pc_tenphong,
+                    COALESCE(pc.pc_loaiphong, 'Không xác định') as pc_loaiphong
+                FROM {$this->table} lc
+                LEFT JOIN phim p ON lc.p_maphim = p.p_maphim  
+                LEFT JOIN phong_chieu pc ON lc.pc_maphongchieu = pc.pc_maphongchieu
+                WHERE lc.lc_ngaychieu = CURRENT_DATE
+                AND lc.lc_trangthai IN ('Sắp chiếu', 'Đang chiếu')
+                ORDER BY lc.lc_giobatdau ASC";
+
+            $stmt = $this->db->prepare($sql);
+            $stmt->execute();
+            $results = $stmt->fetchAll(\PDO::FETCH_ASSOC);
+            
+            // error_log("Found " . count($results) . " showtimes for today");
+            
+            return $results;
+            
+        } catch (Exception $e) {
+            error_log(" Error in getLichChieuToday: " . $e->getMessage());
+            return [];
+        }
+    }
+
+    /**
+     * Lấy lịch chiếu theo phim chỉ trong ngày hôm nay - SỬA CHO POSTGRESQL  
+     */
+    public function getLichChieuByPhimToday($phimId)
+    {
+        try {
+            $sql = "SELECT 
+                    lc.lc_malichchieu,
+                    lc.lc_ngaychieu,
+                    lc.lc_giobatdau,
+                    TO_CHAR(lc.lc_giobatdau, 'HH24:MI') as gio_chieu,
+                    lc.lc_trangthai,
+                    lc.p_maphim,
+                    lc.pc_maphongchieu,
+                    p.p_tenphim,
+                    p.p_poster,
+                    p.p_theloai,
+                    p.p_thoiluong,
+                    p.p_daodien,
+                    p.p_dienvien,
+                    p.p_mota,
+                    COALESCE(pc.pc_tenphong, CONCAT('Phòng ', lc.pc_maphongchieu)) as pc_tenphong,
+                    COALESCE(pc.pc_loaiphong, 'Không xác định') as pc_loaiphong
+                FROM lich_chieu lc  
+                LEFT JOIN phong_chieu pc ON lc.pc_maphongchieu = pc.pc_maphongchieu
+                INNER JOIN phim p ON lc.p_maphim = p.p_maphim 
+                WHERE lc.p_maphim = :phim_id 
+                    AND lc.lc_ngaychieu = CURRENT_DATE
+                    AND lc.lc_trangthai IN ('Đang chiếu', 'Sắp chiếu')
+                ORDER BY lc.lc_giobatdau ASC";
+
+            $stmt = $this->db->prepare($sql);
+            $stmt->execute(['phim_id' => $phimId]);
+            $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
+            
+            // error_log("Found " . count($result) . " showtimes today for movie " . $phimId);
+            
+            return $result;
+            
+        } catch (Exception $e) {
+            error_log("Error in getLichChieuByPhimToday: " . $e->getMessage());
+            return [];
+        }
     }
 }

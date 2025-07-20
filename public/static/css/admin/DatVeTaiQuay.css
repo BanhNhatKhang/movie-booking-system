@@ -1,9 +1,3 @@
-body,
-.card,
-.seat {
-  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif !important;
-}
-
 .seat {
   width: 32px;
   height: 32px;

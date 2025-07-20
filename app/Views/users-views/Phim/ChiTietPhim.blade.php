@@ -17,8 +17,19 @@
         <div class="bg-light-subtle border rounded">
             <div class="row flex-column flex-lg-row p-2">
                 <div class="col-lg-4 mb-3 mb-lg-0">
-                    <img src="{{ $phim['poster'] }}" class="img-fluid" alt="{{ $phim['name'] }}" 
-                         onerror="this.src='/static/imgs/no-poster.jpg'" />
+                    @if($phim['poster'])
+                        <img src="{{ $phim['poster'] }}" 
+                             class="img-fluid" 
+                             alt="{{ $phim['name'] }}"
+                             onerror="this.style.display='none'; this.parentElement.innerHTML='<div class=\'d-flex align-items-center justify-content-center bg-light border rounded\' style=\'height: 400px;\'><div class=\'text-center text-muted\'><i class=\'bi bi-film display-1\'></i><p class=\'mt-2\'>Chưa có poster</p></div></div>';" />
+                    @else
+                        <div class="d-flex align-items-center justify-content-center bg-light border rounded" style="height: 400px;">
+                            <div class="text-center text-muted">
+                                <i class="bi bi-film display-1"></i>
+                                <p class="mt-2">Chưa có poster</p>
+                            </div>
+                        </div>
+                    @endif
                 </div>
                 <div class="col-lg-8">
                     <div class="row bg-light-subtle border rounded text-dark p-3 me-3 align-items-start">
@@ -84,7 +95,6 @@
                         <div class="border border-top-0 p-2 d-flex flex-wrap gap-2">
                             @foreach($gioList as $lichChieu)
                                 @if($lichChieu['trangthai'] === 'Sắp chiếu')
-                                    {{-- ✅ Use the correct slug format --}}
                                     <a href="/chon-ghe/{{ $lichChieu['slug'] }}" class="text-decoration-none">
                                         <button class="btn btn-danger btn-sm">
                                             {{ $lichChieu['gio'] }}

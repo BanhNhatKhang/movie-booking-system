@@ -23,11 +23,19 @@
                     <div class="carousel-inner">
                         @forelse($posterList ?? [] as $index => $poster)
                             <div class="carousel-item {{ $index === 0 ? 'active' : '' }}">
-                                <img src="{{ $poster['pt_anhposter'] }}" class="d-block w-100 carousel-img img-fluid" alt="Poster {{ $index+1 }}">
+                                <img src="{{ $poster['pt_anhposter'] }}" 
+                                     class="d-block w-100 carousel-img img-fluid" 
+                                     alt="Poster {{ $index+1 }}"
+                                     onerror="this.style.display='none'; this.parentElement.innerHTML='<div class=\'d-flex justify-content-center align-items-center\' style=\'height: 400px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);\'><div class=\'text-center text-white\'><h3>Poster không khả dụng</h3></div></div>';">
                             </div>
                         @empty
                             <div class="carousel-item active">
-                                <img src="/static/imgs/default-poster.jpg" class="d-block w-100 carousel-img img-fluid" alt="No poster">
+                                <div class="d-flex justify-content-center align-items-center" style="height: 400px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);">
+                                    <div class="text-center text-white">
+                                        <h3>Chưa có poster quảng cáo</h3>
+                                        <p>Vui lòng quay lại sau</p>
+                                    </div>
+                                </div>
                             </div>
                         @endforelse
                     </div>
@@ -56,7 +64,7 @@
                             aria-controls="dang-chieu"
                             aria-selected="true"
                         >
-                            <span class=responsive-text>PHIM ĐANG CHIẾU</span>
+                            <span class="responsive-text">PHIM ĐANG CHIẾU</span>
                         </button>
                         </li>
                         <li class="nav-item" role="presentation">
@@ -96,15 +104,22 @@
                                             @foreach($chunk as $phim)
                                             <div class="col-6 col-md-4 col-lg-3">
                                                 <div class="movie-card">
-                                                    <img src="{{ $phim['p_poster'] }}" class="img-fluid carousel-img-inner" alt="{{ $phim['p_tenphim'] }}" onerror="this.src='/static/imgs/placeholder-movie.jpg'">
-                                                    {{-- Sử dụng slug thay vì ID --}}
+                                                    @if($phim['p_poster'])
+                                                        <img src="{{ $phim['p_poster'] }}" 
+                                                             class="img-fluid carousel-img-inner" 
+                                                             alt="{{ $phim['p_tenphim'] }}"
+                                                             onerror="this.style.display='none'; this.parentElement.innerHTML='<div class=\'d-flex justify-content-center align-items-center bg-secondary\' style=\'height: 300px;\'><span class=\'text-white\'>Chưa có poster</span></div>';">
+                                                    @else
+                                                        <div class="d-flex justify-content-center align-items-center bg-secondary" style="height: 300px;">
+                                                            <span class="text-white">Chưa có poster</span>
+                                                        </div>
+                                                    @endif
                                                     <a href="/phim/{{ $phim['slug'] }}" class="book-hover-btn">Đặt vé</a>
                                                 </div>  
                                                 <div class="movie-card-text">
                                                     <p>{{ $phim['p_tenphim'] }}</p>
                                                 </div>
                                                 <div class="book-bg">
-                                                    {{-- Sử dụng slug thay vì ID --}}
                                                     <a href="/phim/{{ $phim['slug'] }}" class="book-tk">Đặt vé</a>
                                                 </div>                                                                    
                                             </div>
@@ -115,11 +130,11 @@
                                 @else
                                     <div class="carousel-item active">
                                         <div class="row justify-content-center">
-                                            <div class="col-6 col-md-4 col-lg-3">
-                                                <div class="movie-card-text">
-                                                    <p>Chưa có phim đang chiếu</p>
+                                            <div class="col-12 text-center">
+                                                <div class="alert alert-info" style="background: rgba(13, 202, 240, 0.1); border: 1px solid rgba(13, 202, 240, 0.3); color: #0dcaf0;">
+                                                    <h5>Chưa có phim đang chiếu</h5>
+                                                    <p>Vui lòng quay lại sau!</p>
                                                 </div>
-                                                                                                                
                                             </div>
                                         </div>
                                     </div>
@@ -153,16 +168,23 @@
                                             @foreach($chunk as $phim)
                                             <div class="col-6 col-md-4 col-lg-3">
                                                 <div class="movie-card">
-                                                    {{-- ✅ Sử dụng slug thay vì ID --}}
                                                     <a href="/phim/{{ $phim['slug'] }}" class="text-decoration-none">
-                                                        <img src="{{ $phim['p_poster']}}" class="img-fluid carousel-img-inner" alt="{{ $phim['p_tenphim'] }}">
+                                                        @if($phim['p_poster'])
+                                                            <img src="{{ $phim['p_poster'] }}" 
+                                                                 class="img-fluid carousel-img-inner" 
+                                                                 alt="{{ $phim['p_tenphim'] }}"
+                                                                 onerror="this.style.display='none'; this.parentElement.innerHTML='<div class=\'d-flex justify-content-center align-items-center bg-secondary\' style=\'height: 300px;\'><span class=\'text-white\'>Chưa có poster</span></div>';">
+                                                        @else
+                                                            <div class="d-flex justify-content-center align-items-center bg-secondary" style="height: 300px;">
+                                                                <span class="text-white">Chưa có poster</span>
+                                                            </div>
+                                                        @endif
                                                     </a>
                                                 </div>                                                
                                                 <div class="movie-card-text">
                                                     <p>{{ $phim['p_tenphim'] }}</p>
                                                 </div>
                                                 <div class="book-bg">
-                                                    {{-- ✅ Sử dụng slug thay vì ID --}}
                                                     <a href="/phim/{{ $phim['slug'] }}" class="book-tk">Sắp chiếu</a>
                                                 </div>
                                             </div>
@@ -173,11 +195,11 @@
                                 @else
                                     <div class="carousel-item active">
                                         <div class="row justify-content-center">
-                                            <div class="col-6 col-md-4 col-lg-3">
-                                                <div class="movie-card-text">
-                                                    <p>Chưa có phim sắp chiếu</p>
+                                            <div class="col-12 text-center">
+                                                <div class="alert alert-info" style="background: rgba(13, 202, 240, 0.1); border: 1px solid rgba(13, 202, 240, 0.3); color: #0dcaf0;">
+                                                    <h5>Chưa có phim sắp chiếu</h5>
+                                                    <p>Vui lòng quay lại sau!</p>
                                                 </div>
-                                                                                                                
                                             </div>
                                         </div>
                                     </div>
@@ -204,18 +226,24 @@
                             @if($index < 4) {{-- Giới hạn hiển thị tối đa 4 ưu đãi --}}
                             <div class="col-6 col-md-3 mb-3">
                                 <a href="/uu-dai" class="text-decoration-none">
-                                    <img src="{{ $uuDai['udtc_anhuudai'] ?? '/static/imgs/default-offer.jpg' }}" 
-                                         alt="Ưu đãi {{ $uuDai['udtc_mauudai'] ?? '' }}" 
-                                         class="img-fluid service-img"
-                                         style="border-radius: 8px; transition: transform 0.3s ease;"
-                                         onmouseover="this.style.transform='scale(1.05)'"
-                                         onmouseout="this.style.transform='scale(1)'"
-                                         onerror="this.src='/static/imgs/default-offer.jpg'">
+                                    @if($uuDai['udtc_anhuudai'])
+                                        <img src="{{ $uuDai['udtc_anhuudai'] }}" 
+                                             alt="Ưu đãi {{ $uuDai['udtc_mauudai'] ?? '' }}" 
+                                             class="img-fluid service-img"
+                                             style="border-radius: 8px; transition: transform 0.3s ease;"
+                                             onmouseover="this.style.transform='scale(1.05)'"
+                                             onmouseout="this.style.transform='scale(1)'"
+                                             onerror="this.style.display='none'; this.parentElement.innerHTML='<div class=\'d-flex justify-content-center align-items-center bg-gradient\' style=\'height: 200px; border-radius: 8px; background: linear-gradient(45deg, #667eea, #764ba2);\'><span class=\'text-white\'>Chưa có hình ảnh</span></div>';">
+                                    @else
+                                        <div class="d-flex justify-content-center align-items-center bg-gradient" 
+                                             style="height: 200px; border-radius: 8px; background: linear-gradient(45deg, #667eea, #764ba2);">
+                                            <span class="text-white">Chưa có hình ảnh</span>
+                                        </div>
+                                    @endif
                                 </a>                             
                             </div>
                             @endif
                         @empty
-                            {{-- ✅ Fallback khi không có dữ liệu từ database --}}
                             <div class="col-12 text-center">
                                 <div class="alert alert-info" style="background: rgba(13, 202, 240, 0.1); border: 1px solid rgba(13, 202, 240, 0.3); color: #0dcaf0;">
                                     <i class="bi bi-info-circle me-2"></i>
@@ -225,7 +253,7 @@
                             </div>
                         @endforelse
                         
-                        {{-- ✅ Hiển thị nút "Xem tất cả" nếu có nhiều hơn 4 ưu đãi --}}
+                        {{-- Hiển thị nút "Xem tất cả" nếu có nhiều hơn 4 ưu đãi --}}
                         @if(count($uuDaiList ?? []) > 4)
                         <div class="col-12 text-center mt-4">
                             <a href="/uu-dai" class="btn btn-outline-light btn-lg px-4 py-2">

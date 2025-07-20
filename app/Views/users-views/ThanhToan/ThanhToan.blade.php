@@ -1,3 +1,4 @@
+
 @extends('layouts.users.master')
 
 @section('title', 'Thanh Toán Vé')
@@ -19,17 +20,11 @@
                     <div class="movie-section">
                         @php
                             $posterUrl = $lichChieu['p_poster'] ?? '/static/images/default-poster.jpg';
-                            
-                            // Kiểm tra xem poster có tồn tại không
-                            if (!file_exists($_SERVER['DOCUMENT_ROOT'] . $posterUrl)) {
-                                $posterUrl = 'https://via.placeholder.com/120x160/333333/ffffff?text=No+Image';
-                            }
                         @endphp
                         
                         <img src="{{ $posterUrl }}" 
                              alt="{{ $lichChieu['p_tenphim'] ?? 'Phim' }}" 
-                             class="movie-poster"
-                             onerror="this.src='https://via.placeholder.com/120x160/333333/ffffff?text=No+Image'">
+                             class="movie-poster">
                         
                         <div class="movie-info">
                             <h3>{{ $lichChieu['p_tenphim'] ?? 'Tên phim không xác định' }}</h3>

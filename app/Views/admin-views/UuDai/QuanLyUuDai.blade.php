@@ -1,3 +1,4 @@
+
 {{-- filepath: d:\Server\ct27501-project-BanhNhatKhang\app\Views\admin-views\UuDai\QuanLyUuDai.blade.php --}}
 
 @extends('layouts.admin.master')
@@ -93,7 +94,7 @@
                                  alt="{{ $uuDai['ud_tenuudai'] }}" 
                                  width="100" 
                                  class="img-thumbnail"
-                                 onerror="this.src='/static/imgs/placeholder-uudai.jpg'">
+                                 onerror="this.style.display='none'; this.parentElement.innerHTML='<div class=\'bg-light d-flex align-items-center justify-content-center\' style=\'width: 100px; height: 70px;\'><i class=\'bi bi-image text-muted\'></i></div>';">
                         @else
                             <div class="bg-light d-flex align-items-center justify-content-center" style="width: 100px; height: 70px;">
                                 <i class="bi bi-image text-muted"></i>

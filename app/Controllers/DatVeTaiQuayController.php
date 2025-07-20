@@ -45,7 +45,7 @@ class DatVeTaiQuayController
             $lichChieuModel = new LichChieu();
             
             $phimList = $phimModel->getAllPhim();
-            $lichChieuList = $lichChieuModel->getLichChieuWithFullDetails();
+            $lichChieuList = $lichChieuModel->getLichChieuToday();
             
             return $this->blade->render('admin-views.DatVeTaiQuay.DatVeTaiQuay', [
                 'phimList' => $phimList,
@@ -77,7 +77,7 @@ class DatVeTaiQuayController
             $phongChieuModel = new PhongChieu();
 
             $phimList = $phimModel->getActivePhim();
-            $lichChieuList = $lichChieuModel->getAllLichChieu();
+            $lichChieuList = $lichChieuModel->getLichChieuToday();
             $phongChieuList = $phongChieuModel->getAll();
             $gheList = $gheModel->getAllGhe();
             $soldSeats = [];
@@ -152,7 +152,7 @@ class DatVeTaiQuayController
         if (isset($_GET['phim_id'])) {
             $phimId = $_GET['phim_id'];
             $lichChieuModel = new LichChieu();
-            $lichChieu = $lichChieuModel->getLichChieuByPhim($phimId);
+            $lichChieu = $lichChieuModel->getLichChieuByPhimToday($phimId);
             
             echo json_encode($lichChieu);
             exit;

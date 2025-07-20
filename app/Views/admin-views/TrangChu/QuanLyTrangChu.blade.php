@@ -124,14 +124,13 @@
                 <i class="bi bi-plus-circle"></i> Thêm ưu đãi mới
             </a>
         </button>
-        {{-- ✅ Loại bỏ select box tìm kiếm theo tên ưu đãi --}}
     </div>
     <div class="table-responsive p-3">
         <table class="table align-middle table-hover">
             <thead class="table-dark">
                 <tr>
                     <th>STT</th>
-                    <th>Mã ưu đãi</th> {{-- ✅ Thêm cột mã ưu đãi --}}
+                    <th>Mã ưu đãi</th> 
                     <th>Ảnh ưu đãi</th>
                     <th>Hành động</th>
                 </tr>
