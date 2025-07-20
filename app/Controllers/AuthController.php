@@ -31,7 +31,7 @@ class AuthController
     public function xuLyDangKy()
     {
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-            // ✅ THÊM: Kiểm tra CSRF token ĐẦU TIÊN
+            // THÊM: Kiểm tra CSRF token ĐẦU TIÊN
             $csrfToken = $_POST['csrf_token'] ?? '';
             
             if (!Csrf::checkToken($csrfToken)) {
@@ -56,7 +56,7 @@ class AuthController
             // THÊM: Kiểm tra độ dài mật khẩu (tối thiểu 6 ký tự)
             if (strlen($matkhau) < 6) {
                 $_SESSION['error_message'] = 'Mật khẩu phải có ít nhất 6 ký tự!';
-                // ✅ REFRESH CSRF token khi có lỗi
+                // REFRESH CSRF token khi có lỗi
                 Csrf::refreshToken();
                 header('Location: /dang-ky');
                 exit;

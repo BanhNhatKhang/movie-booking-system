@@ -28,12 +28,16 @@ class HomeController
     public function index()
     {
         try {
+            error_log('Bắt đầu lấy ưu đãi');
             $uuDaiModel = new \App\Models\UuDaiTrangChu();
             $uuDaiList = $uuDaiModel->getAllUuDai();
+            error_log('Lấy ưu đãi xong');
             
+            error_log('Bắt đầu lấy phim đang chiếu');
             $phimModel = new \App\Models\Phim();
             $phimDangChieuRaw = $phimModel->getPhimByStatus('active');
             $phimSapChieuRaw = $phimModel->getPhimByStatus('coming_soon');
+            error_log('Lấy phim đang chiếu xong');
             
             // Thêm slug cho phim đang chiếu
             $phimDangChieu = [];
@@ -49,8 +53,10 @@ class HomeController
                 $phimSapChieu[] = $phim;
             }
             
+            error_log('Bắt đầu lấy poster');
             $posterModel = new \App\Models\Poster();
             $posterList = $posterModel->getAll();
+            error_log('Lấy poster xong');
             
             echo $this->blade->render('index', [
                 'activePage' => 'home',

@@ -56,6 +56,7 @@
                 <select class="form-select" id="loaiUuDai" name="loaiUuDai" required>
                     <option value="">Chọn loại ưu đãi</option>
                     <option value="COMBO" {{ ($oldData['loaiUuDai'] ?? $uuDai['ud_loaiuudai'] ?? '') === 'COMBO' ? 'selected' : '' }}>COMBO</option>
+                    <option value="THÀNH VIÊN" {{ ($oldData['loaiUuDai'] ?? $uuDai['ud_loaiuudai'] ?? '') === 'THÀNH VIÊN' ? 'selected' : '' }}>THÀNH VIÊN</option>
                     <option value="GIẢM GIÁ" {{ ($oldData['loaiUuDai'] ?? $uuDai['ud_loaiuudai'] ?? '') === 'GIẢM GIÁ' ? 'selected' : '' }}>GIẢM GIÁ</option>
                     <option value="SINH NHẬT" {{ ($oldData['loaiUuDai'] ?? $uuDai['ud_loaiuudai'] ?? '') === 'SINH NHẬT' ? 'selected' : '' }}>SINH NHẬT</option>
                     <option value="SỚM" {{ ($oldData['loaiUuDai'] ?? $uuDai['ud_loaiuudai'] ?? '') === 'SỚM' ? 'selected' : '' }}>SỚM</option>

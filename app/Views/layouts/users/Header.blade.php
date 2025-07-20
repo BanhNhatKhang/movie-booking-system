@@ -202,3 +202,24 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 });
 </script>
+
+@if(isset($_SESSION['require_update_info']) && $_SESSION['require_update_info'] === true)
+    <script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Chặn tất cả link trên header (trừ /cap-nhat-thong-tin và /dang-xuat)
+        document.querySelectorAll('header a, header .dropdown-item').forEach(function(link) {
+            const href = link.getAttribute('href');
+            if (
+                href &&
+                href !== '/cap-nhat-thong-tin' &&
+                href !== '/dang-xuat'
+            ) {
+                link.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    alert('HÃY CẬP NHẬT THÔNG TIN CÁ NHÂN TRƯỚC');
+                });
+            }
+        });
+    });
+    </script>
+@endif

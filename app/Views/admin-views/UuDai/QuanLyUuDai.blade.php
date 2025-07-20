@@ -48,6 +48,7 @@
             <select name="loai_uu_dai" class="form-select w-auto" style="min-width:140px;">
                 <option value="">Loại ưu đãi</option>
                 <option value="COMBO" {{ ($filters['loai_uu_dai'] ?? '') === 'COMBO' ? 'selected' : '' }}>COMBO</option>
+                <option value="THÀNH VIÊN" {{ ($filters['loai_uu_dai'] ?? '') === 'THÀNH VIÊN' ? 'selected' : '' }}>THÀNH VIÊN</option>
                 <option value="GIẢM GIÁ" {{ ($filters['loai_uu_dai'] ?? '') === 'GIẢM GIÁ' ? 'selected' : '' }}>GIẢM GIÁ</option>
                 <option value="SINH NHẬT" {{ ($filters['loai_uu_dai'] ?? '') === 'SINH NHẬT' ? 'selected' : '' }}>SINH NHẬT</option>
                 <option value="SỚM" {{ ($filters['loai_uu_dai'] ?? '') === 'SỚM' ? 'selected' : '' }}>SỚM</option>

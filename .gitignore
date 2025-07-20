@@ -8,3 +8,5 @@
 /public/static/uploads/uudai/*
 !/public/static/uploads/uudai/.gitkeep
 /public/static/imgs
+/app/config/client_secret.json
+/app/config/database.php

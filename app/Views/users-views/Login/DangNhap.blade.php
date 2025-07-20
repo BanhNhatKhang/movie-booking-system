@@ -85,6 +85,11 @@
                                         </button>
                                     </div>
                                     <div class="text-center mt-3">
+                                        <a href="/login-google" class="btn btn-outline-danger w-100 mb-2">
+                                            <i class="bi bi-google me-2"></i>Đăng nhập với Google
+                                        </a>
+                                    </div>
+                                    <div class="text-center mt-3">
                                         <p class="text-white">
                                             Chưa có tài khoản?
                                             <a href="/dang-ky" class="text-danger fw-bold">Đăng ký!</a>

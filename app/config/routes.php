@@ -3,6 +3,12 @@
 //user
 $router->add('GET', '/', 'HomeController@index');
 
+//google
+$router->add('GET', '/login-google', 'GoogleAuthController@loginGoogle');
+$router->add('GET', '/google-oauth', 'GoogleAuthController@handleGoogleCallback');
+$router->add('GET', '/cap-nhat-thong-tin', 'GoogleAuthController@capNhatThongTin');
+$router->add('POST', '/cap-nhat-thong-tin', 'GoogleAuthController@capNhatThongTin');
+
 //phim
 $router->add('GET', '/phim-dang-chieu', 'MovieController@phimDangChieu');
 $router->add('GET', '/phim-sap-chieu', 'MovieController@phimSapChieu');
