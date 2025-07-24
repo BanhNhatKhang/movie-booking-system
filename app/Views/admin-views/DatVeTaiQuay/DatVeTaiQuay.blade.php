@@ -49,11 +49,11 @@
                             </select>
                         </div>
 
-                        <div class="mb-3">
+                        <!-- <div class="mb-3">
                             <label class="form-label">Thông tin khách (tùy chọn):</label>
                             <input type="text" class="form-control" id="customerName" placeholder="Tên khách hàng">
                             <input type="tel" class="form-control mt-2" id="customerPhone" placeholder="Số điện thoại">
-                        </div>
+                        </div> -->
                     </form>
                 </div>
             </div>
@@ -658,8 +658,6 @@ function renderSeats(seats, soldSeatIds) {
                     seatElement.classList.add('vip');
                 } else if (seatType === 'luxury') {
                     seatElement.classList.add('luxury');
-                } else if (seatType === 'couple') {
-                    seatElement.classList.add('couple');
                 } else {
                     seatElement.classList.add('normal');
                 }
@@ -766,7 +764,7 @@ function updateLegend() {
         { class: 'normal', bg: '#e9ecef', text: `Thường (${(seatPrices.normal/1000)}k)` },
         { class: 'vip', bg: '#ffc107', text: `VIP (${(seatPrices.vip/1000)}k)` },
         { class: 'luxury', bg: '#6f42c1', text: `Luxury (${(seatPrices.luxury/1000)}k)` },
-        { class: 'couple', bg: '#fd7e14', text: `Couple (${(seatPrices.couple/1000)}k)` },
+        // { class: 'couple', bg: '#fd7e14', text: `Couple (${(seatPrices.couple/1000)}k)` },
         { class: 'selected', bg: '#198754', text: 'Đã chọn' },
         { class: 'sold', bg: '#dc3545', text: 'Đã bán' }
     ];

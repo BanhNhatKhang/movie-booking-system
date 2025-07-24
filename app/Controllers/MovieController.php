@@ -126,23 +126,23 @@ class MovieController
             $slug = $_GET['slug'] ?? '';
             $phimId = $_GET['id'] ?? '';
             
-            error_log("=== CHI TIET PHIM DEBUG ===");
-            error_log("Slug: " . $slug);
-            error_log("Phim ID: " . $phimId);
+            // error_log("=== CHI TIET PHIM DEBUG ===");
+            // error_log("Slug: " . $slug);
+            // error_log("Phim ID: " . $phimId);
             
             $phim = null;
             
             // Tìm phim theo slug trước, nếu không có thì tìm theo ID
             if (!empty($slug)) {
-                error_log("Searching by slug: " . $slug);
+                // error_log("Searching by slug: " . $slug);
                 $phim = $this->phimModel->getPhimBySlug($slug);
             } elseif (!empty($phimId)) {
-                error_log("Searching by ID: " . $phimId);
+                // error_log("Searching by ID: " . $phimId);
                 $phim = $this->phimModel->getPhimById($phimId);
             }
             
             if (!$phim) {
-                error_log("Phim not found");
+                // error_log("Phim not found");
                 $_SESSION['error_message'] = 'Phim không tồn tại!';
                 header('Location: /phim-dang-chieu');
                 exit;
@@ -163,13 +163,13 @@ class MovieController
                 'status' => $phim['p_trangthai']
             ];
             
-            error_log("Formatted phim data: " . json_encode($phimData));
+            // error_log("Formatted phim data: " . json_encode($phimData));
 
             $lichChieuList = $this->lichChieuModel->getLichChieuByPhim($phim['p_maphim']);
-            error_log("LichChieu list count: " . count($lichChieuList));
+            // error_log("LichChieu list count: " . count($lichChieuList));
             
             $lichChieuByDate = $this->organizeLichChieuByDate($lichChieuList);
-            error_log("Organized lichChieu: " . json_encode($lichChieuByDate));
+            // error_log("Organized lichChieu: " . json_encode($lichChieuByDate));
 
             echo $this->blade->render('users-views.Phim.ChiTietPhim', [
                 'activePage' => 'movies',
@@ -178,9 +178,9 @@ class MovieController
             ]);
 
         } catch (Exception $e) {
-            error_log("=== ERROR IN CHI TIET PHIM ===");
-            error_log("Error message: " . $e->getMessage());
-            error_log("Error trace: " . $e->getTraceAsString());
+            // error_log("=== ERROR IN CHI TIET PHIM ===");
+            // error_log("Error message: " . $e->getMessage());
+            // error_log("Error trace: " . $e->getTraceAsString());
             
             $_SESSION['error_message'] = 'Có lỗi xảy ra khi tải thông tin phim: ' . $e->getMessage();
             header('Location: /phim-dang-chieu');
@@ -200,9 +200,9 @@ class MovieController
             $showtimeSlug = $_GET['showtime_slug'] ?? '';
             $lichChieuId = $_GET['lich_chieu'] ?? '';
             
-            error_log("=== CHON GHE DEBUG ===");
-            error_log("Showtime Slug: " . $showtimeSlug);
-            error_log("Lich Chieu ID: " . $lichChieuId);
+            // error_log("=== CHON GHE DEBUG ===");
+            // error_log("Showtime Slug: " . $showtimeSlug);
+            // error_log("Lich Chieu ID: " . $lichChieuId);
             
             $lichChieu = null;
             
@@ -217,7 +217,7 @@ class MovieController
             }
             
             if (!$lichChieu) {
-                error_log("Lich chieu not found");
+                // error_log("Lich chieu not found");
                 $_SESSION['error_message'] = 'Không tìm thấy thông tin lịch chiếu!';
                 header('Location: /phim-dang-chieu');
                 exit;
@@ -231,7 +231,7 @@ class MovieController
 
             // LẤY GHẾ TỪ MODEL GHE
             $gheList = $this->gheModel->getByPhongChieu($lichChieu['pc_maphongchieu']);
-            error_log("Ghe list count: " . count($gheList));
+            // error_log("Ghe list count: " . count($gheList));
             
             if (empty($gheList)) {
                 $_SESSION['error_message'] = 'Phòng chiếu chưa được thiết lập sơ đồ ghế!';
@@ -242,11 +242,11 @@ class MovieController
             // Lấy danh sách ghế đã đặt cho lịch chiếu này
             $phongChieuModel = new \App\Models\PhongChieu();
             $gheDaDat = $phongChieuModel->getGheDaDatByLichChieu($lichChieuId);
-            error_log("Ghe da dat: " . json_encode($gheDaDat));
+            // error_log("Ghe da dat: " . json_encode($gheDaDat));
             
             // Tổ chức ghế theo hàng (A, B, C...)
             $gheByRow = $this->organizeGheByRow($gheList, $gheDaDat);
-            error_log("Ghe by row: " . json_encode($gheByRow));
+            // error_log("Ghe by row: " . json_encode($gheByRow));
             
             // TÍNH GIÁ VÉ THEO LOẠI GHẾ
             $giaBanVe = $this->getGiaBanVeTheoPhong($lichChieu);
@@ -260,9 +260,9 @@ class MovieController
             ]);
 
         } catch (Exception $e) {
-            error_log("=== ERROR IN CHON GHE ===");
-            error_log("Error message: " . $e->getMessage());
-            error_log("Error trace: " . $e->getTraceAsString());
+            // error_log("=== ERROR IN CHON GHE ===");
+            // error_log("Error message: " . $e->getMessage());
+            // error_log("Error trace: " . $e->getTraceAsString());
             
             $_SESSION['error_message'] = 'Có lỗi xảy ra khi tải trang chọn ghế: ' . $e->getMessage();
             header('Location: /phim-dang-chieu');
@@ -352,11 +352,11 @@ class MovieController
                     'trang_thai' => $trangThai,
                     'seat_number' => $seatNumber,
                     'display_code' => $row . str_pad($seatNumber, 2, '0', STR_PAD_LEFT),
-                    'gia_ghe' => (int)($ghe['g_giaghe'] ?? 0) // ✅ THÊM GIÁ GHẾ
+                    'gia_ghe' => (int)($ghe['g_giaghe'] ?? 0)
                 ];
                 
             } catch (Exception $seatError) {
-                error_log("Error processing seat: " . $ghe['g_maghe'] . " - " . $seatError->getMessage());
+                // error_log("Error processing seat: " . $ghe['g_maghe'] . " - " . $seatError->getMessage());
                 continue;
             }
         }
@@ -382,10 +382,10 @@ class MovieController
             $tenPhongChieu = $lichChieu['pc_tenphong'] ?? '';
             $loaiPhongChieu = $lichChieu['pc_loaiphong'] ?? '';
             
-            error_log("=== GET PRICE FOR ROOM (MOVIECONTROLLER) ===");
-            error_log("Ma phong: " . $maPhongChieu);
-            error_log("Ten phong: " . $tenPhongChieu);
-            error_log("Loai phong: " . $loaiPhongChieu);
+            // error_log("=== GET PRICE FOR ROOM (MOVIECONTROLLER) ===");
+            // error_log("Ma phong: " . $maPhongChieu);
+            // error_log("Ten phong: " . $tenPhongChieu);
+            // error_log("Loai phong: " . $loaiPhongChieu);
             
             // ✅ Tìm loại vé theo thứ tự ưu tiên
             $loaiVe = null;
@@ -415,17 +415,17 @@ class MovieController
                 $allLoaiVe = $this->loaiVeModel->getAllLoaiVeSimple();
                 if (!empty($allLoaiVe)) {
                     $loaiVe = $allLoaiVe[0];
-                    error_log("Using first available loai_ve as fallback");
+                    // error_log("Using first available loai_ve as fallback");
                 }
             }
             
             if ($loaiVe) {
                 $giaCoban = (int)$loaiVe['lv_giatien'];
-                error_log("Found loai_ve: " . $loaiVe['lv_tenloaive'] . " with base price: " . $giaCoban);
+                // error_log("Found loai_ve: " . $loaiVe['lv_tenloaive'] . " with base price: " . $giaCoban);
                 
                 // ✅ LẤY GHẾ CỦA PHÒNG CHIẾU ĐỂ TÍNH GIÁ TỪ g_giaghe
                 $gheList = $this->gheModel->getByPhongChieu($maPhongChieu);
-                error_log("Found " . count($gheList) . " seats in room");
+                // error_log("Found " . count($gheList) . " seats in room");
                 
                 // ✅ TÍNH GIÁ THEO LOẠI GHẾ = GIÁ CƠ BẢN + g_giaghe
                 $giaBanVe = [];
@@ -439,12 +439,12 @@ class MovieController
                         $giaBanVe[$loaiGhe] = $tongGia;
                     }
                     
-                    error_log("Ghe {$ghe['g_maghe']} ({$loaiGhe}): {$giaCoban} + {$giaGhe} = {$tongGia}");
+                    // error_log("Ghe {$ghe['g_maghe']} ({$loaiGhe}): {$giaCoban} + {$giaGhe} = {$tongGia}");
                 }
                 
-                // ✅ NẾU KHÔNG CÓ GHẾ TRONG PHÒNG, DÙNG GIÁ MẶC ĐỊNH
+                // NẾU KHÔNG CÓ GHẾ TRONG PHÒNG, DÙNG GIÁ MẶC ĐỊNH
                 if (empty($giaBanVe)) {
-                    error_log("No seats found, using default prices");
+                    // error_log("No seats found, using default prices");
                     $giaBanVe = [
                         'normal' => $giaCoban,
                         'vip' => $giaCoban + 20000,
@@ -453,16 +453,16 @@ class MovieController
                     ];
                 }
                 
-                error_log("Calculated prices (from database): " . json_encode($giaBanVe));
+                // error_log("Calculated prices (from database): " . json_encode($giaBanVe));
                 return $giaBanVe;
             }
             
             // Fallback cuối cùng
-            error_log("No loai_ve found, using hardcoded default");
+            // error_log("No loai_ve found, using hardcoded default");
             return $this->getGiaBanVeDefault();
             
         } catch (Exception $e) {
-            error_log("Error in getGiaBanVeTheoPhong: " . $e->getMessage());
+            // error_log("Error in getGiaBanVeTheoPhong: " . $e->getMessage());
             return $this->getGiaBanVeDefault();
         }
     }
@@ -541,13 +541,13 @@ class MovieController
         
         foreach ($lichChieuList as $lichChieu) {
             try {
-                error_log("=== ORGANIZING LICH CHIEU ===");
-                error_log("LichChieu data: " . json_encode($lichChieu));
+                // error_log("=== ORGANIZING LICH CHIEU ===");
+                // error_log("LichChieu data: " . json_encode($lichChieu));
                 
                 $ngay = $lichChieu['lc_ngaychieu'];
                 $gioChieuRaw = $lichChieu['lc_giobatdau'];
                 
-                // ✅ Fix time parsing - chỉ lấy time part
+                // Fix time parsing - chỉ lấy time part
                 if (strpos($gioChieuRaw, ' ') !== false) {
                     // Full datetime: "2025-07-19 10:45:00" -> chỉ lấy "10:45:00"
                     $timePart = explode(' ', $gioChieuRaw)[1];
@@ -576,7 +576,7 @@ class MovieController
                         }
                     }
                 } catch (Exception $dateError) {
-                    error_log("Date parsing error: " . $dateError->getMessage());
+                    // error_log("Date parsing error: " . $dateError->getMessage());
                     $trangthai = 'Sắp chiếu'; // fallback
                 }
                 
@@ -584,9 +584,9 @@ class MovieController
                     $organized[$ngay] = [];
                 }
                 
-                // ✅ Tạo slug với full data (bao gồm p_tenphim)
+                // Tạo slug với full data (bao gồm p_tenphim)
                 $slug = $this->lichChieuModel->createLichChieuSlug($lichChieu);
-                error_log("Generated slug for UI: " . $slug);
+                // error_log("Generated slug for UI: " . $slug);
                 
                 $organized[$ngay][] = [
                     'id' => $lichChieu['lc_malichchieu'],
@@ -596,10 +596,10 @@ class MovieController
                     'slug' => $slug
                 ];
                 
-                error_log("Added to organized: " . json_encode(end($organized[$ngay])));
+                // error_log("Added to organized: " . json_encode(end($organized[$ngay])));
                 
             } catch (Exception $itemError) {
-                error_log("Error processing lich chieu item: " . $itemError->getMessage());
+                // error_log("Error processing lich chieu item: " . $itemError->getMessage());
                 continue; 
             }
         }
@@ -612,7 +612,7 @@ class MovieController
             });
         }
         
-        error_log("Final organized lichChieu: " . json_encode($organized));
+        // error_log("Final organized lichChieu: " . json_encode($organized));
         return $organized;
     }
 }

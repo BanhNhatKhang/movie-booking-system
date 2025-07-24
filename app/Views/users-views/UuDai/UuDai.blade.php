@@ -29,7 +29,7 @@
                                 Combo 4 vé + 2 bắp lớn + 4 nước chỉ 399.000đ. Áp dụng cho tất
                                 cả các suất chiếu trong tuần. Hạn sử dụng đến 31/12/2024.
                             </p>
-                            <button class="featured-btn">SỬ DỤNG NGAY</button>
+                            <!-- <button class="featured-btn">SỬ DỤNG NGAY</button> -->
                         </div>
                     </div>
                     <div class="col-md-6">
@@ -101,7 +101,7 @@
                                         </div>
                                         
                                         @if($offer['ud_trangthai'] === 'Đang diễn ra')
-                                            <a href="#" class="offer-btn">CHI TIẾT</a>
+                                            <div class="offer-btn">ĐANG DIỄN RA</div>
                                         @elseif($offer['ud_trangthai'] === 'Sắp diễn ra')
                                             <span class="offer-btn" style="opacity: 0.6; cursor: not-allowed;">SẮP DIỄN RA</span>
                                         @else

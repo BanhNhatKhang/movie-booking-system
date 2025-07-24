@@ -81,9 +81,9 @@
                         <option value="">-- Chọn loại phòng --</option>
                         <option value="3D">3D</option>
                         <option value="IMAX">IMAX</option>
-                        <option value="4DX">4DX</option>
-                        <option value="Ultra 4DX">Ultra 4DX</option>
-                        <option value="Standard">Standard</option>
+                        <option value="4D">4D</option>
+                        <!-- <option value="Ultra 4DX">Ultra 4DX</option>
+                        <option value="Standard">Standard</option> -->
                     </select>
                 </div>
             </div>
@@ -174,11 +174,11 @@
                             </label>
                         </div>
                     </div>
-                    <div class="col-auto">
+                    <!-- <div class="col-auto">
                         <button type="button" class="btn btn-outline-success btn-sm" id="btn-auto-layout">
                             <i class="bi bi-magic"></i> Tự động bố trí
                         </button>
-                    </div>
+                    </div> -->
                 </div>
                 <small class="d-block mt-2 text-muted">
                     <i class="bi bi-info-circle"></i> 
