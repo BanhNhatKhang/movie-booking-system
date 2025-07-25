@@ -333,8 +333,7 @@ class Ghe extends BaseModel
                         WHEN 'normal' THEN 1 
                         WHEN 'vip' THEN 2 
                         WHEN 'luxury' THEN 3 
-                        WHEN 'couple' THEN 4 
-                        ELSE 5 
+                        ELSE 4
                     END";
         
             $stmt = $this->db->prepare($sql);
