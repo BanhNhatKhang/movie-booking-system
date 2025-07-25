@@ -448,8 +448,7 @@ class MovieController
                     $giaBanVe = [
                         'normal' => $giaCoban,
                         'vip' => $giaCoban + 20000,
-                        'luxury' => $giaCoban + 50000,
-                        'couple' => $giaCoban + 80000
+                        'luxury' => $giaCoban + 50000
                     ];
                 }
                 
@@ -476,7 +475,6 @@ class MovieController
             'normal' => 70000,
             'vip' => 90000,
             'luxury' => 120000,
-            'couple' => 150000
         ];
     }
 

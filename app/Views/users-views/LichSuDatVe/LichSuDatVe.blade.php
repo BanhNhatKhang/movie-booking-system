@@ -24,7 +24,7 @@
               <th>Điểm tích lũy</th>
               <th>Mã vé</th>
               <th>Trạng thái vé</th>
-              <th>QR vé</th> <!-- Thêm cột này -->
+              <th>QR vé</th>
             </tr>
           </thead>
           <tbody>

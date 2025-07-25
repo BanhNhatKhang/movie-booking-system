@@ -40,7 +40,7 @@ class QuanLyPhongGheController
                 'rooms' => [],
                 'roomId' => null,
                 'room' => null,
-                'roomTypes' => ['3D', 'IMAX', '4DX', 'Ultra 4DX'],
+                'roomTypes' => ['3D', 'IMAX', '4D'],
                 'gheList' => [],
                 'allGhes' => [],
                 'noRoomsMessage' => 'Chưa có phòng chiếu nào trong hệ thống.'
@@ -125,7 +125,7 @@ class QuanLyPhongGheController
             'roomId' => $roomId,
             'room' => $room,
             'actualRoomCode' => $actualRoomCode,
-            'roomTypes' => ['3D', 'IMAX', '4DX', 'Ultra 4DX'],
+            'roomTypes' => ['3D', 'IMAX', '4DX'],
             'gheList' => $filteredGhes,
             'allGhes' => $allGhes,
             'gheListByRoom' => $gheListByRoom,
@@ -399,7 +399,7 @@ class QuanLyPhongGheController
             $giaGhe = $_POST['gia_ghe'] ?? 0;
             
             // Validate loại ghế
-            $validTypes = ['normal', 'vip', 'luxury', 'couple'];
+            $validTypes = ['normal', 'vip', 'luxury'];
             if (empty($loaiGhe) || !in_array($loaiGhe, $validTypes)) {
                 echo json_encode([
                     'success' => false,
