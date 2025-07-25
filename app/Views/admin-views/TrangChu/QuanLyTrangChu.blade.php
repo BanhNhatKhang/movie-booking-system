@@ -67,7 +67,7 @@
                 <tr>
                     <th>STT</th>
                     <th>Ảnh poster</th>
-                    <th>Tên phim</th>
+                    <th>Mã poster</th>
                     <th>Hành động</th>
                 </tr>
             </thead>

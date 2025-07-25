@@ -280,15 +280,13 @@ document.addEventListener('DOMContentLoaded', function() {
         showPaymentModal();
     });
 
-    // ✅ SỬA FUNCTION showPaymentModal()
+    // SỬA FUNCTION showPaymentModal()
     function showPaymentModal() {
         const movieName = document.getElementById('movieSelect').options[document.getElementById('movieSelect').selectedIndex].text;
         const showtimeText = document.getElementById('showtimeSelect').options[document.getElementById('showtimeSelect').selectedIndex].text;
-        const customerName = document.getElementById('customerName').value || 'Khách vãng lai';
-        const customerPhone = document.getElementById('customerPhone').value || '';
         const total = calculateTotal();
 
-        // ✅ TẠO MODAL THANH TOÁN
+        //TẠO MODAL THANH TOÁN
         const modalHtml = `
             <div class="modal fade" id="paymentModal" tabindex="-1">
                 <div class="modal-dialog modal-lg">
@@ -313,8 +311,6 @@ document.addEventListener('DOMContentLoaded', function() {
                                             <p><strong>🪑 Ghế:</strong> ${selectedSeats.map(s => s.display).join(', ')}</p>
                                         </div>
                                         <div class="col-md-6">
-                                            <p><strong>👤 Khách hàng:</strong> ${customerName}</p>
-                                            <p><strong>📞 Điện thoại:</strong> ${customerPhone || 'Không có'}</p>
                                             <p><strong>💰 Tổng tiền:</strong> <span class="text-success fs-5">${total.toLocaleString()} VNĐ</span></p>
                                         </div>
                                     </div>
@@ -465,16 +461,10 @@ document.addEventListener('DOMContentLoaded', function() {
     // ✅ SỬA XỬ LÝ THANH TOÁN - BỎ GHI CHÚ
     function processPaymentAndPrint() {
         const paymentMethod = document.querySelector('input[name="paymentMethod"]:checked').value;
-        const customerName = document.getElementById('customerName').value || 'Khách vãng lai';
-        const customerPhone = document.getElementById('customerPhone').value || '';
 
         const bookingData = {
             showtime_id: currentShowtime,
             selected_seats: selectedSeats,
-            customer_info: {
-                name: customerName,
-                phone: customerPhone
-            },
             payment_method: paymentMethod,
             total_amount: calculateTotal()
         };
@@ -552,7 +542,6 @@ document.addEventListener('DOMContentLoaded', function() {
     function generateTicketHTML(data) {
         const movieName = document.getElementById('movieSelect').options[document.getElementById('movieSelect').selectedIndex].text;
         const showtimeText = document.getElementById('showtimeSelect').options[document.getElementById('showtimeSelect').selectedIndex].text;
-        const customerName = document.getElementById('customerName').value || 'Khách vãng lai';
 
         return `
             <div class="ticket-print">
@@ -565,7 +554,6 @@ document.addEventListener('DOMContentLoaded', function() {
                 <div class="row">
                     <div class="col-md-6">
                         <p><strong>Mã thanh toán:</strong> ${data.payment_id}</p>
-                        <p><strong>Khách hàng:</strong> ${customerName}</p>
                         <p><strong>Phim:</strong> ${movieName}</p>
                         <p><strong>Suất chiếu:</strong> ${showtimeText}</p>
                     </div>

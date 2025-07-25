@@ -93,7 +93,6 @@
                         <div><span class="legend-seat legend-normal"></span> Ghế thường</div>
                         <div><span class="legend-seat legend-vip"></span> Ghế VIP</div>
                         <div><span class="legend-seat legend-luxury"></span> Luxury</div>
-                        <div><span class="legend-seat legend-couple"></span> Couple</div>
                         <div><span class="legend-seat legend-sold"></span> Đã đặt</div>
                         <div><span class="legend-seat legend-selected"></span> Đang chọn</div>
                     </div>
