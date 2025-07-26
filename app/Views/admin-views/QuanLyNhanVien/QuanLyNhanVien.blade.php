@@ -132,13 +132,13 @@
                                         </a>
                                         @if($nv['nd_id'] !== $_SESSION['user_id'])
                                             <a href="/khoa-nhan-vien?id={{ $nv['nd_id'] }}" 
-                                               class="btn btn-{{ ($nv['nd_trangthai'] ?? 'active') === 'active' ? 'danger' : 'success' }} btn-sm" 
+                                               class="btn btn-{{ ($nv['nd_trangthai'] ?? 'active') === 'active' ? 'success' : 'danger' }} btn-sm" 
                                                title="{{ ($nv['nd_trangthai'] ?? 'active') === 'active' ? 'Khóa tài khoản' : 'Kích hoạt' }}"
                                                onclick="return confirm('Bạn có chắc chắn?')">
                                                 @if(($nv['nd_trangthai'] ?? 'active') === 'active')
-                                                    <i class="bi bi-lock"></i>
-                                                @else
                                                     <i class="bi bi-unlock"></i>
+                                                @else
+                                                    <i class="bi bi-lock"></i>
                                                 @endif
                                             </a>
                                         @else

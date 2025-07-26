@@ -3,6 +3,7 @@ document.addEventListener("DOMContentLoaded", function () {
   const imagePreview = document.getElementById("imagePreview");
   const previewImg = document.getElementById("previewImg");
   const removeBtn = document.getElementById("removePreview");
+  const currentImage = document.querySelector(".current-image"); // lấy ảnh cũ
 
   // xử lý chọn file
   fileInput.addEventListener("change", function (e) {

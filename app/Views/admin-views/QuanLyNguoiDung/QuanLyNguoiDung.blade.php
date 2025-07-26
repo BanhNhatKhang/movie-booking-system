@@ -119,13 +119,13 @@
                                         <i class="bi bi-pencil"></i>
                                     </a>
                                     <a href="/khoa-nguoi-dung?id={{ $user['nd_id'] }}" 
-                                       class="btn btn-{{ ($user['nd_trangthai'] ?? 'active') === 'active' ? 'danger' : 'success' }} btn-sm" 
+                                       class="btn btn-{{ ($user['nd_trangthai'] ?? 'active') === 'active' ? 'success' : 'danger' }} btn-sm" 
                                        title="{{ ($user['nd_trangthai'] ?? 'active') === 'active' ? 'Khóa tài khoản' : 'Mở khóa' }}"
                                        onclick="return confirm('Bạn có chắc chắn?')">
                                         @if(($user['nd_trangthai'] ?? 'active') === 'active')
-                                            <i class="bi bi-lock"></i>
-                                        @else
                                             <i class="bi bi-unlock"></i>
+                                        @else
+                                            <i class="bi bi-lock"></i>
                                         @endif
                                     </a>
                                 </div>

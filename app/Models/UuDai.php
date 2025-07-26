@@ -193,13 +193,13 @@ class UuDai extends BaseModel
     private function generateMaUuDai()
     {
         try {
-            $sql = "SELECT COUNT(*) as count FROM {$this->table}";
+            $sql = "SELECT MAX(CAST(SUBSTRING({$this->primaryKey} FROM 3) AS INTEGER)) as max_id FROM {$this->table}";
             $stmt = $this->db->prepare($sql);
             $stmt->execute();
             $result = $stmt->fetch(PDO::FETCH_ASSOC);
-            
-            $count = $result['count'] + 1;
-            return 'UD' . str_pad($count, 3, '0', STR_PAD_LEFT);
+
+            $maxId = $result['max_id'] ? $result['max_id'] + 1 : 1;
+            return 'UD' . str_pad($maxId, 3, '0', STR_PAD_LEFT);
         } catch (Exception $e) {
             error_log("Error generating ma uu dai: " . $e->getMessage());
             return 'UD001';
